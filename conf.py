@@ -10,7 +10,7 @@ def config():
     return conf
 
 def load():
-    s = AppState()
+    s = AppState(None)
     return s
 
 
