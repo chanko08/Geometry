@@ -2,14 +2,12 @@ from pygame.locals import *
 from geometry.constants import *
 class StateMachine(object):
     def __init__(self, game_data):
-        self.evs = set() 
         self.current = None
         self.game_data = game_data
 
 
     def broadcast(self, ev, *args, **kwargs):
-        if ev in self.evs:
-            self.current.broadcast(ev, *args, **kwargs)
+        self.current.broadcast(ev, *args, **kwargs)
 
 class AppState(StateMachine):
     def __init__(self, loaded_data):
@@ -20,7 +18,6 @@ class AppState(StateMachine):
 class MenuState(StateMachine):
     def __init__(self, game_data, parent):
         super().__init__(game_data)
-        parent.evs.update([KEYDOWN, GAME_DRAW])
 
 
     def broadcast(self, ev_type, *args, **kwargs):
