@@ -29,9 +29,24 @@ class MenuState(StateMachine):
 
 
     def draw(self, window):
-
         print('made it to draw!')
 
+
+class LevelState(StateMachine):
+    def __init__(self, game_data, lvlfile, parent):
+        super().__init__(self, game_data)
+        #TODO tie the levelloader function to Jacks stuff
+        self.level_model = levelloader(lvlfile) 
+        self.level_renderer = SimpleLevelRenderer(self.level_model)
+
+    def broadcast(self, ev_type, *args, **kwargs):
+        if ev_type == GAME_DRAW:
+            self.draw(*args, **kwargs)
+        elif ev_type == GAME_UPDATE:
+            pass
+
+    def draw(self, window):
+        self.level_renderer.render()
 
 
 
