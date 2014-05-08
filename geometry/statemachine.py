@@ -1,5 +1,8 @@
 from pygame.locals import *
 from geometry.constants import *
+from geometry.level.render.simple import SimpleLevelRenderer
+from geometry.level.model import LevelModel
+
 class StateMachine(object):
     def __init__(self, game_data):
         self.current = None
@@ -12,7 +15,7 @@ class StateMachine(object):
 class AppState(StateMachine):
     def __init__(self, loaded_data):
         super().__init__(loaded_data)
-        self.current = MenuState(loaded_data, self)
+        self.current = LevelState(loaded_data, "levels/test.json" ,self)
 
 
 class MenuState(StateMachine):
@@ -34,10 +37,11 @@ class MenuState(StateMachine):
 
 class LevelState(StateMachine):
     def __init__(self, game_data, lvlfile, parent):
-        super().__init__(self, game_data)
+        super().__init__(game_data)
         #TODO tie the levelloader function to Jacks stuff
-        self.level_model = levelloader(lvlfile) 
+        self.level_model = LevelModel(lvlfile) 
         self.level_renderer = SimpleLevelRenderer(self.level_model)
+        self.parent = parent
 
     def broadcast(self, ev_type, *args, **kwargs):
         if ev_type == GAME_DRAW:
@@ -46,7 +50,7 @@ class LevelState(StateMachine):
             pass
 
     def draw(self, window):
-        self.level_renderer.render()
+        self.level_renderer.render(window)
 
 
 
