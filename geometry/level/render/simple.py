@@ -10,8 +10,6 @@ class SimpleLevelRenderer(object):
     def render(self, window):
         for k,v in self.model.models.items():
             
-            print(k,v)
-            
             render_fun = self.render_funs.get(k)
             if render_fun:
                 for w in v :
@@ -21,13 +19,14 @@ _DEFAULT_RECT_COLOR = (255, 0, 0)
 
 _DEFAULT_RECT_LINE_WIDTH = 0 #fill in rectangles by default
 
-_DEFAULT_LINE_WIDTH = 1
+_DEFAULT_LINE_WIDTH = 5
 
 _DEFAULT_LINE_COLOR = (0, 255, 0)
 
 def _world_to_screen_coord(window, coord):
+
     x, y = coord
-    return x, 50 - y
+    return x * window.get_width() // 50, (50 - y) * window.get_height() // 50
 
 def _rect_render(window, rect_obj):
     topleft = _world_to_screen_coord(rect_obj.rect.topleft)
@@ -48,7 +47,6 @@ def _wall_render(window, wall):
 
     lines = [_world_to_screen_coord(window, l) for l in wall.points]
 
-    print(lines)
     pygame.draw.lines( window
                      , _DEFAULT_LINE_COLOR
                      , 0
