@@ -1,12 +1,12 @@
 {
 	"objects": [
 		{	
-		 	"shape":	{"type": "rectangle", "corners": [[0,50],[0,50]]},
-		 	"attr": 	["wall"]
+		 	"model": 	"wall",
+		 	"points":	[[0,0],[0,50],[50,50],[50,0],[0,0]]
 		},
 		{	
-		 	"shape":	{"type": "lines",	"points": [[10,0],[20,10],[30,10]]},
-		 	"attr": 	["wall"]
+		 	"model": 	"wall",
+		 	"points":	[[10,0],[20,10],[30,10]]
 		}
 	]
 }
