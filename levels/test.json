@@ -7,6 +7,13 @@
 		{	
 		 	"model": 	"wall",
 		 	"points":	[[10,0],[20,10],[30,10]]
+		},
+		{
+			"model":    	"player",
+			"position": 	[5,0],
+			"scale":    	1.0,
+			"health":   	100,
+			"inventory":	[]
 		}
 	]
 }
