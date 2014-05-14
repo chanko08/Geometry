@@ -17,6 +17,8 @@ class LevelModel(object):
 			for obj in self.data['objects']:
 				if obj['model'] == 'wall':
 					self.models['wall'].append(WallModel(obj['points']))
+				if obj['model'] == 'player':
+					self.models['player'].append(PlayerModel(obj))
 
 	def __str__(self):
 		return str(self.models)
@@ -30,7 +32,21 @@ class WallModel(object):
 		self.points = [tuple(p) for p in points]
 
 	def __repr__(self):
-		return "WallModel("+str(self.points)+")"		
+		return "WallModel("+str(self.points)+")"
+
+class PlayerModel(object):
+		"""docstring for PlayerModel"""
+		def __init__(self, data):
+			super(PlayerModel, self).__init__()
+			self.data	   = data
+			self.position  = data['position']
+			self.scale     = data['scale']
+			self.health    = data['health']
+			self.inventory = data['inventory']
+
+		def __repr__(self):
+			return 'PlayerModel('+str(data)+')'
+				
 
 
 if __name__ == '__main__':
