@@ -30,11 +30,11 @@ _DEFAULT_PLAYER_COLOR = (0, 255, 0)
 def _world_to_screen_coord(window, coord):
 
     x, y = coord
-    return x * 10, (50 - y) * 10 
+    return x, (50 - y) 
 
 def _world_to_screen_scale(window, scalar):
     x,y = scalar
-    return x * 10, y * 10
+    return x, y
 
 def _rect_render(window, rect_obj):
     topleft = _world_to_screen_coord(rect_obj.rect.topleft)
