@@ -30,7 +30,7 @@ _DEFAULT_PLAYER_COLOR = (0, 255, 0)
 def _world_to_screen_coord(window, coord):
 
     x, y = coord
-    return x, (50 - y) 
+    return x, (window.get_height() - y) 
 
 def _world_to_screen_scale(window, scalar):
     x,y = scalar
