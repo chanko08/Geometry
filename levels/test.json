@@ -1,19 +1,23 @@
 {
+	"level": {
+		"corners":[[0,0],[800,600]]
+	},
 	"objects": [
 		{	
 		 	"model": 	"wall",
-		 	"points":	[[0,0],[0,50],[50,50],[50,0],[0,0]]
+		 	"points":	[[0,0],[0,500],[500,500],[500,0],[0,0]]
 		},
 		{	
 		 	"model": 	"wall",
-		 	"points":	[[10,0],[20,10],[30,10]]
+		 	"points":	[[100,0],[200,100],[300,100]]
 		},
 		{
 			"model":    	"player",
-			"position": 	[5,0],
+			"position": 	[50,0],
 			"scale":    	1.0,
 			"health":   	100,
-			"inventory":	[]
+			"inventory":	[],
+			"width":    	50
 		}
 	]
 }

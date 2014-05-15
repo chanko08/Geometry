@@ -40,7 +40,7 @@ class PlayerModel(object):
 			super(PlayerModel, self).__init__()
 			self.data	   = data
 			self.position  = data['position']
-			self.width	   = 5
+			self.width	   = data['width']
 			self.scale     = data['scale']
 			self.health    = data['health']
 			self.inventory = data['inventory']
