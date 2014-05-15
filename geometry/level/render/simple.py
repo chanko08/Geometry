@@ -5,7 +5,9 @@ class SimpleLevelRenderer(object):
     def __init__(self, model):
         self.model = model
 
-        self.render_funs = { 'wall': _wall_render }
+        self.render_funs = { 'wall': _wall_render
+                           , 'player': _player_render
+                           }
 
     def render(self, window):
         for k,v in self.model.models.items():
@@ -23,10 +25,16 @@ _DEFAULT_LINE_WIDTH = 5
 
 _DEFAULT_LINE_COLOR = (0, 255, 0)
 
+_DEFAULT_PLAYER_COLOR = (0, 255, 0)
+
 def _world_to_screen_coord(window, coord):
 
     x, y = coord
-    return x * window.get_width() // 50, (50 - y) * window.get_height() // 50
+    return x * 10, (50 - y) * 10 
+
+def _world_to_screen_scale(window, scalar):
+    x,y = scalar
+    return x * 10, y * 10
 
 def _rect_render(window, rect_obj):
     topleft = _world_to_screen_coord(rect_obj.rect.topleft)
@@ -53,3 +61,20 @@ def _wall_render(window, wall):
                      , lines
                      , _DEFAULT_LINE_WIDTH
                      )
+
+def _player_render(window, player):
+
+    x,y = _world_to_screen_coord(window, player.position)
+    w,h = _world_to_screen_scale(window, [player.width, player.width])
+
+    print(x,y,w,h)
+    print(_DEFAULT_PLAYER_COLOR, window)
+
+    rect = pygame.Rect(x, y - h, w, h)
+
+
+    pygame.draw.rect(window, _DEFAULT_PLAYER_COLOR, rect)
+
+
+
+
