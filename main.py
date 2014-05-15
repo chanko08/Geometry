@@ -28,8 +28,6 @@ def main():
             elif event.type == KEYDOWN and event.key == K_ESCAPE:
                 pygame.event.post(pygame.event.Event(QUIT))
 
-    
-        
         statemachine.broadcast(GAME_UPDATE, conf.fps) 
         statemachine.broadcast(GAME_DRAW, window)
         pygame.display.update()

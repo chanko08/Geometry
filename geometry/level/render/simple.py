@@ -67,9 +67,6 @@ def _player_render(window, player):
     x,y = _world_to_screen_coord(window, player.position)
     w,h = _world_to_screen_scale(window, [player.width, player.width])
 
-    print(x,y,w,h)
-    print(_DEFAULT_PLAYER_COLOR, window)
-
     rect = pygame.Rect(x, y - h, w, h)
 
 
