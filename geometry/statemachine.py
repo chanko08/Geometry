@@ -1,3 +1,4 @@
+import pygame
 from pygame.locals import *
 from geometry.constants import *
 from geometry.level.render.simple import SimpleLevelRenderer
@@ -38,6 +39,20 @@ class MenuState(StateMachine):
 class LevelState(StateMachine):
     def __init__(self, game_data, lvlfile, parent):
         super().__init__(game_data)
+        self.controls = game_data.controls
+        self.controls[K_ESCAPE] = 'quit'
+
+        self.control_action = {
+                'move_left' :  lambda : None,
+                'move_right' : lambda : None,
+                'jump' :       lambda : None,
+                'shoot' :      lambda : None,
+                'crouch' :     lambda : None,
+                'look_up' :    lambda : None,
+                'quit' :       lambda : pygame.event.post(pygame.event.Event(QUIT))
+                }
+
+
         #TODO tie the levelloader function to Jacks stuff
         self.level_model = LevelModel(lvlfile) 
         self.level_renderer = SimpleLevelRenderer(self.level_model)
@@ -47,7 +62,18 @@ class LevelState(StateMachine):
         if ev_type == GAME_DRAW:
             self.draw(*args, **kwargs)
         elif ev_type == GAME_UPDATE:
+            #self.level_model.update(args)
             pass
+        elif ev_type == KEYDOWN:
+            ev = args[0]
+            action = self.controls.get(ev.key)
+            if action:
+                func = self.control_action.get(action, lambda : None)
+                func()
+
+                        
+
+            
 
     def draw(self, window):
         self.level_renderer.render(window)
