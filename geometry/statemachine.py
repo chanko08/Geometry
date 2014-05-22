@@ -49,8 +49,8 @@ class LevelState(StateMachine):
                 self.level_model.stop_player(direction)
 
         self.control_action = {
-            'move_left' :  lambda x : move_direction(x, Direction.LEFT)
-            'move_right' : lambda x : move_direction(x, Direction.RIGHT)
+            'move_left' :  lambda x : move_direction(x, Direction.LEFT),
+            'move_right' : lambda x : move_direction(x, Direction.RIGHT),
             'jump' :       lambda x : None,
             'shoot' :      lambda x : None,
             'crouch' :     lambda x : None,
@@ -68,8 +68,7 @@ class LevelState(StateMachine):
         if ev_type == GAME_DRAW:
             self.draw(*args, **kwargs)
         elif ev_type == GAME_UPDATE:
-            #self.level_model.update(args)
-            pass
+            self.level_model.update(args)
         elif ev_type == KEYDOWN:
             ev = args[0]
             action = self.controls.get(ev.key)
