@@ -55,8 +55,8 @@ class LevelState(StateMachine):
             'move_right' : lambda x : move_direction(x, Direction.RIGHT),
             'jump' :       lambda x : None,
             'shoot' :      lambda x : None,
-            'crouch' :     lambda x : None,
-            'look_up' :    lambda x : None,
+            'crouch' :     lambda x : move_direction(x, Direction.DOWN),
+            'look_up' :    lambda x : move_direction(x, Direction.UP),
             'quit' :       lambda x : pygame.event.post(pygame.event.Event(QUIT))
             }
 

@@ -74,7 +74,7 @@ class PlayerModel(object):
 
 		def update(self,dt):
 			print(dt*self.velocity)
-			self.position += dt*self.velocity				
+			self.position += 100*dt*self.velocity				
 
 
 if __name__ == '__main__':
