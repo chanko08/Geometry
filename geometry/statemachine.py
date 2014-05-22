@@ -42,15 +42,21 @@ class LevelState(StateMachine):
         self.controls = game_data.controls
         self.controls[K_ESCAPE] = 'quit'
 
+        def move_direction(keypress, direction):
+            if keypress == KEYDOWN:
+                self.level_model.move_player(direction)
+            else:
+                self.level_model.stop_player(direction)
+
         self.control_action = {
-                'move_left' :  lambda : None,
-                'move_right' : lambda : None,
-                'jump' :       lambda : None,
-                'shoot' :      lambda : None,
-                'crouch' :     lambda : None,
-                'look_up' :    lambda : None,
-                'quit' :       lambda : pygame.event.post(pygame.event.Event(QUIT))
-                }
+            'move_left' :  lambda x : move_direction(x, Direction.LEFT)
+            'move_right' : lambda x : move_direction(x, Direction.RIGHT)
+            'jump' :       lambda x : None,
+            'shoot' :      lambda x : None,
+            'crouch' :     lambda x : None,
+            'look_up' :    lambda x : None,
+            'quit' :       lambda x : pygame.event.post(pygame.event.Event(QUIT))
+            }
 
 
         #TODO tie the levelloader function to Jacks stuff
@@ -69,7 +75,7 @@ class LevelState(StateMachine):
             action = self.controls.get(ev.key)
             if action:
                 func = self.control_action.get(action, lambda : None)
-                func()
+                func(ev_type)
 
                         
 
