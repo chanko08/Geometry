@@ -64,17 +64,16 @@ class PlayerModel(object):
 
 		def move(self, direction):
 			self.velocity += direction
-			self.velocity /= norm(self.velocity)
-			print(self.velocity)
-
+			if max(abs(self.velocity)) > .00001:
+				self.velocity /= norm(self.velocity)
 
 		def stop(self, direction):
 			self.velocity -= self.velocity.dot(direction)*direction
-			if max(abs(self.velocity > .00001)):
+			if max(abs(self.velocity)) > .00001:
 				self.velocity /= norm(self.velocity)
-			print(self.velocity)
 
 		def update(self,dt):
+			print(dt*self.velocity)
 			self.position += dt*self.velocity				
 
 
