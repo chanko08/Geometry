@@ -25,11 +25,15 @@ class LevelModel(object):
 	def __str__(self):
 		return str(self.models)
 
+	def update(self,FPS):
+		dt = 1.0/FPS
+		list(map( lambda thing: thing.update(dt), self.models['player']))
+
 	def move_player(self,direction):
-		map( lambda player: player.move(direction),  self.models['player'] )
+		list(map( lambda player: player.move(direction),  self.models['player'] ))
 
 	def stop_player(self,direction):
-		map( lambda player: player.stop(direction),  self.models['player'] )
+		list(map( lambda player: player.stop(direction),  self.models['player'] ))
 
 
 class WallModel(object):
@@ -53,7 +57,7 @@ class PlayerModel(object):
 			self.health    = data['health']
 			self.inventory = data['inventory']
 
-			self.velocity  = array([0,0])
+			self.velocity  = array([0.0,0.0])
 
 		def __repr__(self):
 			return 'PlayerModel('+str(data)+')'
@@ -61,11 +65,17 @@ class PlayerModel(object):
 		def move(self, direction):
 			self.velocity += direction
 			self.velocity /= norm(self.velocity)
+			print(self.velocity)
+
 
 		def stop(self, direction):
 			self.velocity -= self.velocity.dot(direction)*direction
-			self.velocity /= norm(self.velocity)
-				
+			if max(abs(self.velocity > .00001)):
+				self.velocity /= norm(self.velocity)
+			print(self.velocity)
+
+		def update(self,dt):
+			self.position += dt*self.velocity				
 
 
 if __name__ == '__main__':

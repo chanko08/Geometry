@@ -44,8 +44,10 @@ class LevelState(StateMachine):
 
         def move_direction(keypress, direction):
             if keypress == KEYDOWN:
+                print('DOWN',direction)
                 self.level_model.move_player(direction)
-            else:
+            else:                
+                print('UP',direction)
                 self.level_model.stop_player(direction)
 
         self.control_action = {
@@ -68,10 +70,11 @@ class LevelState(StateMachine):
         if ev_type == GAME_DRAW:
             self.draw(*args, **kwargs)
         elif ev_type == GAME_UPDATE:
-            self.level_model.update(args)
-        elif ev_type == KEYDOWN:
+            self.level_model.update(args[0])
+        elif ev_type == KEYDOWN or ev_type == KEYUP:
             ev = args[0]
             action = self.controls.get(ev.key)
+            print(action,args)
             if action:
                 func = self.control_action.get(action, lambda : None)
                 func(ev_type)
