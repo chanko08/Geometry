@@ -1,6 +1,8 @@
 import json
 import pprint
 import pygame
+from numpy import array
+from numpy.linalg import norm
 from collections import defaultdict
 
 class LevelModel(object):
@@ -23,6 +25,12 @@ class LevelModel(object):
 	def __str__(self):
 		return str(self.models)
 
+	def move_player(self,direction):
+		map( lambda player: player.move(direction),  self.models['player'] )
+
+	def stop_player(self,direction):
+		map( lambda player: player.stop(direction),  self.models['player'] )
+
 
 class WallModel(object):
 	"""docstring for WallModel"""
@@ -39,14 +47,24 @@ class PlayerModel(object):
 		def __init__(self, data):
 			super(PlayerModel, self).__init__()
 			self.data	   = data
-			self.position  = data['position']
+			self.position  = array(data['position'])
 			self.width	   = data['width']
 			self.scale     = data['scale']
 			self.health    = data['health']
 			self.inventory = data['inventory']
 
+			self.velocity  = array([0,0])
+
 		def __repr__(self):
 			return 'PlayerModel('+str(data)+')'
+
+		def move(self, direction):
+			self.velocity += direction
+			self.velocity /= norm(self.velocity)
+
+		def stop(self, direction):
+			self.velocity -= self.velocity.dot(direction)*direction
+			self.velocity /= norm(self.velocity)
 				
 
 
