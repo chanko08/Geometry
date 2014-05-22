@@ -63,7 +63,7 @@ class LevelState(StateMachine):
 
         #TODO tie the levelloader function to Jacks stuff
         self.level_model = LevelModel(lvlfile) 
-        self.level_renderer = SimpleLevelRenderer(self.level_model)
+        self.level_renderer = SimpleLevelRenderer(self.level_model, self.game_data)
         self.parent = parent
 
     def broadcast(self, ev_type, *args, **kwargs):

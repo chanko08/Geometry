@@ -142,6 +142,8 @@ keyname = {
     "EURO":        K_EURO
 }
 
+conf_controls = None
+
 def config():
     conf = Object()
     conf.window_size = 800, 600
@@ -149,10 +151,11 @@ def config():
     conf.caption = "Geometry"
     conf.controls = dict()
 
-    with open('controls.json') as keyfile:
-        controls = json.load(keyfile)
-        for fun,key in controls.items():
-            conf.controls[keyname[key.upper()]] = fun
+    if not conf_controls:
+        with open('controls.json') as keyfile:
+            controls = json.load(keyfile)
+            for fun,key in controls.items():
+                conf.controls[keyname[key.upper()]] = fun
 
     print("Config: ", conf)
 

@@ -1,21 +1,28 @@
 import pygame
 import itertools
 
+
 class SimpleLevelRenderer(object):
-    def __init__(self, model):
+    def __init__(self, model, conf):
         self.model = model
 
         self.render_funs = { 'wall': _wall_render
                            , 'player': _player_render
                            }
 
+        self.mask = pygame.Surface(conf.window_size)
+        self.mask.fill(_DEFAULT_BG_COLOR)
+
     def render(self, window):
+        window.blit(self.mask, (0,0))
         for k,v in self.model.models.items():
             
             render_fun = self.render_funs.get(k)
             if render_fun:
                 for w in v :
                     render_fun(window, w)
+
+_DEFAULT_BG_COLOR = (0, 0, 0)
 
 _DEFAULT_RECT_COLOR = (255, 0, 0)
 
