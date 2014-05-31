@@ -1,8 +1,0 @@
-{
-	"move_left": 	"left",
-	"move_right":	"right",
-	"jump":      	"space",
-	"shoot":     	"x",
-	"crouch":    	"down",
-	"look_up":   	"up"
-}
