@@ -17,7 +17,7 @@ return {
       properties = {},
       objects = {
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "polyline",
           x = 74,
@@ -33,7 +33,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "polyline",
           x = 800,
@@ -51,7 +51,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "polyline",
           x = 30,
@@ -66,7 +66,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "polyline",
           x = 89,
@@ -81,7 +81,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "polyline",
           x = 173,
@@ -96,7 +96,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "polyline",
           x = 273,
@@ -111,7 +111,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "polyline",
           x = 382,
@@ -126,7 +126,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "polyline",
           x = 480,
@@ -141,7 +141,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "rectangle",
           x = 80,
@@ -152,7 +152,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "rectangle",
           x = 419,
@@ -163,7 +163,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "rectangle",
           x = 441,
@@ -174,7 +174,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "rectangle",
           x = 668,
@@ -185,7 +185,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "rectangle",
           x = 570,
@@ -196,7 +196,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "rectangle",
           x = 59,
@@ -207,7 +207,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 721,
@@ -218,7 +218,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 750,
@@ -229,7 +229,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 769,
@@ -240,7 +240,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 735,
@@ -251,7 +251,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 790,
@@ -262,7 +262,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 773,
@@ -273,7 +273,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 798,
@@ -284,7 +284,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 780,
@@ -295,7 +295,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 755,
@@ -306,7 +306,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 735,
@@ -317,7 +317,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 714,
@@ -328,7 +328,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 705,
@@ -339,7 +339,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 700,
@@ -350,7 +350,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 689,
@@ -361,7 +361,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 723,
@@ -372,7 +372,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 746,
@@ -383,7 +383,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 766,
@@ -394,7 +394,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 798,
@@ -405,7 +405,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 780,
@@ -416,7 +416,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 817,
@@ -427,7 +427,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 810,
@@ -438,7 +438,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 833,
@@ -449,7 +449,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 833,
@@ -460,7 +460,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 817,
@@ -471,7 +471,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 796,
@@ -482,7 +482,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 847,
@@ -493,7 +493,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 678,
@@ -504,7 +504,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 693,
@@ -515,7 +515,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 659,
@@ -526,7 +526,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 675,
@@ -537,7 +537,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 652,
@@ -548,7 +548,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 666,
@@ -559,7 +559,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "ellipse",
           x = 677,
@@ -570,7 +570,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "polyline",
           x = 299,
@@ -625,7 +625,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "polygon",
           x = 844,
@@ -642,7 +642,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "polygon",
           x = 513,
@@ -661,7 +661,7 @@ return {
           properties = {}
         },
         {
-          name = "",
+          name = "wall",
           type = "",
           shape = "polygon",
           x = 449,

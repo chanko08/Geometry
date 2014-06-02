@@ -3,7 +3,7 @@ local state = nil
 function love.load()
   local settings = require('settings')
   local state_cls = settings.STARTING_STATE
-  state = state_cls:new()
+  state = state_cls:new(settings.START_LEVEL)
 end
 
 
