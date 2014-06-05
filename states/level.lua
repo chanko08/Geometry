@@ -2,12 +2,26 @@ class       = require('lib/middleclass')
 inspect     = require('lib/inspect')
 _           = require('lib/underscore')
 State       = require('state')
+Camera      = require('lib/hump/camera')
+
 
 local LevelState     = class('LevelState', State)
 local LevelModel     = class('LevelModel')
+
 local PlayerModel    = class('PlayerModel')
+
+local PlayerModelState = class('PlayerModelState')
+local PlayerModelStandState = class('PlayerModelStandState', PlayerModelState)
+local PlayerModelWalkState = class('PlayerModelWalkState', PlayerModelState)
+
+
 local WallModel      = class('WallModel')
 local SimpleRenderer = class('SimpleRenderer')
+
+
+local Direction = {}
+Direction.LEFT = -1
+Direction.RIGHT = 1
 
 ---------------------------------------
 -- Level Sate
@@ -27,7 +41,20 @@ function LevelState:draw()
 end
 
 function LevelState:keypressed(key)
+    if key == 'left' then
+        self.model:move_player(Direction.LEFT)
+    elseif key == 'right' then
+        self.model:move_player(Direction.RIGHT)
+    end
 
+end
+
+function LevelState:keyreleased(key)
+    if key == 'left' then
+        self.model:move_player(Direction.RIGHT)
+    elseif key == 'right' then
+        self.model:move_player(Direction.LEFT)
+    end
 end
 
 -------------------------------------
@@ -68,9 +95,22 @@ function LevelModel:update(dt)
     
 end
 
+function LevelModel:move_player(direction)
+    _.map(self.models['player'], function(p) p:move(direction) end)
+end
+
 -------------------------------------
 -- SimpleRenderer
+
+function SimpleRenderer:initialize(model)
+    self.camera = Camera.new()
+end
+
 function SimpleRenderer:draw(model)
+    local player = _.head(model.models['player'])
+    local pos = {player.body:getWorldPoints(player.physics_shape:getPoints())}
+    
+    self.camera:move(pos[1], pos[2])
     -- no player, yet
     for k, wall in pairs(model.models['wall']) do
         if wall.shape == 'rectangle' then
@@ -111,13 +151,71 @@ function PlayerModel:initialize(player_object, world)
     self.physics_shape = love.physics.newRectangleShape(self.x, self.y, self.width, self.height)
     self.fixture = love.physics.newFixture(self.body, self.physics_shape, 1)
 
+    self.state = PlayerModelStandState(self)
+
 
 end
 
 function PlayerModel:update(dt)
    self.x = self.body:getX() 
    self.y = self.body:getY()
+   self.state:update(dt)
 end
+
+function PlayerModel:move(direction)
+    print('player',direction)
+    self.state:move(direction)
+end
+
+
+
+-------------------------------------
+-- PlayerModelState
+function PlayerModelState:initialize(player)
+    self.player = player
+end
+
+function PlayerModelState:move(direction)
+end
+
+function PlayerModelState:update(dt)
+end
+
+
+
+-------------------------------------
+-- PlayerModelStandState
+function PlayerModelStandState:move(direction)
+    self.player.state = PlayerModelWalkState(self.player, direction)
+end
+
+-------------------------------------
+-- PlayerModelWalkState
+
+function PlayerModelWalkState:initialize(player, direction)
+    PlayerModelState.initialize(self,player)
+    self.direction = direction
+    self.acc = 0
+end
+
+
+function PlayerModelWalkState:move(direction)
+    self.player.state = PlayerModelWalkState(self.player, direction)
+end
+
+function PlayerModelWalkState:update(dt)
+    local acc = self.direction * 200 
+    local vx, vy = self.player.body:getLinearVelocity()
+    if self.acc == 0 then
+        self.acc = acc
+    elseif math.abs(vx) <= 0.0005 then
+        self.player.state = PlayerModelStandState(self.player)
+        return
+    end
+
+    self.player.body:applyForce(self.acc, 0)
+end
+
 
 -------------------------------------
 -- WallModel
@@ -164,6 +262,7 @@ function WallModel:initialize(wall_object, world)
     end
 
     self.fixture = love.physics.newFixture(self.body, self.physics_shape)
+    self.body:setLinearDamping(0.1)
 end
 
 function WallModel:update(dt)
