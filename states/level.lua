@@ -33,6 +33,8 @@ end
 -------------------------------------
 -- LevelModel
 function LevelModel:initialize(lvl)
+    love.physics.setMeter(32)
+    self.world = love.physics.newWorld(0, 9.81 * 32, true)
     self.models = {}
     for i,layer in ipairs(lvl.layers) do
         if layer.type == 'objectgroup' then
@@ -42,7 +44,6 @@ function LevelModel:initialize(lvl)
         end
     end
 
-    print(inspect(self.models))
 end
 
 function LevelModel:_add_model(obj)
@@ -50,17 +51,21 @@ function LevelModel:_add_model(obj)
         if not self.models['player'] then
             self.models['player'] = {}
         end
-        table.insert(self.models['player'], PlayerModel(obj))
+        table.insert(self.models['player'], PlayerModel(obj, self.world))
     -- Everything else has "" as a name right now
     elseif obj.name == 'wall' then
         if not self.models['wall'] then
             self.models['wall'] = {}
         end
-        table.insert(self.models['wall'], WallModel(obj))
+        table.insert(self.models['wall'], WallModel(obj, self.world))
     end
 end
     
 function LevelModel:update(dt)
+    self.world:update(dt)
+    _.map(self.models['wall'],   function(w) w:update(dt) end)
+    _.map(self.models['player'], function(w) w:update(dt) end)
+    
 end
 
 -------------------------------------
@@ -73,50 +78,97 @@ function SimpleRenderer:draw(model)
         elseif wall.shape == 'ellipse' then
             love.graphics.circle('line', wall.x, wall.y, 2, 50)
         elseif wall.shape == 'polyline' then
-            love.graphics.line( wall.vertices )
+            love.graphics.line( wall.body:getWorldPoints(wall.physics_shape:getPoints()))
         elseif wall.shape == 'polygon' then
             love.graphics.polygon( 'line', wall.vertices )
         end
     end
+
+    local r,g,b,a = love.graphics.getColor()
+    love.graphics.setColor(0,255,0)
+    for k, player in pairs(model.models['player']) do
+        local x,y = player.body:getWorldPoints(player.physics_shape:getPoints())
+        love.graphics.rectangle( 'fill', x, y,  player.width, player.height)
+    end
+    love.graphics.setColor(r,g,b,a)
+
 end
 
 -------------------------------------
 -- PlayerModel
-function PlayerModel:initialize(player_object)
+function PlayerModel:initialize(player_object, world)
     self.x = player_object.x
     self.y = player_object.y
     self.properties = player_object.properties
+    self.width  = 32
+    self.height = 32
+
+    self.body = love.physics.newBody( world
+                                    , self.x - self.width / 2
+                                    , self.y - self.height / 2
+                                    , 'dynamic'
+                                    )
+    self.physics_shape = love.physics.newRectangleShape(self.x, self.y, self.width, self.height)
+    self.fixture = love.physics.newFixture(self.body, self.physics_shape, 1)
+
+
 end
 
 function PlayerModel:update(dt)
-    
+   self.x = self.body:getX() 
+   self.y = self.body:getY()
 end
 
 -------------------------------------
 -- WallModel
-function WallModel:initialize(wall_object)
+function WallModel:initialize(wall_object, world)
     self.x = wall_object.x
     self.y = wall_object.y
     self.shape = wall_object.shape
     self.properties = wall_object.properties
 
-    if self.shape == 'rectangle' or self.shape == 'ellipse' then
-        self.width = wall_object.width
+
+    if self.shape == 'rectangle' then
+        self.width  = wall_object.width
         self.height = wall_object.height
+
+        self.body =love.physics.newBody( world
+                                       , self.x - self.width / 2
+                                       , self.y - self.height / 2
+                                       , 'static'
+                                       )
+        self.physics_shape  = love.physics.newRectangleShape(self.width, self.height)
+
+    elseif self.shape == 'ellipse' then
+        self.width  = wall_object.width
+        if self.width <= 0 then
+            self.width = 14
+        end
+
+        self.body =love.physics.newBody(world, self.x, self.y, 'static')
+        self.physics_shape  = love.physics.newCircleShape(self.x, self.y, self.width)
     
     elseif self.shape == 'polyline' then 
         self.vertices = _.flatten( 
             _.map( wall_object.polyline, function(pt) return {pt.x + self.x, pt.y+self.y} end) )
+
+        self.body =love.physics.newBody(world, self.x, self.y, 'static')
+        self.physics_shape = love.physics.newChainShape(false, unpack(self.vertices))
     
     elseif self.shape == 'polygon' then
         self.vertices = _.flatten( 
             _.map( wall_object.polygon,  function(pt) return {pt.x + self.x, pt.y+self.y} end) )
-    
+
+        self.body =love.physics.newBody(world, self.x, self.y, 'static')
+        self.physics_shape = love.physics.newChainShape(true, unpack(self.vertices))
     end
+
+    self.fixture = love.physics.newFixture(self.body, self.physics_shape)
 end
 
 function WallModel:update(dt)
-    
+   self.x = self.body:getX()
+   self.y = self.body:getY()
 end
 
 return LevelState
