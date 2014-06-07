@@ -22,6 +22,7 @@ local SimpleRenderer = class('SimpleRenderer')
 local Direction = {}
 Direction.LEFT = -1
 Direction.RIGHT = 1
+Direction.STOP = 0
 
 ---------------------------------------
 -- Level Sate
@@ -29,11 +30,12 @@ function LevelState:initialize(lvlfile)
     local lvlpath = 'lvls/'
     lvl = love.filesystem.load(lvlpath .. lvlfile)
     self.model = LevelModel(lvl())
-    self.renderer = SimpleRenderer(lvl())
+    self.renderer = SimpleRenderer(self.model)
 end
 
 function LevelState:update(dt)
     self.model:update(dt)
+    self.renderer:update(dt)
 end
 
 function LevelState:draw()
@@ -50,10 +52,8 @@ function LevelState:keypressed(key)
 end
 
 function LevelState:keyreleased(key)
-    if key == 'left' then
-        self.model:move_player(Direction.RIGHT)
-    elseif key == 'right' then
-        self.model:move_player(Direction.LEFT)
+    if key == 'left' or key == 'right' then
+        self.model:move_player(Direction.STOP)
     end
 end
 
@@ -103,35 +103,50 @@ end
 -- SimpleRenderer
 
 function SimpleRenderer:initialize(model)
-    self.camera = Camera.new()
+    self.player = _.head(model.models['player'])
+    self.px, self.py = self.player.body:getWorldPoints(self.player.physics_shape:getPoints())
+    self.camera = Camera(self.px,self.py)
 end
 
 function SimpleRenderer:draw(model)
-    local player = _.head(model.models['player'])
-    local pos = {player.body:getWorldPoints(player.physics_shape:getPoints())}
-    
-    self.camera:move(pos[1], pos[2])
+    self.camera:attach()
+    self.px, self.py = self.player.body:getWorldPoints(self.player.physics_shape:getPoints())
+    print('pos',self.px,self.py)
+    print('camera: ',self.camera.x,self.camera.y)
     -- no player, yet
     for k, wall in pairs(model.models['wall']) do
-        if wall.shape == 'rectangle' then
-            love.graphics.rectangle( 'line', wall.x, wall.y, wall.width, wall.height)
-        elseif wall.shape == 'ellipse' then
-            love.graphics.circle('line', wall.x, wall.y, 2, 50)
-        elseif wall.shape == 'polyline' then
-            love.graphics.line( wall.body:getWorldPoints(wall.physics_shape:getPoints()))
-        elseif wall.shape == 'polygon' then
-            love.graphics.polygon( 'line', wall.vertices )
+
+        if wall.shape == 'ellipse' then
+            local center = {wall.body:getWorldPoints(wall.physics_shape:getPoint())}
+            love.graphics.circle('line', center[1], center[2], wall.width, 50)
+        else
+
+            local points = {wall.body:getWorldPoints(wall.physics_shape:getPoints())}
+
+            -- if wall.shape == 'rectangle' then
+            --     -- local x,y = wall.body:getWorldPoints(wall.physics_shape:getPoints())
+            --     love.graphics.rectangle( 'line', points[1],points[2], wall.width, wall.height)
+            if wall.shape == 'polyline' then
+                love.graphics.line( unpack(points) )
+            else -- wall.shape == 'polygon' then
+                love.graphics.polygon( 'line', unpack(points) )
+            end
         end
     end
 
     local r,g,b,a = love.graphics.getColor()
-    love.graphics.setColor(0,255,0)
+    love.graphics.setColor(255,0,255)
     for k, player in pairs(model.models['player']) do
-        local x,y = player.body:getWorldPoints(player.physics_shape:getPoints())
-        love.graphics.rectangle( 'fill', x, y,  player.width, player.height)
+        local points = {player.body:getWorldPoints(player.physics_shape:getPoints())}
+        love.graphics.polygon( 'fill', unpack(points) )
     end
     love.graphics.setColor(r,g,b,a)
+    self.camera:detach()
+end
 
+function SimpleRenderer:update(dt)
+    local dx, dy = self.px - self.camera.x, self.py - self.camera.y
+    self.camera:move(dt*4*dx,dt*4*dy)
 end
 
 -------------------------------------
@@ -142,12 +157,15 @@ function PlayerModel:initialize(player_object, world)
     self.properties = player_object.properties
     self.width  = 32
     self.height = 32
+    self.max_velocity = 500.0
+    self.walk_accel = 500.0
 
     self.body = love.physics.newBody( world
                                     , self.x - self.width / 2
                                     , self.y - self.height / 2
                                     , 'dynamic'
                                     )
+
     self.physics_shape = love.physics.newRectangleShape(self.x, self.y, self.width, self.height)
     self.fixture = love.physics.newFixture(self.body, self.physics_shape, 1)
 
@@ -163,7 +181,6 @@ function PlayerModel:update(dt)
 end
 
 function PlayerModel:move(direction)
-    print('player',direction)
     self.state:move(direction)
 end
 
@@ -185,6 +202,7 @@ end
 
 -------------------------------------
 -- PlayerModelStandState
+
 function PlayerModelStandState:move(direction)
     self.player.state = PlayerModelWalkState(self.player, direction)
 end
@@ -195,25 +213,42 @@ end
 function PlayerModelWalkState:initialize(player, direction)
     PlayerModelState.initialize(self,player)
     self.direction = direction
-    self.acc = 0
+
+    self.vx, self.vy = self.player.body:getLinearVelocity()
+    self.x, self.y   = self.player.body:getPosition()
+   
+    local currentSign = (self.vx == 0) and 0 or ((self.vx > 0) and 1 or -1) -- sign(vx)
+    self.acc = self.player.walk_accel*self.direction
+
+    if (currentSign ~= 0) and (currentSign ~= self.direction) then
+        self.acc = self.acc * 0.2 -- slow on turn around
+    end
+
+    
 end
 
 
 function PlayerModelWalkState:move(direction)
-    self.player.state = PlayerModelWalkState(self.player, direction)
+    if direction == 0 then
+        local vx, vy = self.player.body:getLinearVelocity()
+        self.player.body:setLinearVelocity(0,vy)
+        self.player.state = PlayerModelStandState(self.player)
+    else
+        self.player.state = PlayerModelWalkState(self.player, direction)
+    end
 end
 
 function PlayerModelWalkState:update(dt)
-    local acc = self.direction * 200 
-    local vx, vy = self.player.body:getLinearVelocity()
-    if self.acc == 0 then
-        self.acc = acc
-    elseif math.abs(vx) <= 0.0005 then
-        self.player.state = PlayerModelStandState(self.player)
-        return
-    end
 
-    self.player.body:applyForce(self.acc, 0)
+    self.vx = self.vx + self.acc*dt
+
+    self.vx = (self.vx >  self.player.max_velocity) and  self.player.max_velocity or self.vx
+    self.vx = (self.vx < -self.player.max_velocity) and -self.player.max_velocity or self.vx
+
+    print(self.vx, self.vy)
+
+    self.player.body:setLinearVelocity(self.vx, self.vy)
+    -- self.player.body:setPosition(self.x + dt*self.vx, self.y+dt*self.vy)
 end
 
 
@@ -262,7 +297,6 @@ function WallModel:initialize(wall_object, world)
     end
 
     self.fixture = love.physics.newFixture(self.body, self.physics_shape)
-    self.body:setLinearDamping(0.1)
 end
 
 function WallModel:update(dt)
