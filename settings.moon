@@ -1,10 +1,12 @@
--- LevelState = require 'states/level'
+LevelState = require 'states/level'
 
 settings =
-    DISPLAY_WIDTH:  0
-    DISPLAY_HEIGHT: 0
-    WINDOW_OPTIONS: { fullscreen: true }
+    DISPLAY_WIDTH:  640
+    DISPLAY_HEIGHT: 480
+    WINDOW_OPTIONS: { fullscreen: false }
 
     -- STARTING_STATE: LevelState
-    STARTING_STATE: {}
+    STARTING_STATE: LevelState
     START_LEVEL:    'notiles.lua'
+
+return settings
