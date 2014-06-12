@@ -5,14 +5,14 @@ class PlayerModel
         @x = player_object.x
         @y = player_object.y
         @properties = player_object.properties
-        @width = 32
-        @height = 32
+        @width        = 32
+        @height       = 32
         @max_velocity = 500
-        @walk_accel = 500
+        @walk_accel   = 500
 
-        @jump_speed = 200
-        @max_jumps = 2
-        @num_jumps = 0
+        @jump_speed   = 200
+        @max_jumps    = 2
+        @num_jumps    = 0
 
         @body = love.physics.newBody world            ,
                                      @x - @width / 2  ,
@@ -24,7 +24,7 @@ class PlayerModel
         @state = PlayerModelStandState(@)
 
     update: (dt) =>
-        @x = @body\getX! 
+        @x = @body\getX!
         @y = @body\getY!
         @state\update(dt)
 
@@ -68,7 +68,7 @@ class PlayerModelState
 ---- PlayerModelStandState
 class PlayerModelStandState extends PlayerModelState
     move: (direction) =>
-        super(direction)
+        super direction
         @player.state = PlayerModelWalkState @player, direction
 
 
@@ -88,7 +88,7 @@ class PlayerModelStandState extends PlayerModelState
 ---- PlayerModelWalkState
 class PlayerModelWalkState extends PlayerModelStandState
     initialize: (player, direction) =>
-        super(player)
+        super player
         @direction = direction
 
         @vx, @vy = @player.body\getLinearVelocity!
@@ -97,7 +97,7 @@ class PlayerModelWalkState extends PlayerModelStandState
         currentSign = (@vx == 0) and 0 or ((@vx > 0) and 1 or -1) -- sign(vx)
         @acc = @player.walk_accel * @direction
 
-        if currentSign ~= 0 and currentSign ~= @direction 
+        if currentSign != 0 and currentSign != @direction
             @acc = @acc * 0.5 -- slow on turn around
         
     
@@ -105,7 +105,7 @@ class PlayerModelWalkState extends PlayerModelStandState
 
 
     move: (direction) =>
-        super(direction)
+        super direction
         if direction == 0
             vx, vy = @player.body\getLinearVelocity!
             @player.body\setLinearVelocity 0, vy
@@ -127,7 +127,7 @@ class PlayerModelWalkState extends PlayerModelStandState
 
 
     update: (dt) =>
-        super(dt)
+        super dt
         @vx = @vx + @acc * dt
 
         @vx = (@vx >  @player.max_velocity) and  @player.max_velocity or @vx
@@ -135,7 +135,7 @@ class PlayerModelWalkState extends PlayerModelStandState
 
         -- print(@vx, @vy)
 
-        @player.body\setLinearVelocity(@vx, @vy)
+        @player.body\setLinearVelocity @vx, @vy
         -- @player.body:setPosition(@x + dt*@vx, @y+dt*@vy)
 
 
@@ -144,7 +144,7 @@ class PlayerModelWalkState extends PlayerModelStandState
 ---- PlayerModelJumpState
 class PlayerModelJumpState extends PlayerModelWalkState
     new: (player, direction) =>
-        super(player, direction)
+        super player, direction
 
         if math.abs(@vy) < .001 and @player.num_jumps <= @player.max_jumps
             @vy = -@player.jump_speed
@@ -154,7 +154,7 @@ class PlayerModelJumpState extends PlayerModelWalkState
 
 
     move: (direction) =>
-        super(direction)
+        super direction
         if direction == 0
             vx, vy = @player.body\getLinearVelocity!
             @player.body\setLinearVelocity 0, vy
@@ -173,4 +173,4 @@ class PlayerModelJumpState extends PlayerModelWalkState
         @player.state = PlayerModelWalkState @player, @direction
 
 
-
+return PlayerModel

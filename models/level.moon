@@ -26,7 +26,7 @@ class LevelModel
             constructor = Wall
 
         if constructor
-            table.insert(@models[obj.name], constructor(obj, @world))
+            table.insert @models[obj.name], constructor obj, @world
 
     update: (dt) =>
         @world\update dt
