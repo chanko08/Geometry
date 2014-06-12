@@ -1,50 +1,11 @@
 Constants = require 'constants'
 
-class PlayerModel
-    new: (player_object, world) =>
-        @x = player_object.x
-        @y = player_object.y
-        @properties = player_object.properties
-        @width        = 32
-        @height       = 32
-        @max_velocity = 500
-        @walk_accel   = 500
-
-        @jump_speed   = 200
-        @max_jumps    = 2
-        @num_jumps    = 0
-
-        @body = love.physics.newBody world            ,
-                                     @x - @width / 2  ,
-                                     @y - @height / 2 ,
-                                     'dynamic'
-
-        @physics_shape = love.physics.newRectangleShape @x, @y, @width, @height
-        @fixture = love.physics.newFixture @body, @physics_shape, 1
-        @state = PlayerModelStandState(@)
-
-    update: (dt) =>
-        @x = @body\getX!
-        @y = @body\getY!
-        @state\update(dt)
-
-
-    move: (direction) =>
-        @state\move(direction)
-
-
-    jump: =>
-        @state\jump!
-
-
-    stop_jump: =>
-        @state\stop_jump!
-
+export * 
 
 -------------------------------------
 -- PlayerModelState
 class PlayerModelState
-    initialize: (player) =>
+    new: (player) =>
         @player = player
 
 
@@ -61,6 +22,7 @@ class PlayerModelState
             @player.num_jumps = 0
 
     update: (dt) =>
+
 
 
 
@@ -83,11 +45,10 @@ class PlayerModelStandState extends PlayerModelState
         PlayerModelState.stop_jump @
         @player.state = PlayerModelStandState @player
 
-
 ---------------------------------------
 ---- PlayerModelWalkState
 class PlayerModelWalkState extends PlayerModelStandState
-    initialize: (player, direction) =>
+    new: (player, direction) =>
         super player
         @direction = direction
 
@@ -171,6 +132,49 @@ class PlayerModelJumpState extends PlayerModelWalkState
     stop_jump: () =>
         super!
         @player.state = PlayerModelWalkState @player, @direction
+
+
+
+
+class PlayerModel
+    new: (player_object, world) =>
+        @x = player_object.x
+        @y = player_object.y
+        @properties = player_object.properties
+        @width        = 32
+        @height       = 32
+        @max_velocity = 500
+        @walk_accel   = 500
+
+        @jump_speed   = 200
+        @max_jumps    = 2
+        @num_jumps    = 0
+
+        @body = love.physics.newBody world            ,
+                                     @x - @width / 2  ,
+                                     @y - @height / 2 ,
+                                     'dynamic'
+
+        @physics_shape = love.physics.newRectangleShape @x, @y, @width, @height
+        @fixture = love.physics.newFixture @body, @physics_shape, 1
+        @state = PlayerModelStandState @
+
+    update: (dt) =>
+        @x = @body\getX!
+        @y = @body\getY!
+        @state\update(dt)
+
+
+    move: (direction) =>
+        @state\move(direction)
+
+
+    jump: =>
+        @state\jump!
+
+
+    stop_jump: =>
+        @state\stop_jump!
 
 
 return PlayerModel

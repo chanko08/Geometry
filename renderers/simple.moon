@@ -2,7 +2,7 @@ Camera = require 'lib/hump/camera'
 
 class SimpleRenderer
     new: (model) =>
-        @player = model.models[1]
+        @player = model.models['player'][1]
         @px, @py = @player.body\getWorldPoints( @player.physics_shape\getPoints() )
         @camera = Camera(@px, @py)
 
@@ -42,7 +42,7 @@ class SimpleRenderer
         love.graphics.setColor 255, 0, 255
 
         for k, player in pairs model.models['player']
-            points = {wall.body\getWorldPoints(wall.physics_shape\getPoints!)}
+            points = {player.body\getWorldPoints(player.physics_shape\getPoints!)}
             love.graphics.polygon 'fill', unpack points
         
         love.graphics.setColor r,g,b,a
@@ -57,6 +57,7 @@ class SimpleRenderer
         love.graphics.print "(#{mx},#{my})" 
 
         love.graphics.setColor r,g,b,a
+        @camera\detach!
 
 
 

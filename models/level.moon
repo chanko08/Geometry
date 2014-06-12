@@ -31,16 +31,16 @@ class LevelModel
     update: (dt) =>
         @world\update dt
 
-        [m\update dt for m in @models['player']]
-        [m\update dt for m in @models['wall']]
+        [m\update dt for m in *@models['player']]
+        [m\update dt for m in *@models['wall']]
 
     move_player: (direction) =>
-        [m\move direction for m in @models['player']]
+        [m\move direction for m in *@models['player']]
 
     jump_player: =>
-        [m\jump! for m in @models['player']]
+        [m\jump! for m in *@models['player']]
 
     stop_jump_player: =>
-        [m\stop_jump! for m in @models['player']]
+        [m\stop_jump! for m in *@models['player']]
 
 return LevelModel
