@@ -54,7 +54,7 @@ class SimpleRenderer
 
         love.graphics.line(mx - 3, my, mx + 3, my)
         love.graphics.line(mx, my - 3, mx, my + 3)
-        love.graphics.print "(#{mx},#{my})" 
+        love.graphics.print "(#{mx},#{my})", mx + 5, my + 5
 
         love.graphics.setColor r,g,b,a
         @camera\detach!
