@@ -3,9 +3,6 @@ local state = nil
 function love.load()
     local settings = require('settings')
     love.mouse.setVisible(false)
-    love.window.setMode(settings.DISPLAY_WIDTH, 
-                        settings.DISPLAY_HEIGHT, 
-                        settings.WINDOW_OPTIONS)
     
     local state_cls = settings.STARTING_STATE
     state = state_cls:new(settings.START_LEVEL)
