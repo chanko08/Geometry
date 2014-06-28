@@ -2,6 +2,7 @@ inspect = require 'lib/inspect'
 Player  = require 'models/player'
 Wall    = require 'models/wall'
 HC      = require 'lib/HardonCollider'
+_       = require 'lib/underscore'
 
 
 
@@ -41,7 +42,8 @@ class LevelModel
             table.insert(@models[obj.name], constructor(obj, @physics_world, @collider))
 
     update: (dt) =>
-        @physics_world\update dt
+        @collider\update dt
+        --@physics_world\update dt
 
         [m\update dt for m in *@models['player']]
         [m\update dt for m in *@models['wall']]
@@ -56,7 +58,8 @@ class LevelModel
         [m\stop_jump! for m in *@models['player']]
 
     on_collision: (dt, A, B, mx, my) =>
-        print('collided', inspect(A), inspect(B))
+        _.map(@models['player'], (p) -> p\collide(dt, A, B, mx, my))
+        print('collided')
 
     on_stop_collision: (dt, A, B) =>
         print('stopped')

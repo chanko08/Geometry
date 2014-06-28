@@ -1,5 +1,6 @@
 Constants = require 'constants'
 
+
 export * 
 
 -------------------------------------
@@ -13,6 +14,8 @@ class PlayerModelState
 
 
     jump: =>
+
+    collide: (dt, A, B, mx, my) =>
 
 
     stop_jump: =>
@@ -34,6 +37,8 @@ class PlayerModelStandState extends PlayerModelState
         @player.state = PlayerModelWalkState @player, direction
 
 
+    collide: (dt, A, B, mx, my) =>
+        @player.hasCollided = true
 
     jump: =>
         super!
@@ -44,6 +49,12 @@ class PlayerModelStandState extends PlayerModelState
         super!
         PlayerModelState.stop_jump @
         @player.state = PlayerModelStandState @player
+
+    update: (dt) =>
+        if @player.hasCollided
+            @player.hasCollided = false
+        else
+            @player.state = PlayerModelJumpState @player, Constants.Direction.STOP
 
 ---------------------------------------
 ---- PlayerModelWalkState
@@ -112,7 +123,8 @@ class PlayerModelJumpState extends PlayerModelWalkState
             @player.num_jumps = @player.num_jumps + 1
     
 
-
+    update: (dt) =>
+        @player.collider_shape\move 0, Constants.GRAVITY*dt
 
     move: (direction) =>
         super direction
@@ -123,7 +135,9 @@ class PlayerModelJumpState extends PlayerModelWalkState
         else
             @player.state = PlayerModelJumpState @player, direction
     
-
+    collide: (dt, A, B, mx, my) =>
+        @player.collider_shape\move mx/2, my/2
+        @player.state = PlayerModelStandState @player
 
     jump: () =>
         @player.state = PlayerModelJumpState @player, @direction
@@ -137,7 +151,7 @@ class PlayerModelJumpState extends PlayerModelWalkState
 
 
 class PlayerModel
-    new: (player_object, world) =>
+    new: (player_object, world, collider) =>
         @x = player_object.x
         @y = player_object.y
         @properties = player_object.properties
@@ -145,10 +159,15 @@ class PlayerModel
         @height       = 32
         @max_velocity = 500
         @walk_accel   = 500
+        @hasCollided  = false
 
         @jump_speed   = 200
         @max_jumps    = 2
         @num_jumps    = 0
+
+        @collider_shape = collider\addRectangle @x, @y, @width, @height
+        @collider_shape.model = @
+        
 
         @body = love.physics.newBody world            ,
                                      @x - @width / 2  ,
@@ -160,8 +179,17 @@ class PlayerModel
         @state = PlayerModelStandState @
 
     update: (dt) =>
-        @x = @body\getX!
-        @y = @body\getY!
+        -- @y = @y + 300*dt
+        -- @body\setY @y
+        --print @y
+        --@x = @body\getX!
+        -- @y = @body\getY!
+        
+        x, y = @collider_shape\center!
+        @x = x - @width/2
+        @y = y - @height/2
+        @body\setPosition @x, @y
+
         @state\update(dt)
 
 
@@ -175,6 +203,15 @@ class PlayerModel
 
     stop_jump: =>
         @state\stop_jump!
+
+    collide: (dt, A, B, mx, my) =>
+        @state\collide dt, A, B, mx, my
+        -- print mx, my
+        -- if mx*mx + my*my < 0.5
+        --     mx = 0
+        --     my = 0
+
+        -- @collider_shape\move mx, my
 
 
 return PlayerModel
