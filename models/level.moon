@@ -1,10 +1,22 @@
-Player = require 'models/player'
-Wall   = require 'models/wall'
+inspect = require 'lib/inspect'
+Player  = require 'models/player'
+Wall    = require 'models/wall'
+HC      = require 'lib/HardonCollider'
+
+
 
 class LevelModel
     new: (lvl) =>
+
+        on_collision = (dt, A, B, mx, my) ->
+            @on_collision(dt, A, B, mx, my)
+
+        on_stop_collision = (dt, A, B) ->
+            @on_stop_collision(dt, A, B)
+
         love.physics.setMeter 32
-        @world  = love.physics.newWorld 0, 9.81 * 32, true
+        @physics_world  = love.physics.newWorld 0, 9.81 * 32, true
+        @collider = HC(100, on_collision, on_stop_collision)
         @width  = lvl.width
         @height = lvl.height
         @models = {}
@@ -26,10 +38,10 @@ class LevelModel
             constructor = Wall
 
         if constructor
-            table.insert @models[obj.name], constructor obj, @world
+            table.insert(@models[obj.name], constructor(obj, @physics_world, @collider))
 
     update: (dt) =>
-        @world\update dt
+        @physics_world\update dt
 
         [m\update dt for m in *@models['player']]
         [m\update dt for m in *@models['wall']]
@@ -42,5 +54,11 @@ class LevelModel
 
     stop_jump_player: =>
         [m\stop_jump! for m in *@models['player']]
+
+    on_collision: (dt, A, B, mx, my) =>
+        print('collided', inspect(A), inspect(B))
+
+    on_stop_collision: (dt, A, B) =>
+        print('stopped')
 
 return LevelModel

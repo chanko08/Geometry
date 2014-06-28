@@ -22,7 +22,7 @@ class SimpleRenderer
         -- Level statics
         for k, wall in pairs model.models['wall']
 
-            if wall.shape == 'ellipse'
+            if wall.shape_name == 'ellipse'
                 center = {wall.body\getWorldPoints(wall.physics_shape\getPoint!)}
                 love.graphics.circle 'line', 
                                       center[1], 
@@ -32,7 +32,7 @@ class SimpleRenderer
             else 
                 points = {wall.body\getWorldPoints(wall.physics_shape\getPoints!)}
 
-                if wall.shape == 'polyline'
+                if wall.shape_name == 'polyline'
                     love.graphics.line unpack points
                 else
                     love.graphics.polygon 'line', unpack points
