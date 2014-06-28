@@ -3,3 +3,6 @@ build:
 
 clean:
 	find . -name "*.lua" -not -path "./lib/*" -not -path "./assets/*" -not -path "./lvls/*" | xargs rm
+
+sex:clean build
+	love .
