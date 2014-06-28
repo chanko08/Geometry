@@ -73,6 +73,6 @@ class SimpleRenderer
 
 
     update: (dt) =>
-        @px, @py = @player.body\getWorldPoints(@player.physics_shape\getPoints!)
+        @px, @py = @player.x, @player.y
         dx, dy = @px - @camera.x, @py - @camera.y
         @camera\move(dt*4*dx, dt*4*dy)

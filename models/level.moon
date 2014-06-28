@@ -15,8 +15,6 @@ class LevelModel
         on_stop_collision = (dt, A, B) ->
             @on_stop_collision(dt, A, B)
 
-        love.physics.setMeter 32
-        @physics_world  = love.physics.newWorld 0, 9.81 * 32, true
         @collider = HC(100, on_collision, on_stop_collision)
         @width  = lvl.width
         @height = lvl.height
@@ -39,7 +37,7 @@ class LevelModel
             constructor = Wall
 
         if constructor
-            table.insert(@models[obj.name], constructor(obj, @physics_world, @collider))
+            table.insert(@models[obj.name], constructor(obj, @collider))
 
     update: (dt) =>
         @collider\update dt

@@ -2,7 +2,7 @@ inspect = require 'lib/inspect'
 _       = require 'lib/underscore'
 
 class WallModel
-    new: (wall_object, world, collider) =>
+    new: (wall_object, collider) =>
         @x          = wall_object.x
         @y          = wall_object.y
         @shape_name = wall_object.shape
@@ -15,26 +15,12 @@ class WallModel
             box = collider\addRectangle @x, @y, @width, @height
             collider\setPassive box
 
-            @body   = love.physics.newBody  world,
-                                            @x - @width/2,
-                                            @y - @height/2,
-                                            'static'
-
-            @physics_shape = love.physics.newRectangleShape @width, @height
-
         elseif @shape_name == 'ellipse'
             @width  = wall_object.width
             if @width <= 0 then @width = 14
 
             circle = collider\addCircle @x, @y, @width
             collider\setPassive circle
-
-            @body   = love.physics.newBody  world,
-                                            @x,
-                                            @y,
-                                            'static'
-
-            @physics_shape = love.physics.newCircleShape(@x, @y, @width)
 
         elseif @shape_name == 'polyline'
             -- Translate the relative-to-start coordinates
@@ -53,12 +39,6 @@ class WallModel
 
             _.map(@lines, create_line)
 
-            @physics_shape = love.physics.newChainShape(false, unpack @vertices)
-            @body   = love.physics.newBody  world,
-                                            @x,
-                                            @y,
-                                            'static'
-
         elseif @shape_name = 'polygon'
             @vertices = [{pt.x + @x, pt.y + @y} for pt in *wall_object.polygon ]
 
@@ -68,19 +48,7 @@ class WallModel
             polygon = collider\addPolygon(unpack @vertices)
             collider\setPassive polygon
 
-            @physics_shape = love.physics.newChainShape(true, unpack @vertices)
-            @body   = love.physics.newBody  world,
-                                            @x,
-                                            @y,
-                                            'static'
-
         else
             error 'Unknown shape!'
 
-        
-        @fixture = love.physics.newFixture(@body, @physics_shape)
-
     update: (dt) =>
-
-
-
