@@ -43,7 +43,7 @@ class WallModel
 
             @lines = [{@vertices[i], @vertices[i+1]} for i = 1,#@vertices - 1 ]
 
-            @physics_vertices = [c for v in *@vertices for c in *{v.x, v.y}]
+            @vertices = [c for v in *@vertices for c in *{v.x, v.y}]
 
             -- Create a triangle that closely approximates a line
             -- as HardonCollider does not have line collision objects
@@ -53,7 +53,7 @@ class WallModel
 
             _.map(@lines, create_line)
 
-            @physics_shape = love.physics.newChainShape(false, unpack @physics_vertices)
+            @physics_shape = love.physics.newChainShape(false, unpack @vertices)
             @body   = love.physics.newBody  world,
                                             @x,
                                             @y,
@@ -63,7 +63,7 @@ class WallModel
             @vertices = [{pt.x + @x, pt.y + @y} for pt in *wall_object.polygon ]
 
 
-            @vertices = [c for v in *@vertices for c in *v]
+            @vertices  = [c for v in *@vertices for c in *v]
 
             polygon = collider\addPolygon(unpack @vertices)
             collider\setPassive polygon

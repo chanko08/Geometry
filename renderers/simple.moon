@@ -1,9 +1,10 @@
 Camera = require 'lib/hump/camera'
+inspect = require 'lib/inspect'
 
 class SimpleRenderer
     new: (model) =>
         @player = model.models['player'][1]
-        @px, @py = @player.body\getWorldPoints( @player.physics_shape\getPoints() )
+        @px, @py = @player.x, @player.y
         @camera = Camera(@px, @py)
 
     draw: (model) =>
@@ -23,14 +24,21 @@ class SimpleRenderer
         for k, wall in pairs model.models['wall']
 
             if wall.shape_name == 'ellipse'
-                center = {wall.body\getWorldPoints(wall.physics_shape\getPoint!)}
                 love.graphics.circle 'line', 
-                                      center[1], 
-                                      center[2], 
+                                      wall.x, 
+                                      wall.y, 
                                       wall.width, 
                                       50
-            else 
-                points = {wall.body\getWorldPoints(wall.physics_shape\getPoints!)}
+
+            elseif wall.shape_name == 'rectangle'
+                love.graphics.rectangle 'line',
+                                        wall.x,
+                                        wall.y,
+                                        wall.width,
+                                        wall.height
+
+            else
+                points = wall.vertices
 
                 if wall.shape_name == 'polyline'
                     love.graphics.line unpack points
@@ -42,8 +50,11 @@ class SimpleRenderer
         love.graphics.setColor 255, 0, 255
 
         for k, player in pairs model.models['player']
-            points = {player.body\getWorldPoints(player.physics_shape\getPoints!)}
-            love.graphics.polygon 'fill', unpack points
+            love.graphics.rectangle 'fill',
+                                    player.x,
+                                    player.y,
+                                    player.width,
+                                    player.height
         
         love.graphics.setColor r,g,b,a
 
