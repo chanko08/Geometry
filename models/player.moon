@@ -1,4 +1,5 @@
 Constants = require 'constants'
+inspect   = require 'lib/inspect'
 
 
 export * 
@@ -8,7 +9,8 @@ export *
 class PlayerModelState
     new: (player) =>
         @player = player
-        @vx, @vy = 0, 0
+        @player.vx = 0
+        @player.vy = 0
 
 
     move: (direction) =>
@@ -29,6 +31,9 @@ class PlayerModelState
 ---------------------------------------
 ---- PlayerModelStandState
 class PlayerModelStandState extends PlayerModelState
+    new: (player) =>
+        super player
+
     move: (direction) =>
         super direction
         @player.state = PlayerModelWalkState @player, direction
@@ -60,7 +65,7 @@ class PlayerModelWalkState extends PlayerModelStandState
         super player
         @direction = direction
     
-        currentSign = (@vx == 0) and 0 or ((@vx > 0) and 1 or -1) -- sign(vx)
+        currentSign = (@player.vx == 0) and 0 or ((@player.vx > 0) and 1 or -1) -- sign(vx)
         @acc = @player.walk_accel * @direction
 
         if currentSign != 0 and currentSign != @direction
@@ -84,18 +89,14 @@ class PlayerModelWalkState extends PlayerModelStandState
         @player.state = PlayerModelJumpState @player, @direction
 
 
-
-    stop_jump: () =>
-        super!
-        @player.state = PlayerModelWalkState @player, @direction
-
-
     update: (dt) =>
         super dt
-        @vx = @vx + @acc * dt
+        @player.vx = @player.vx + @acc * dt
 
-        @vx = (@vx >  @player.max_velocity) and  @player.max_velocity or @vx
-        @vx = (@vx < -@player.max_velocity) and -@player.max_velocity or @vx
+        @player.vx = (@player.vx >  @player.max_velocity) and  @player.max_velocity or @player.vx
+        @player.vx = (@player.vx < -@player.max_velocity) and -@player.max_velocity or @player.vx
+
+
 
         -- print(@vx, @vy)
 
@@ -106,13 +107,13 @@ class PlayerModelJumpState extends PlayerModelWalkState
     new: (player, direction) =>
         super player, direction
 
-        if math.abs(@vy) < .001 and @player.num_jumps <= @player.max_jumps
-            @vy = -@player.jump_speed
+        if math.abs(@player.vy) < .001 and @player.num_jumps <= @player.max_jumps
+            @player.vy = -@player.jump_speed
             @player.num_jumps = @player.num_jumps + 1
     
 
     update: (dt) =>
-        @player.collider_shape\move 0, Constants.GRAVITY*dt
+        @player.vy += Constants.GRAVITY * dt 
 
     move: (direction) =>
         super direction
@@ -123,7 +124,7 @@ class PlayerModelJumpState extends PlayerModelWalkState
     
     collide: (dt, A, B, mx, my) =>
         @player.collider_shape\move mx/2, my/2
-        @player.state = PlayerModelStandState @player
+        @player.state = PlayerModelWalkState @player, @direction
 
     jump: () =>
         @player.state = PlayerModelJumpState @player, @direction
@@ -131,15 +132,18 @@ class PlayerModelJumpState extends PlayerModelWalkState
 
     stop_jump: () =>
         super!
-        @player.state = PlayerModelWalkState @player, @direction
+        @player.vy = 0
 
 
 
 
 class PlayerModel
+
     new: (player_object, collider) =>
         @x = player_object.x
         @y = player_object.y
+        @vx, @vy = 0,0
+
         @properties = player_object.properties
         @width        = 32
         @height       = 32
@@ -147,7 +151,7 @@ class PlayerModel
         @walk_accel   = 500
         @hasCollided  = false
 
-        @jump_speed   = 200
+        @jump_speed   = 400
         @max_jumps    = 2
         @num_jumps    = 0
 
@@ -156,12 +160,21 @@ class PlayerModel
         
         @state = PlayerModelStandState @
 
+
     update: (dt) =>
+        
+
         x, y = @collider_shape\center!
         @x = x - @width/2
         @y = y - @height/2
 
+        before = @state.__class.__name
         @state\update(dt)
+        after = @state.__class.__name
+        print before, after
+
+
+        @collider_shape\move @vx * dt, @vy * dt
 
 
     move: (direction) =>
