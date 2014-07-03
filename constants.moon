@@ -5,5 +5,6 @@ class Constants
         STOP: 0
 
     GRAVITY: 150
+    MAX_VELOCITY:500
 
 return Constants

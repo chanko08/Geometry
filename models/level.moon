@@ -57,9 +57,7 @@ class LevelModel
 
     on_collision: (dt, A, B, mx, my) =>
         _.map(@models['player'], (p) -> p\collide(dt, A, B, mx, my))
-        print('collided')
 
     on_stop_collision: (dt, A, B) =>
-        print('stopped')
 
 return LevelModel

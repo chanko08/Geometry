@@ -1,16 +1,30 @@
 Constants = require 'constants'
 inspect   = require 'lib/inspect'
+_         = require 'lib/underscore'
 
 
 export * 
+
+walk_step = (state, dt) ->
+    vx = state.vx + state.ax * dt
+
+    vx = (vx >  Constants.MAX_VELOCITY) and  Constants.MAX_VELOCITY or vx
+    vx = (vx < -Constants.MAX_VELOCITY) and -Constants.MAX_VELOCITY or vx
+
+    print "VX: #{vx} AX: #{state.ax}"
+    return vx
+
 
 -------------------------------------
 -- PlayerModelState
 class PlayerModelState
     new: (player) =>
         @player = player
-        @player.vx = 0
-        @player.vy = 0
+        @vx = 0
+        @vy = 0
+        @ax = 0
+        @ay = 0
+        @direction = Constants.Direction.STOP
 
 
     move: (direction) =>
@@ -35,104 +49,125 @@ class PlayerModelStandState extends PlayerModelState
         super player
 
     move: (direction) =>
-        super direction
-        @player.state = PlayerModelWalkState @player, direction
+        @ax = direction * @player.walk_accel
+
+        @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay)
 
 
     collide: (dt, A, B, mx, my) =>
         @player.hasCollided = true
 
     jump: =>
-        super!
-        @player.state = PlayerModelJumpState @player, Constants.Direction.STOP
-
-
-    stop_jump: =>
-        super!
-        PlayerModelState.stop_jump @
-        @player.state = PlayerModelStandState @player
+        @vy = -@player.jump_speed
+        @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay)
 
     update: (dt) =>
         if @player.hasCollided
             @player.hasCollided = false
         else
-            @player.state = PlayerModelJumpState @player, Constants.Direction.STOP
+            @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay)
 
 ---------------------------------------
 ---- PlayerModelWalkState
-class PlayerModelWalkState extends PlayerModelStandState
-    new: (player, direction) =>
+class PlayerModelWalkState extends PlayerModelState
+    new: (player, vx, vy, ax, ay) =>
         super player
-        @direction = direction
-    
-        currentSign = (@player.vx == 0) and 0 or ((@player.vx > 0) and 1 or -1) -- sign(vx)
-        @acc = @player.walk_accel * @direction
 
-        if currentSign != 0 and currentSign != @direction
-            @acc = @acc * 0.5 -- slow on turn around
+        print "Args: ", vx, vy, ax, ay
         
-    
+        @vx = vx
+        @vy = vy
+        @ax = ax
+        @ay = ay    
 
 
 
     move: (direction) =>
-        super direction
         if direction == 0
-            @player.state = PlayerModelStandState @player
+            @player\switch_state(PlayerModelStandState, @player)
         else
-            @player.state = PlayerModelWalkState @player, direction
+            currentSign = (@vx == 0) and 0 or ((@vx > 0) and 1 or -1) -- sign(vx)
+            --@player.acc = @player.walk_accel * @direction
+
+            if currentSign != 0 and currentSign != direction
+                @ax = direction * @ax * 0.5 -- slow on turn around
+            
+            @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay)
     
 
 
     jump: () =>
-        super!
-        @player.state = PlayerModelJumpState @player, @direction
+        @vy = -@player.jump_speed
+        @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay)
 
 
     update: (dt) =>
-        super dt
-        @player.vx = @player.vx + @acc * dt
+        if @player.hasCollided
+            @player.hasCollided = false
+            @vx = walk_step(@, dt)
+        else
+            @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay)
 
-        @player.vx = (@player.vx >  @player.max_velocity) and  @player.max_velocity or @player.vx
-        @player.vx = (@player.vx < -@player.max_velocity) and -@player.max_velocity or @player.vx
 
-
-
+    collide: (dt, A, B, mx, my) => 
+        @player.hasCollided = true
         -- print(@vx, @vy)
 
 
 ---------------------------------------
 ---- PlayerModelJumpState
-class PlayerModelJumpState extends PlayerModelWalkState
-    new: (player, direction) =>
-        super player, direction
+class PlayerModelJumpState extends PlayerModelState
+    new: (player, vx, vy, ax, ay) =>
+        super player
+        @vx = vx
+        @vy = vy
+        @ax = ax
+        @ay = ay
 
-        if math.abs(@player.vy) < .001 and @player.num_jumps <= @player.max_jumps
-            @player.vy = -@player.jump_speed
-            @player.num_jumps = @player.num_jumps + 1
+        --if math.abs(@vy) < .001
+        --@vy = -@player.jump_speed
+        @hit_ground = false
     
 
     update: (dt) =>
-        @player.vy += Constants.GRAVITY * dt 
+        @vy += Constants.GRAVITY * dt 
+        @vx = walk_step(@, dt)
+        if @hit_ground
+            print("hit the fucking ground: #{@ax}, #{@vx}, #{@vy}")
+            @vy = 0
+            if @ax != 0
+                @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay)
+            else
+                @player\switch_state(PlayerModelStandState, @player, @vx, @vy, @ax, @ay)
 
     move: (direction) =>
-        super direction
         if direction == 0
-            @player.state = PlayerModelStandState @player
+            --@player\switch_state(PlayerModelStandState, @player)
+            @vx = 0
+            @ax = 0
         else
-            @player.state = PlayerModelJumpState @player, direction
+            print('Direction is: ', direction)
+            --@player\switch_state(PlayerModelJumpState, @player, direction)
+            currentSign = (@vx == 0) and 0 or ((@vx > 0) and 1 or -1) -- sign(vx)
+            @ax = @player.walk_accel * direction
+
+
+            if currentSign != 0 and currentSign != direction
+                @ax = @ax * 0.5 -- slow on turn around
+            print "ACCEL: #{@ax}"
     
     collide: (dt, A, B, mx, my) =>
-        @player.collider_shape\move mx/2, my/2
-        @player.state = PlayerModelWalkState @player, @direction
+
+        --if @vy > 0
+        @player.collider_shape\move mx, my
+        @hit_ground = true
 
     jump: () =>
-        @player.state = PlayerModelJumpState @player, @direction
+        @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay)
 
 
     stop_jump: () =>
-        super!
-        @player.vy = 0
+        @vy = 0
 
 
 
@@ -143,17 +178,20 @@ class PlayerModel
         @x = player_object.x
         @y = player_object.y
         @vx, @vy = 0,0
+        @acc = 0
 
         @properties = player_object.properties
         @width        = 32
         @height       = 32
-        @max_velocity = 500
+        --@max_velocity = 500
         @walk_accel   = 500
         @hasCollided  = false
 
         @jump_speed   = 400
         @max_jumps    = 2
         @num_jumps    = 0
+
+        @collider     = collider
 
         @collider_shape = collider\addRectangle @x, @y, @width, @height
         @collider_shape.model = @
@@ -165,16 +203,13 @@ class PlayerModel
         
 
         x, y = @collider_shape\center!
+        -- print "(#{x},#{y})" 
         @x = x - @width/2
         @y = y - @height/2
 
-        before = @state.__class.__name
         @state\update(dt)
-        after = @state.__class.__name
-        print before, after
 
-
-        @collider_shape\move @vx * dt, @vy * dt
+        @collider_shape\move @state.vx * dt, @state.vy * dt
 
 
     move: (direction) =>
@@ -196,6 +231,10 @@ class PlayerModel
         --     my = 0
 
         -- @collider_shape\move mx, my
+    switch_state: (next_state, ...) =>
 
+        print('switching from', @state.__class.__name, 'to', next_state.__class.__name)
+        print(...)
+        @state = next_state(...) 
 
 return PlayerModel
