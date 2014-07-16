@@ -11,20 +11,25 @@ walk_step = (state, dt) ->
     vx = (vx >  Constants.MAX_VELOCITY) and  Constants.MAX_VELOCITY or vx
     vx = (vx < -Constants.MAX_VELOCITY) and -Constants.MAX_VELOCITY or vx
 
-    print "VX: #{vx} AX: #{state.ax}"
+    -- print "VX: #{vx} AX: #{state.ax}"
     return vx
+
+
+-- walk_direction = (direction, wall) ->
 
 
 -------------------------------------
 -- PlayerModelState
 class PlayerModelState
-    new: (player) =>
+    new: (player, facing) =>
         @player = player
         @vx = 0
         @vy = 0
         @ax = 0
         @ay = 0
-        @direction = Constants.Direction.STOP
+        @walk_dir = Constants.Direction.STOP
+        @facing = facing
+        @direction = Constants.Direction.RIGHT
 
 
     move: (direction) =>
@@ -45,60 +50,74 @@ class PlayerModelState
 ---------------------------------------
 ---- PlayerModelStandState
 class PlayerModelStandState extends PlayerModelState
-    new: (player) =>
-        super player
+    new: (player, wall, direction, facing) =>
+        print('facing in stand state', facing)
+        super player, facing
+        print('facing in stand state', @facing)
+        @wall = wall
 
     move: (direction) =>
-        @ax = direction * @player.walk_accel
 
-        @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay)
+        @ax = direction * @player.walk_accel
+        if direction != Constants.Direction.STOP
+            @facing = direction
+
+        @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay, @wall, @facing)
 
 
     collide: (dt, A, B, mx, my) =>
+
         @player.hasCollided = true
+        if A == @player.collider_shape
+            @wall = B
+        else
+            @wall = A
+        -- print inspect wall_direction()
+        -- love.event.quit!
 
     jump: =>
         @vy = -@player.jump_speed
-        @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay)
+        @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay, @facing)
 
     update: (dt) =>
         if @player.hasCollided
             @player.hasCollided = false
         else
-            @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay)
+            @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay, @facing)
 
 ---------------------------------------
 ---- PlayerModelWalkState
 class PlayerModelWalkState extends PlayerModelState
-    new: (player, vx, vy, ax, ay) =>
-        super player
+    new: (player, vx, vy, ax, ay, wall, facing) =>
+        super player, facing
 
-        print "Args: ", vx, vy, ax, ay
+        --print "Args: ", vx, vy, ax, ay
         
         @vx = vx
         @vy = vy
         @ax = ax
-        @ay = ay    
-
+        @ay = ay
+        @wall = wall
 
 
     move: (direction) =>
         if direction == 0
-            @player\switch_state(PlayerModelStandState, @player)
+            @player\switch_state(PlayerModelStandState, @player, nil, nil, @facing)
         else
             currentSign = (@vx == 0) and 0 or ((@vx > 0) and 1 or -1) -- sign(vx)
             --@player.acc = @player.walk_accel * @direction
 
             if currentSign != 0 and currentSign != direction
                 @ax = direction * @ax * 0.5 -- slow on turn around
+                @facing = direction
             
-            @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay)
+            @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay, nil, @facing)
     
 
 
     jump: () =>
         @vy = -@player.jump_speed
-        @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay)
+        @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay, @facing)
 
 
     update: (dt) =>
@@ -106,19 +125,23 @@ class PlayerModelWalkState extends PlayerModelState
             @player.hasCollided = false
             @vx = walk_step(@, dt)
         else
-            @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay)
+            @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay, @facing)
 
 
     collide: (dt, A, B, mx, my) => 
         @player.hasCollided = true
+        if A == @player.collider_shape
+            @wall = B
+        else
+            @wall = A
         -- print(@vx, @vy)
 
 
 ---------------------------------------
 ---- PlayerModelJumpState
 class PlayerModelJumpState extends PlayerModelState
-    new: (player, vx, vy, ax, ay) =>
-        super player
+    new: (player, vx, vy, ax, ay, facing) =>
+        super player, facing
         @vx = vx
         @vy = vy
         @ax = ax
@@ -136,9 +159,9 @@ class PlayerModelJumpState extends PlayerModelState
             print("hit the fucking ground: #{@ax}, #{@vx}, #{@vy}")
             @vy = 0
             if @ax != 0
-                @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay)
+                @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay, @wall, @facing)
             else
-                @player\switch_state(PlayerModelStandState, @player, @vx, @vy, @ax, @ay)
+                @player\switch_state(PlayerModelStandState, @player, @wall, nil, @facing)
 
     move: (direction) =>
         if direction == 0
@@ -157,13 +180,17 @@ class PlayerModelJumpState extends PlayerModelState
             print "ACCEL: #{@ax}"
     
     collide: (dt, A, B, mx, my) =>
+        if @vy > 0
+            @player.collider_shape\move mx, my
+            @hit_ground = true
 
-        --if @vy > 0
-        @player.collider_shape\move mx, my
-        @hit_ground = true
+            if A == @player.collider_shape
+                @wall = B
+            else
+                @wall = A
 
     jump: () =>
-        @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay)
+        @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay, @facing)
 
 
     stop_jump: () =>
@@ -177,8 +204,6 @@ class PlayerModel
     new: (player_object, collider) =>
         @x = player_object.x
         @y = player_object.y
-        @vx, @vy = 0,0
-        @acc = 0
 
         @properties = player_object.properties
         @width        = 32
@@ -193,10 +218,12 @@ class PlayerModel
 
         @collider     = collider
 
-        @collider_shape = collider\addRectangle @x, @y, @width, @height
+        @collider_shape = collider\addPolygon( @x + 0.5*@width, @y, @x + @width, @y + 0.5*@height, @x + 0.5*@width, @y + @height, @x, @y + 0.5*@height )
         @collider_shape.model = @
         
-        @state = PlayerModelStandState @
+        print('direction?', Constants.Direction.RIGHT)
+        @state = PlayerModelStandState(@, nil, nil, Constants.Direction.RIGHT)
+        print('initial state facing', @state.facing)
 
 
     update: (dt) =>
@@ -234,7 +261,9 @@ class PlayerModel
     switch_state: (next_state, ...) =>
 
         print('switching from', @state.__class.__name, 'to', next_state.__class.__name)
-        print(...)
+        print('facing', @state.facing)
+        --print(...)
         @state = next_state(...) 
+        print('facing', @state.facing)
 
 return PlayerModel

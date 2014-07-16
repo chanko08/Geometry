@@ -1,11 +1,16 @@
 Camera = require 'lib/hump/camera'
 inspect = require 'lib/inspect'
 
+Constants = require 'constants'
+
 class SimpleRenderer
     new: (model) =>
         @player = model.models['player'][1]
         @px, @py = @player.x, @player.y
         @camera = Camera(@px, @py)
+        @player_images =
+            normal: love.graphics.newImage('assets/player/player.png')
+            jump:   love.graphics.newImage('assets/player/player_jump.png')
 
     draw: (model) =>
         @camera\attach!
@@ -50,11 +55,27 @@ class SimpleRenderer
         love.graphics.setColor 255, 0, 255
 
         for k, player in pairs model.models['player']
-            love.graphics.rectangle 'fill',
-                                    player.x,
-                                    player.y,
-                                    player.width,
-                                    player.height
+            -- love.graphics.rectangle 'fill',
+            --                         player.x,
+            --                         player.y,
+            --                         player.width,
+            --                         player.height
+            --print player.state.facing
+            facing = player.state.facing
+            offset = 0
+            if facing == Constants.Direction.LEFT
+                offset = player.width
+
+            image = @player_images.normal
+            if math.abs(player.state.vy) > 0
+                image = @player_images.jump
+
+            love.graphics.draw(image, player.x, player.y, 0, facing, 1, offset)
+
+        love.graphics.setColor 0, 255, 0
+
+        for k, player in pairs model.models['player']
+            player.collider_shape\draw('line')
         
         love.graphics.setColor r,g,b,a
 

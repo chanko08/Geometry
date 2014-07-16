@@ -34,7 +34,7 @@ class WallModel
             -- Create a triangle that closely approximates a line
             -- as HardonCollider does not have line collision objects
             create_line = (L) ->
-                line = collider\addPolygon(L[1].x, L[1].y, L[2].x, L[2].y, L[1].x, L[1].y + .001)
+                line = collider\addPolygon(L[1].x, L[1].y, L[2].x, L[2].y, (L[1].x + L[2].x) * 0.5, (L[1].y + L[2].y) * 0.5 + .001)
                 collider\setPassive line
 
             _.map(@lines, create_line)
