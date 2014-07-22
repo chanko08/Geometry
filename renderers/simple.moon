@@ -67,7 +67,7 @@ class SimpleRenderer
                 offset = player.width
 
             image = @player_images.normal
-            if math.abs(player.state.vy) > 0
+            if math.abs(player.state.vy) > 25
                 image = @player_images.jump
 
             love.graphics.draw(image, player.x, player.y, 0, facing, 1, offset)

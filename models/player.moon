@@ -174,6 +174,7 @@ class PlayerModelJumpState extends PlayerModelState
             currentSign = (@vx == 0) and 0 or ((@vx > 0) and 1 or -1) -- sign(vx)
             @ax = @player.walk_accel * direction
 
+            @facing = direction
 
             if currentSign != 0 and currentSign != direction
                 @ax = @ax * 0.5 -- slow on turn around
