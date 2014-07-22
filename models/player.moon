@@ -134,6 +134,7 @@ class PlayerModelWalkState extends PlayerModelState
             @wall = B
         else
             @wall = A
+        @player.collider_shape\move mx, my
         -- print(@vx, @vy)
 
 
