@@ -1,6 +1,7 @@
 Constants = require 'constants'
 inspect   = require 'lib/inspect'
 _         = require 'lib/underscore'
+tween     = require 'lib/tween'
 
 
 export * 
@@ -23,11 +24,12 @@ walk_step = (state, dt) ->
 class PlayerModelState
     new: (player, facing) =>
         @player = player
+        
         @vx = 0
         @vy = 0
         @ax = 0
         @ay = 0
-        @walk_dir = Constants.Direction.STOP
+
         @facing = facing
         @direction = Constants.Direction.RIGHT
 
@@ -151,6 +153,7 @@ class PlayerModelJumpState extends PlayerModelState
         --if math.abs(@vy) < .001
         --@vy = -@player.jump_speed
         @hit_ground = false
+        @just_jumped_duration = 1
     
 
     update: (dt) =>
@@ -158,6 +161,11 @@ class PlayerModelJumpState extends PlayerModelState
         @vx = walk_step(@, dt)
         if @hit_ground
             print("hit the fucking ground: #{@ax}, #{@vx}, #{@vy}")
+
+            if @vy > 100
+                @player.scale_y = 1 - 0.5*(math.min(@vy/Constants.MAX_VELOCITY,1.25))
+                @player.tweens.smush = tween.new(0.17, @player, {scale_y: 1.0}, "inBack")
+
             @vy = 0
             if @ax != 0
                 @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay, @wall, @facing)
@@ -182,14 +190,19 @@ class PlayerModelJumpState extends PlayerModelState
             print "ACCEL: #{@ax}"
     
     collide: (dt, A, B, mx, my) =>
-        if @vy > 0
-            @player.collider_shape\move mx, my
-            @hit_ground = true
+        if @just_jumped_duration > 0
+            @just_jumped_duration -= 1
+            return
 
-            if A == @player.collider_shape
-                @wall = B
-            else
-                @wall = A
+        @player.collider_shape\move mx, my
+
+        if A == @player.collider_shape
+            @wall = B
+        else
+            @wall = A
+
+        if @vy > 0
+            @hit_ground = true
 
     jump: () =>
         @player\switch_state(PlayerModelJumpState, @player, @vx, @vy, @ax, @ay, @facing)
@@ -214,6 +227,8 @@ class PlayerModel
         @walk_accel   = 500
         @hasCollided  = false
 
+        @scale_y      = 1
+
         @jump_speed   = 400
         @max_jumps    = 2
         @num_jumps    = 0
@@ -222,6 +237,8 @@ class PlayerModel
 
         @collider_shape = collider\addPolygon( @x + 0.5*@width, @y, @x + @width, @y + 0.5*@height, @x + 0.5*@width, @y + @height, @x, @y + 0.5*@height )
         @collider_shape.model = @
+
+        @tweens = { }
         
         print('direction?', Constants.Direction.RIGHT)
         @state = PlayerModelStandState(@, nil, nil, Constants.Direction.RIGHT)
@@ -229,7 +246,8 @@ class PlayerModel
 
 
     update: (dt) =>
-        
+        for k,tw in pairs(@tweens)
+            tw\update(dt)
 
         x, y = @collider_shape\center!
         -- print "(#{x},#{y})" 
@@ -247,7 +265,6 @@ class PlayerModel
 
     jump: =>
         @state\jump!
-
 
     stop_jump: =>
         @state\stop_jump!

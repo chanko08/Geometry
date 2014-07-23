@@ -70,7 +70,7 @@ class SimpleRenderer
             if math.abs(player.state.vy) > 25
                 image = @player_images.jump
 
-            love.graphics.draw(image, player.x, player.y, 0, facing, 1, offset)
+            love.graphics.draw(image, player.x, player.y + (1 - player.scale_y)*player.height, 0, facing, player.scale_y, offset)
 
         love.graphics.setColor 0, 255, 0
 
