@@ -41,7 +41,23 @@ class LevelState
         elseif key == ' '
             @model\jump_player!
 
+    mousepressed: (x,y,button) =>
+        if button == 'l' -- that's an L as in LEFT
+            x, y = @renderer\world_coords(x,y)
+            @model\shoot_gun(x,y)
+        elseif button == 'r'
+            print '-- Right mouse DOWN'
+        elseif button == 'm'
+            print '-- Middle mouse DOWN'
 
+
+    mousereleased: (x,y,button) =>
+        if button == 'l' -- that's an L as in LEFT
+            print '-- Left mouse UP' 
+        elseif button == 'r'
+            print '-- Right mouse UP'
+        elseif button == 'm'
+            print '-- Middle mouse UP'
 
 
     keyreleased: (key) =>

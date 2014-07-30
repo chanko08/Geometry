@@ -8,5 +8,6 @@ class Constants
 
     GRAVITY: 500
     MAX_VELOCITY:500
+    MAX_BULLET_RANGE:1e12
 
 return Constants

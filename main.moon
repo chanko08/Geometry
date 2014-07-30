@@ -28,3 +28,9 @@ love.keypressed = (key) ->
 love.keyreleased = (key) ->
     state\keyreleased key
 
+love.mousepressed = (x,y,button) ->
+    state\mousepressed x,y,button
+
+
+love.mousereleased = (x,y,button) ->
+    state\mousereleased x,y,button

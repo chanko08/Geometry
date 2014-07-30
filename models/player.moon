@@ -1,4 +1,6 @@
 Constants = require 'constants'
+Bullet    = require 'models/bullet'
+
 inspect   = require 'lib/inspect'
 _         = require 'lib/underscore'
 tween     = require 'lib/tween'
@@ -216,7 +218,10 @@ class PlayerModelJumpState extends PlayerModelState
 
 class PlayerModel
 
-    new: (player_object, collider) =>
+    new: (player_object, level, id) =>
+        @id = id
+        @model_type = 'player'
+
         @x = player_object.x
         @y = player_object.y
 
@@ -233,9 +238,10 @@ class PlayerModel
         @max_jumps    = 2
         @num_jumps    = 0
 
-        @collider     = collider
+        @collider     = level.collider
+        @level        = level
 
-        @collider_shape = collider\addPolygon( @x + 0.5*@width, @y, @x + @width, @y + 0.5*@height, @x + 0.5*@width, @y + @height, @x, @y + 0.5*@height )
+        @collider_shape = @collider\addPolygon( @x + 0.5*@width, @y, @x + @width, @y + 0.5*@height, @x + 0.5*@width, @y + @height, @x, @y + 0.5*@height )
         @collider_shape.model = @
 
         @tweens = { }
@@ -269,6 +275,11 @@ class PlayerModel
     stop_jump: =>
         @state\stop_jump!
 
+    shoot:(xdir,ydir) =>
+        cx, cy = @\get_center!
+        bullet_data = {name:'bullet', radius:10, orig_x: cx, orig_y:cy, dir_x:xdir, dir_y:ydir, speed:1000}
+        @level\_add_model(bullet_data)
+
     collide: (dt, A, B, mx, my) =>
         @state\collide dt, A, B, mx, my
         -- print mx, my
@@ -284,5 +295,9 @@ class PlayerModel
         --print(...)
         @state = next_state(...) 
         print('facing', @state.facing)
+
+    get_center: =>
+        return @collider_shape\center!
+
 
 return PlayerModel

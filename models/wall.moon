@@ -2,25 +2,30 @@ inspect = require 'lib/inspect'
 _       = require 'lib/underscore'
 
 class WallModel
-    new: (wall_object, collider) =>
+    new: (wall_object, level, id) =>
+        @id = id
+        @model_type = 'wall'
+
         @x          = wall_object.x
         @y          = wall_object.y
         @shape_name = wall_object.shape
         @properties = wall_object.properties
+        @level      = level
+        @collider   = @level.collider
 
         if @shape_name == 'rectangle'
             @width  = wall_object.width
             @height = wall_object.height
 
-            box = collider\addRectangle @x, @y, @width, @height
-            collider\setPassive box
+            box = @collider\addRectangle @x, @y, @width, @height
+            @collider\setPassive box
 
         elseif @shape_name == 'ellipse'
             @width  = wall_object.width
             if @width <= 0 then @width = 14
 
-            circle = collider\addCircle @x, @y, @width
-            collider\setPassive circle
+            circle = @collider\addCircle @x, @y, @width
+            @collider\setPassive circle
 
         elseif @shape_name == 'polyline'
             -- Translate the relative-to-start coordinates
@@ -34,8 +39,8 @@ class WallModel
             -- Create a triangle that closely approximates a line
             -- as HardonCollider does not have line collision objects
             create_line = (L) ->
-                line = collider\addPolygon(L[1].x, L[1].y, L[2].x, L[2].y, (L[1].x + L[2].x) * 0.5, (L[1].y + L[2].y) * 0.5 + .001)
-                collider\setPassive line
+                line = @collider\addPolygon(L[1].x, L[1].y, L[2].x, L[2].y, (L[1].x + L[2].x) * 0.5, (L[1].y + L[2].y) * 0.5 + .001)
+                @collider\setPassive line
 
             _.map(@lines, create_line)
 
@@ -45,8 +50,8 @@ class WallModel
 
             @vertices  = [c for v in *@vertices for c in *v]
 
-            polygon = collider\addPolygon(unpack @vertices)
-            collider\setPassive polygon
+            polygon = @collider\addPolygon(unpack @vertices)
+            @collider\setPassive polygon
 
         else
             error 'Unknown shape!'

@@ -1,11 +1,16 @@
 Camera = require 'lib/hump/camera'
 inspect = require 'lib/inspect'
 
+_ = require 'lib/underscore'
+
 Constants = require 'constants'
 
 class SimpleRenderer
     new: (model) =>
-        @player = model.models['player'][1]
+
+        for id,m in pairs model\get_models('player')
+            @player = m
+
         @px, @py = @player.x, @player.y
         @camera = Camera(@px, @py)
         @player_images =
@@ -89,6 +94,16 @@ class SimpleRenderer
         love.graphics.print "(#{mx},#{my})", mx + 5, my + 5
 
         love.graphics.setColor r,g,b,a
+        
+        -- BULLETS
+        r,g,b,a = love.graphics.getColor!
+        love.graphics.setColor 0, 255, 255
+        for k,bullet in pairs model\get_models('bullet')
+            love.graphics.circle('fill', bullet.x, bullet.y, 25)
+
+        love.graphics.setColor r,g,b,a
+
+
         @camera\detach!
 
 
@@ -97,3 +112,7 @@ class SimpleRenderer
         @px, @py = @player.x, @player.y
         dx, dy = @px - @camera.x, @py - @camera.y
         @camera\move(dt*4*dx, dt*4*dy)
+
+    world_coords: (x, y) =>
+        return @camera\worldCoords(x,y)
+
