@@ -34,9 +34,9 @@ class LevelState
 
 
     keypressed: (key) =>
-        if key == 'left'
+        if key == 'a'
             @model\move_player Constants.Direction.LEFT
-        elseif key == 'right'
+        elseif key == 'd'
             @model\move_player Constants.Direction.RIGHT
         elseif key == ' '
             @model\jump_player!
@@ -61,7 +61,7 @@ class LevelState
 
 
     keyreleased: (key) =>
-        if key == 'left' or key == 'right'
+        if key == 'a' or key == 'd'
             @model\move_player Constants.Direction.STOP
         elseif key == ' '
             @model\stop_jump_player!
