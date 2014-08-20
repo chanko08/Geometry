@@ -9,7 +9,7 @@ debug_count_refs = (tbl, tbl_name) ->
     c = 0
     for i,p in pairs tbl
         c = c + 1
-    print "DEBUG: table #{tbl_name} has #{c} keys"
+    -- print "DEBUG: table #{tbl_name} has #{c} keys"
 
 class LevelModel
     new: (lvl) =>
@@ -88,8 +88,8 @@ class LevelModel
     on_collision: (dt, A, B, mx, my) =>
         -- _.map(@models['player'], (p) -> p\collide(dt, A, B, mx, my))
 
-        print dt
-        print "\tA - #{A.model.model_type}"
+        -- print dt
+        -- print "\tA - #{A.model.model_type}"
         if B.model
             print "\tB - #{B.model.model_type}"
 

@@ -7,7 +7,9 @@ class Constants
         DOWN:  3
 
     GRAVITY: 500
-    MAX_VELOCITY:500
+    MAX_VELOCITY:333
     MAX_BULLET_RANGE:1e12
 
+    MIN_ZOOM: .4
+    MAX_ZOOM: 1.5
 return Constants

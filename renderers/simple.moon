@@ -1,5 +1,6 @@
 Camera = require 'lib/hump/camera'
 inspect = require 'lib/inspect'
+tween     = require 'lib/tween'
 
 _ = require 'lib/underscore'
 
@@ -11,6 +12,7 @@ class SimpleRenderer
         for id,m in pairs model\get_models('player')
             @player = m
 
+        @zoom_level = 1.0
         @px, @py = @player.x, @player.y
         @camera = Camera(@px, @py)
         @player_images =
@@ -115,4 +117,22 @@ class SimpleRenderer
 
     world_coords: (x, y) =>
         return @camera\worldCoords(x,y)
+
+    zoomOut: () =>
+        print "zoom out"
+        if @zoom_level * .9 <= Constants.MIN_ZOOM
+            @zoom_level = Constants.MIN_ZOOM
+        else
+            @zoom_level *= 0.9
+        @camera\zoomTo(@zoom_level)
+
+
+    zoomIn: () =>
+        print "zoom in"
+        if @zoom_level * 1.1 >= Constants.MAX_ZOOM
+            @zoom_level = Constants.MAX_ZOOM
+        else
+            @zoom_level *= 1.1
+
+        @camera\zoomTo(@zoom_level)
 

@@ -1,8 +1,9 @@
 LevelState = require 'states/level'
 
+
 settings =
-    DISPLAY_WIDTH:  640
-    DISPLAY_HEIGHT: 480
+    DISPLAY_WIDTH:  800
+    DISPLAY_HEIGHT: 600
     WINDOW_OPTIONS: { fullscreen: false }
 
     -- STARTING_STATE: LevelState

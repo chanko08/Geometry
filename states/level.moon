@@ -49,6 +49,14 @@ class LevelState
             print '-- Right mouse DOWN'
         elseif button == 'm'
             print '-- Middle mouse DOWN'
+        elseif button == 'wd'
+            print '-- Wheel DOWN'
+            @renderer\zoomOut!
+        elseif button == 'wu'
+            print '-- Wheel UP'
+            @renderer\zoomIn!
+        else
+            print 'Other button: ', button
 
 
     mousereleased: (x,y,button) =>
@@ -59,9 +67,12 @@ class LevelState
         elseif button == 'm'
             print '-- Middle mouse UP'
 
-
     keyreleased: (key) =>
-        if key == 'a' or key == 'd'
+        if key == 'a' and love.keyboard.isDown('d')
+            @model\move_player Constants.Direction.RIGHT
+        elseif key == 'd' and love.keyboard.isDown('a')
+            @model\move_player Constants.Direction.LEFT
+        elseif key == 'a' or key == 'd'
             @model\move_player Constants.Direction.STOP
         elseif key == ' '
             @model\stop_jump_player!

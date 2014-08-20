@@ -61,12 +61,11 @@ class PlayerModelStandState extends PlayerModelState
         @wall = wall
 
     move: (direction) =>
-
-        @ax = direction * @player.walk_accel
         if direction != Constants.Direction.STOP
+            @ax = direction * @player.walk_accel
             @facing = direction
 
-        @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay, @wall, @facing)
+            @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay, @wall, @facing)
 
 
     collide: (dt, A, B, mx, my) =>
@@ -112,10 +111,10 @@ class PlayerModelWalkState extends PlayerModelState
             --@player.acc = @player.walk_accel * @direction
 
             if currentSign != 0 and currentSign != direction
-                @ax = direction * @ax * 0.5 -- slow on turn around
+                @ax = direction * @ax -- slow on turn around
                 @facing = direction
             
-            @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay, nil, @facing)
+                @player\switch_state(PlayerModelWalkState, @player, @vx, @vy, @ax, @ay, nil, @facing)
     
 
 
@@ -189,7 +188,7 @@ class PlayerModelJumpState extends PlayerModelState
 
             if currentSign != 0 and currentSign != direction
                 @ax = @ax * 0.5 -- slow on turn around
-            print "ACCEL: #{@ax}"
+            -- print "ACCEL: #{@ax}"
     
     collide: (dt, A, B, mx, my) =>
         if @just_jumped_duration > 0
@@ -229,7 +228,7 @@ class PlayerModel
         @width        = 32
         @height       = 32
         --@max_velocity = 500
-        @walk_accel   = 500
+        @walk_accel   = 1500
         @hasCollided  = false
 
         @scale_y      = 1
