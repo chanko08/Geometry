@@ -70,20 +70,14 @@ class LevelModel
 
         -- {m\move direction for id,m in pairs @models['player'] when m}
 
+    stop_move_player: (direction) =>
+        for id, m in pairs @\get_models('player')
+            m\stop_move direction
+
     shoot_gun: (x,y) =>
         for id, m in pairs @\get_models('player')
             m\shoot(x,y)
         -- {m\shoot(x,y) for id,m in pairs @models['player'] when m}
-
-    jump_player: =>
-        for id, m in pairs @\get_models('player')
-            m\jump!
-        -- {m\jump! for id,m in pairs @models['player'] when m}
-
-    stop_jump_player: =>
-        for id, m in pairs @\get_models('player')
-            m\stop_jump!
-        -- {m\stop_jump! for id,m in pairs @models['player'] when m}
 
     on_collision: (dt, A, B, mx, my) =>
         -- _.map(@models['player'], (p) -> p\collide(dt, A, B, mx, my))

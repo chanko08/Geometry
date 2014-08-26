@@ -39,7 +39,7 @@ class LevelState
         elseif key == 'd'
             @model\move_player Constants.Direction.RIGHT
         elseif key == ' '
-            @model\jump_player!
+            @model\move_player Constants.Direction.UP
 
     mousepressed: (x,y,button) =>
         if button == 'l' -- that's an L as in LEFT
@@ -68,14 +68,12 @@ class LevelState
             print '-- Middle mouse UP'
 
     keyreleased: (key) =>
-        if key == 'a' and love.keyboard.isDown('d')
-            @model\move_player Constants.Direction.RIGHT
-        elseif key == 'd' and love.keyboard.isDown('a')
-            @model\move_player Constants.Direction.LEFT
-        elseif key == 'a' or key == 'd'
-            @model\move_player Constants.Direction.STOP
+        if key == 'a'
+            @model\stop_move_player Constants.Direction.LEFT
+        elseif key == 'd'
+            @model\stop_move_player Constants.Direction.RIGHT
         elseif key == ' '
-            @model\stop_jump_player!
+            @model\stop_move_player Constants.Direction.UP
 
 
 

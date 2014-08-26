@@ -68,13 +68,13 @@ class SimpleRenderer
             --                         player.width,
             --                         player.height
             --print player.state.facing
-            facing = player.state.facing
+            facing = player.direction
             offset = 0
             if facing == Constants.Direction.LEFT
                 offset = player.width
 
             image = @player_images.normal
-            if math.abs(player.state.vy) > 25
+            if math.abs(player.vy) > 25
                 image = @player_images.jump
 
             love.graphics.draw(image, player.x, player.y + (1 - player.scale_y)*player.height, 0, facing, player.scale_y, offset)
