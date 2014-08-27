@@ -6,6 +6,8 @@ _ = require 'lib/underscore'
 
 Constants = require 'constants'
 
+BulletRenderer = require 'renderers/bullet'
+
 class SimpleRenderer
     new: (model) =>
 
@@ -18,6 +20,8 @@ class SimpleRenderer
         @player_images =
             normal: love.graphics.newImage('assets/player/player.png')
             jump:   love.graphics.newImage('assets/player/player_jump.png')
+
+        @bullet_renderer = BulletRenderer()
 
     draw: (model) =>
         @camera\attach!
@@ -98,12 +102,8 @@ class SimpleRenderer
         love.graphics.setColor r,g,b,a
         
         -- BULLETS
-        r,g,b,a = love.graphics.getColor!
-        love.graphics.setColor 0, 255, 255
-        for k,bullet in pairs model\get_models('bullet')
-            love.graphics.circle('fill', bullet.x, bullet.y, 25)
-
-        love.graphics.setColor r,g,b,a
+        for k, player in pairs model.models['player']
+            @bullet_renderer\draw(player.backpack.guns[player.equipped_gun_index].bullets)
 
 
         @camera\detach!

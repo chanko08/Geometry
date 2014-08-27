@@ -41,8 +41,6 @@ class LevelModel
             constructor = Player
         elseif obj.name == 'wall'
             constructor = Wall
-        elseif obj.name == 'bullet'
-            constructor = Bullet
 
         if constructor
             -- table.insert(@models[obj.name], constructor(obj, @, @next_id))
@@ -74,9 +72,14 @@ class LevelModel
         for id, m in pairs @\get_models('player')
             m\stop_move direction
 
-    shoot_gun: (x,y) =>
+    pull_gun_trigger: (x,y) =>
         for id, m in pairs @\get_models('player')
-            m\shoot(x,y)
+            m\pull_gun_trigger(x,y)
+        -- {m\shoot(x,y) for id,m in pairs @models['player'] when m}
+
+    release_gun_trigger: (x,y) =>
+        for id, m in pairs @\get_models('player')
+            m\release_gun_trigger(x,y)
         -- {m\shoot(x,y) for id,m in pairs @models['player'] when m}
 
     on_collision: (dt, A, B, mx, my) =>

@@ -1,40 +1,15 @@
-Constants = require 'constants'
-Bullet    = require 'models/bullet'
+Constants   = require 'constants'
+Bullet      = require 'models/bullet'
+SamusCannon = require 'models/guns/samus_cannon'
 
-inspect   = require 'lib/inspect'
-_         = require 'lib/underscore'
-tween     = require 'lib/tween'
+inspect     = require 'lib/inspect'
+_           = require 'lib/underscore'
+tween       = require 'lib/tween'
+
+physics = require 'systems/physics'
 
 
 export * 
-
-walk_step = (state, dt) ->
-    vx = state.vx + state.ax * dt
-
-    vx = (vx >  Constants.MAX_VELOCITY) and  Constants.MAX_VELOCITY or vx
-    vx = (vx < -Constants.MAX_VELOCITY) and -Constants.MAX_VELOCITY or vx
-
-    -- print "VX: #{vx} AX: #{state.ax}"
-    return vx
-
-
-physics_integration = (phys_obj, dt, max_velocity) ->
-    max_velocity = max_velocity or Constants.MAX_VELOCITY
-
-    vx = phys_obj.vx + phys_obj.ax * dt
-    vx = (vx >  max_velocity) and  max_velocity or vx
-    vx = (vx < -max_velocity) and -max_velocity or vx
-
-    px = phys_obj.x + vx * dt
-
-
-    phys_obj.vx = vx
-    phys_obj.x = px
-    return phys_obj
-
-
--- walk_direction = (direction, wall) ->
-
 
 
 class PlayerModel
@@ -85,8 +60,21 @@ class PlayerModel
             my: 0
 
         @tweens = { }
+
+        @equipped_gun_index = 1
+        @backpack = {}
+        @backpack.guns = {}
+        print inspect(SamusCannon)
+        table.insert(@backpack.guns, SamusCannon(@))
+
+    equipped_gun: () =>
+        return @backpack.guns[@equipped_gun_index]
         
     update: (dt) =>
+        player_gun = @\equipped_gun()
+        if player_gun
+            player_gun\update(dt)
+
         if @collision.hasCollided
             @collision.hasCollided = false
             @collider_shape\move @collision.mx, @collision.my
@@ -126,8 +114,8 @@ class PlayerModel
 
         
 
-        phys_x = physics_integration(phys_x, dt)
-        phyx_y = physics_integration(phys_y, dt)
+        phys_x = physics(phys_x, dt, Constants.MAX_VELOCITY)
+        phyx_y = physics(phys_y, dt, Constants.MAX_VELOCITY)
 
         @x = phys_x.x
         @y = phys_y.x
@@ -168,10 +156,13 @@ class PlayerModel
             @vy = 0
             @jump_dur = 0
 
-    shoot:(xdir,ydir) =>
-        cx, cy = @\get_center!
-        bullet_data = {name:'bullet', radius:10, orig_x: cx, orig_y:cy, dir_x:xdir, dir_y:ydir, speed:1000}
-        @level\_add_model(bullet_data)
+    pull_gun_trigger:(cross_x, cross_y) =>
+        if @equipped_gun_index
+            @backpack.guns[@equipped_gun_index]\pull_trigger({x: cross_x, y:cross_y})
+
+    release_gun_trigger: (cross_x, cross_y) =>
+        if @equipped_gun_index
+            @backpack.guns[@equipped_gun_index]\release_trigger({x: cross_x, y:cross_y})
 
     collide: (dt, player_physics, other_physics, mx, my) =>
         --@state\collide dt, A, B, mx, my

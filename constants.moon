@@ -12,4 +12,6 @@ class Constants
 
     MIN_ZOOM: .4
     MAX_ZOOM: 1.5
+
+    
 return Constants

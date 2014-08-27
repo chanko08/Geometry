@@ -44,7 +44,7 @@ class LevelState
     mousepressed: (x,y,button) =>
         if button == 'l' -- that's an L as in LEFT
             x, y = @renderer\world_coords(x,y)
-            @model\shoot_gun(x,y)
+            @model\pull_gun_trigger(x,y)
         elseif button == 'r'
             print '-- Right mouse DOWN'
         elseif button == 'm'
@@ -61,7 +61,8 @@ class LevelState
 
     mousereleased: (x,y,button) =>
         if button == 'l' -- that's an L as in LEFT
-            print '-- Left mouse UP' 
+            x, y = @renderer\world_coords(x,y)
+            @model\release_gun_trigger(x,y)
         elseif button == 'r'
             print '-- Right mouse UP'
         elseif button == 'm'
