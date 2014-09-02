@@ -52,6 +52,7 @@ class PlayerModel
         @level        = level
 
         @collider_shape = @collider\addPolygon( @x + 0.5*@width, @y, @x + @width, @y + 0.5*@height, @x + 0.5*@width, @y + @height, @x, @y + 0.5*@height )
+        @collider\addToGroup('player',@collider_shape)
         @collider_shape.model = @
 
         @collision =

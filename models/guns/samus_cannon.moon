@@ -1,6 +1,8 @@
 Gun    = require 'models/gun'
 Bullet = require 'models/bullet'
 
+inspect = require 'lib/inspect'
+
 physics = require 'systems/physics'
 vector  = require 'lib/HardonCollider/vector-light'
 
@@ -9,15 +11,22 @@ class SamusCannonBullet extends Bullet
         print gun, start, crosshair, size_ratio
         super(gun, 'samus-cannon-bullet', start, crosshair)
 
-        @max_bullet_radius = 10
+        @id = #@gun.bullets + 1
+
+        @max_bullet_radius = 30
         @max_bullet_speed = 500
 
         @radius = size_ratio * @max_bullet_radius
 
-        @collide_shape = @gun.player.collider\addCircle(@x, @y, @radius)
+        @collider_shape = @gun.owner.collider\addCircle(@x, @y, @radius)
+        @gun.owner.collider\addToGroup('player',@collider_shape)
+        @collider_shape.model = @
 
         @vx = @dir_x * @max_bullet_speed
         @vy = @dir_y * @max_bullet_speed
+
+    collide: (dt, A, B, mx, my) =>
+        table.remove(@gun.bullets, @id)
 
 
     update: (dt) =>
@@ -29,15 +38,15 @@ class SamusCannonBullet extends Bullet
         phys_y = 
             x: @y
             vx: @vy
-            ay: 0
+            ax: 0
 
-        phys_x = physics(phys_x)
-        phys_y = physics(phys_y)
+        phys_x = physics(phys_x,dt)
+        phys_y = physics(phys_y,dt)
 
         @x = phys_x.x
         @y = phys_y.x
 
-        @collide_shape\moveTo @x @y
+        @collider_shape\moveTo @x, @y
 
 class SamusCannon extends Gun
     new: (owner) =>
@@ -78,6 +87,9 @@ class SamusCannon extends Gun
             bullet = SamusCannonBullet(@, {x:cx, y:cy}, @target_direction, @charge_state/@charge_time)
 
             table.insert(@bullets, bullet)
+            @fire_bullet = false
+            @charge_state = 0
+            @is_charging = false
 
         for k, bullet in pairs @bullets
             bullet\update(dt)
