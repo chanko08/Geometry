@@ -103,7 +103,7 @@ class SimpleRenderer
         
         -- BULLETS
         for k, player in pairs model.models['player']
-            @bullet_renderer\draw(player.backpack.guns[player.equipped_gun_index].bullets)
+            @bullet_renderer\draw(player\get_equipped_gun()\get_bullets!)
 
 
         @camera\detach!

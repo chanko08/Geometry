@@ -13,7 +13,7 @@ class SamusCannonBullet extends Bullet
 
         @id = #@gun.bullets + 1
 
-        @max_bullet_radius = 30
+        @max_bullet_radius = 15
         @max_bullet_speed = 500
 
         @radius = size_ratio * @max_bullet_radius
@@ -26,7 +26,7 @@ class SamusCannonBullet extends Bullet
         @vy = @dir_y * @max_bullet_speed
 
     collide: (dt, A, B, mx, my) =>
-        table.remove(@gun.bullets, @id)
+        @gun.bullets[@] = nil
 
 
     update: (dt) =>
@@ -67,6 +67,7 @@ class SamusCannon extends Gun
             @fire_bullet = true
             @target_direction = target
             @is_charging = false
+            return
 
         print 'Charging!'
         @is_charging = true
@@ -86,12 +87,13 @@ class SamusCannon extends Gun
             cx, cy = @owner\get_center!
             bullet = SamusCannonBullet(@, {x:cx, y:cy}, @target_direction, @charge_state/@charge_time)
 
-            table.insert(@bullets, bullet)
+            print(bullet)
+            @bullets[bullet] = true
             @fire_bullet = false
             @charge_state = 0
             @is_charging = false
 
-        for k, bullet in pairs @bullets
+        for bullet, garbage in pairs @bullets
             bullet\update(dt)
 
 

@@ -1,3 +1,5 @@
+_ = require 'lib/underscore'
+
 class Gun
     new: (owner)=>
         @owner = owner
@@ -8,6 +10,9 @@ class Gun
     release_trigger: (crosshair) =>
 
     special_control: (...) =>
+
+    get_bullets: () =>
+    	_.keys(@bullets)
 
     update: (dt) =>
 

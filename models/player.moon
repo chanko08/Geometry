@@ -68,11 +68,11 @@ class PlayerModel
         print inspect(SamusCannon)
         table.insert(@backpack.guns, SamusCannon(@))
 
-    equipped_gun: () =>
+    get_equipped_gun: () =>
         return @backpack.guns[@equipped_gun_index]
         
     update: (dt) =>
-        player_gun = @\equipped_gun()
+        player_gun = @\get_equipped_gun()
         if player_gun
             player_gun\update(dt)
 
@@ -159,11 +159,11 @@ class PlayerModel
 
     pull_gun_trigger:(cross_x, cross_y) =>
         if @equipped_gun_index
-            @backpack.guns[@equipped_gun_index]\pull_trigger({x: cross_x, y:cross_y})
+            @\get_equipped_gun()\pull_trigger({x: cross_x, y:cross_y})
 
     release_gun_trigger: (cross_x, cross_y) =>
         if @equipped_gun_index
-            @backpack.guns[@equipped_gun_index]\release_trigger({x: cross_x, y:cross_y})
+            @\get_equipped_gun()\release_trigger({x: cross_x, y:cross_y})
 
     collide: (dt, player_physics, other_physics, mx, my) =>
         --@state\collide dt, A, B, mx, my
