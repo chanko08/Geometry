@@ -12,7 +12,8 @@ class SamusCannonRenderer
 			hover_x += player_x
 			hover_y += player_y
 			wobble_amount    = 2
-			wobble_rate      = 30*gun.charge_state/gun.charge_time
+			wobble_rate      = 27*gun.charge_state/gun.charge_time
+			wobble_rate		 = math.min(wobble_rate,99)
 			wobble_radius    = wobble_amount*math.sin(wobble_rate*gun.charge_state)
 			wobble_color     = {255*(.75 + .25*math.sin(wobble_rate*gun.charge_state)) , 255, 255}
 
