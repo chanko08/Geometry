@@ -11,25 +11,28 @@ class SamusCannonBullet extends Bullet
         print gun, start, crosshair, size_ratio
         super(gun, 'samus-cannon-bullet', start, crosshair)
 
-        @id = #@gun.bullets + 1
-
         @max_bullet_radius = 15
-        @max_bullet_speed = 500
+        @max_bullet_speed = 500       
 
         @radius = size_ratio * @max_bullet_radius
 
-        @collider_shape = @gun.owner.collider\addCircle(@x, @y, @radius)
-        @gun.owner.collider\addToGroup('player',@collider_shape)
+        @collider_shape = @collider\addCircle(@x, @y, @radius)
+        @collider\addToGroup('player',@collider_shape)
         @collider_shape.model = @
 
         @vx = @dir_x * @max_bullet_speed
         @vy = @dir_y * @max_bullet_speed
 
     collide: (dt, A, B, mx, my) =>
+        if @tunneling_dong
+            @collider\remove(@tunneling_dong)
+        @collider\remove(@collider_shape)
         @gun.bullets[@] = nil
 
 
     update: (dt) =>
+        prev_x, prev_y = @x, @y
+
         phys_x =
             x: @x
             vx: @vx
@@ -46,13 +49,31 @@ class SamusCannonBullet extends Bullet
         @x = phys_x.x
         @y = phys_y.x
 
+        if @tunneling_dong
+            @collider\remove(@tunneling_dong)
+
+        -- Check for tunneling
+        -- Add a rectangle that contains the start and end
+        -- positions of the bullets, rotated to snugly hold them.
+        height = 2*@radius
+        width  = 2*@radius + vector.dist(prev_x,prev_y,@x,@y)
+        
+        dx, dy = @x - prev_x, @y - prev_y
+        angle  = math.atan2(dy,dx)
+
+        @tunneling_dong = @collider\addRectangle(0,0,width,height)
+        @collider\addToGroup('player',@tunneling_dong)
+        @tunneling_dong\setRotation(angle)
+        @tunneling_dong\moveTo((prev_x + @x)/2, (prev_y + @y)/2)
+        @tunneling_dong.model = @
+
         @collider_shape\moveTo @x, @y
 
 class SamusCannon extends Gun
     new: (owner) =>
         print 'creating cannon'
         super(owner)
-        @min_charge   = 0.3
+        @min_charge   = 0.2
         @charge_time  = 3 --seconds
         @charge_state = 0 --also seconds, charge_state/charge_time = % charge
 
