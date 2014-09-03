@@ -7,14 +7,14 @@ physics = require 'systems/physics'
 vector  = require 'lib/HardonCollider/vector-light'
 
 class SamusCannonBullet extends Bullet
-    new: (gun, start, crosshair, size_ratio) =>
+    new: (gun, start, crosshair, radius, t) =>
         print gun, start, crosshair, size_ratio
         super(gun, 'samus-cannon-bullet', start, crosshair)
 
-        @max_bullet_radius = 15
         @max_bullet_speed = 500       
 
-        @radius = size_ratio * @max_bullet_radius
+        @radius = radius
+        @t = t
 
         @collider_shape = @collider\addCircle(@x, @y, @radius)
         @collider\addToGroup('player',@collider_shape)
@@ -31,6 +31,7 @@ class SamusCannonBullet extends Bullet
 
 
     update: (dt) =>
+        @t += dt
         prev_x, prev_y = @x, @y
 
         phys_x =
@@ -73,46 +74,56 @@ class SamusCannon extends Gun
     new: (owner) =>
         print 'creating cannon'
         super(owner)
-        @min_charge   = 0.2
-        @charge_time  = 3 --seconds
-        @charge_state = 0 --also seconds, charge_state/charge_time = % charge
+        @max_bullet_radius = 10
+        @min_charge       = 0.3
+        @charge_time      = 3 --seconds
+        @charge_state     = @min_charge --also seconds, charge_state/charge_time = % charge
+        @is_fully_charged = false
+        @hover_distance   = 50
 
-        @is_charging = false
-        @fire_bullet = false
+        
+        @is_charging      = false
+        @fire_bullet      = false
         @target_direction = nil
         print 'created cannon'
 
     pull_trigger: (target) =>
         if @is_charging
             print 'FIRING'
-            @fire_bullet = true
+            @fire_bullet      = true
             @target_direction = target
-            @is_charging = false
-            return
-
-        print 'Charging!'
-        @is_charging = true
-
+            @is_charging      = false
+        else
+            print 'Charging!'
+            @is_charging = true
 
 
+    current_radius: () =>
+        @max_bullet_radius*math.min(@charge_state/@charge_time,@charge_time)
 
     update: (dt) =>
         if @is_charging
             @charge_state += dt
 
+        if @charge_state > @charge_time
+            @is_fully_charged = true
 
         if @fire_bullet
-            @charge_state = math.max(@min_charge, math.min(@charge_time, @charge_state))
-            print 'Fire radius: ', @charge_state/@charge_time
-
+            print 'Fire radius: ', @\current_radius!
+            
             cx, cy = @owner\get_center!
-            bullet = SamusCannonBullet(@, {x:cx, y:cy}, @target_direction, @charge_state/@charge_time)
 
-            print(bullet)
-            @bullets[bullet] = true
-            @fire_bullet = false
-            @charge_state = 0
-            @is_charging = false
+            hover_x, hover_y = vector.mul(@hover_distance,vector.normalize(@target_direction.x - cx, @target_direction.y - cy))
+            hover_x += cx
+            hover_y += cy
+
+            bullet = SamusCannonBullet(@, {x:hover_x, y:hover_y}, @target_direction, @\current_radius!,@charge_state)
+
+            @bullets[bullet]  = true
+            @fire_bullet      = false
+            @charge_state     = @min_charge
+            @is_fully_charged = false
+            @is_charging      = false
 
         for bullet, garbage in pairs @bullets
             bullet\update(dt)

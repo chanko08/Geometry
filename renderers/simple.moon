@@ -1,12 +1,13 @@
-Camera = require 'lib/hump/camera'
-inspect = require 'lib/inspect'
-tween     = require 'lib/tween'
+Camera              = require 'lib/hump/camera'
+inspect             = require 'lib/inspect'
+tween               = require 'lib/tween'
 
-_ = require 'lib/underscore'
+_                   = require 'lib/underscore'
 
-Constants = require 'constants'
+Constants           = require 'constants'
 
-BulletRenderer = require 'renderers/bullet'
+BulletRenderer      = require 'renderers/bullet'
+SamusCannonRenderer = require 'renderers/guns/samus_cannon'
 
 class SimpleRenderer
     new: (model) =>
@@ -22,6 +23,7 @@ class SimpleRenderer
             jump:   love.graphics.newImage('assets/player/player_jump.png')
 
         @bullet_renderer = BulletRenderer()
+        @gun_renderer    = SamusCannonRenderer()
 
     draw: (model) =>
         @camera\attach!
@@ -104,7 +106,7 @@ class SimpleRenderer
         -- BULLETS
         for k, player in pairs model.models['player']
             @bullet_renderer\draw(player\get_equipped_gun()\get_bullets!)
-
+            @gun_renderer\draw(player\get_equipped_gun(), mx, my)
 
         @camera\detach!
 
