@@ -51,7 +51,8 @@ class PlayerModel
         @collider     = level.collider
         @level        = level
 
-        @collider_shape = @collider\addPolygon( @x + 0.5*@width, @y, @x + @width, @y + 0.5*@height, @x + 0.5*@width, @y + @height, @x, @y + 0.5*@height )
+        -- @collider_shape = @collider\addPolygon( @x + 0.5*@width, @y, @x + @width, @y + 0.5*@height, @x + 0.5*@width, @y + @height, @x, @y + 0.5*@height )
+        @collider_shape = @collider\addCircle(@x,@y,@width/2)
         @collider\addToGroup('player',@collider_shape)
         @collider_shape.model = @
 
@@ -68,10 +69,12 @@ class PlayerModel
         print inspect(SamusCannon)
         table.insert(@backpack.guns, SamusCannon(@))
 
+
     get_equipped_gun: () =>
         return @backpack.guns[@equipped_gun_index]
         
     update: (dt) =>
+
         player_gun = @\get_equipped_gun()
         if player_gun
             player_gun\update(dt)
@@ -125,6 +128,8 @@ class PlayerModel
         @vy = phys_y.vx
 
         @update_collider!
+        @collision.mx = 0
+        @collision.my = 0
         
 
         --check if we're in the air
@@ -169,8 +174,9 @@ class PlayerModel
         --@state\collide dt, A, B, mx, my
         --@vy = 0
         @collision.hasCollided = true
-        @collision.mx = mx
-        @collision.my = my
+        @collision.mx += mx
+        @collision.my += my
+
         
 
 
