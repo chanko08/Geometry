@@ -143,5 +143,7 @@
    <polygon points="0,0 118,12 119,25 189,27 207,64 164,80 189,52 164,43 96,48 98,27 -9,20 -180,-61"/>
   </object>
   <object name="player" x="94" y="55" width="37" height="35"/>
+  <object name="grunt" x="286" y="879" width="37" height="35"/>
+  <object name="grunt" x="466" y="315" width="37" height="35"/>
  </objectgroup>
 </map>

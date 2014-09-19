@@ -1,5 +1,6 @@
 inspect = require 'lib/inspect'
 Player  = require 'models/player'
+Grunt   = require 'models/enemies/grunt'
 Bullet  = require 'models/bullet'
 Wall    = require 'models/wall'
 HC      = require 'lib/HardonCollider'
@@ -41,6 +42,8 @@ class LevelModel
             constructor = Player
         elseif obj.name == 'wall'
             constructor = Wall
+        elseif obj.name == 'grunt'
+            constructor = Grunt
 
         if constructor
             -- table.insert(@models[obj.name], constructor(obj, @, @next_id))

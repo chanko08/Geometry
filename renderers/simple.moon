@@ -9,9 +9,33 @@ Constants           = require 'constants'
 BulletRenderer      = require 'renderers/bullet'
 SamusCannonRenderer = require 'renderers/guns/samus_cannon'
 
+draw_thing = (thing) ->
+    if thing.shape_name == 'ellipse'
+        love.graphics.circle 'line', 
+                              thing.x, 
+                              thing.y, 
+                              thing.width, 
+                              50
+
+    elseif thing.shape_name == 'rectangle'
+        love.graphics.rectangle 'line',
+                                thing.x,
+                                thing.y,
+                                thing.width,
+                                thing.height
+
+    else
+        points = thing.vertices
+        love.graphics.setLineWidth(2)
+
+        if thing.shape_name == 'polyline'
+            love.graphics.line unpack points
+        else
+            love.graphics.polygon 'line', unpack points
+
 class SimpleRenderer
     new: (model) =>
-
+        love.graphics.setLineStyle("smooth")
         for id,m in pairs model\get_models('player')
             @player = m
 
@@ -21,6 +45,10 @@ class SimpleRenderer
         @player_images =
             normal: love.graphics.newImage('assets/player/player.png')
             jump:   love.graphics.newImage('assets/player/player_jump.png')
+        @grunt_images =
+            normal: love.graphics.newImage('assets/enemies/grunt/grunt.png')
+            jump:   love.graphics.newImage('assets/enemies/grunt/grunt_jump.png')
+            psycho: {love.graphics.newImage('assets/enemies/grunt/grunt_psycho.png'),love.graphics.newImage('assets/enemies/grunt/grunt_psycho2.png')}
 
         @bullet_renderer = BulletRenderer()
         @gun_renderer    = SamusCannonRenderer()
@@ -40,40 +68,13 @@ class SimpleRenderer
 
         -- Level statics
         for k, wall in pairs model.models['wall']
-
-            if wall.shape_name == 'ellipse'
-                love.graphics.circle 'line', 
-                                      wall.x, 
-                                      wall.y, 
-                                      wall.width, 
-                                      50
-
-            elseif wall.shape_name == 'rectangle'
-                love.graphics.rectangle 'line',
-                                        wall.x,
-                                        wall.y,
-                                        wall.width,
-                                        wall.height
-
-            else
-                points = wall.vertices
-
-                if wall.shape_name == 'polyline'
-                    love.graphics.line unpack points
-                else
-                    love.graphics.polygon 'line', unpack points
+            draw_thing(wall)
 
         -- Player
         r,g,b,a = love.graphics.getColor!
         love.graphics.setColor 255, 0, 255
 
         for k, player in pairs model.models['player']
-            -- love.graphics.rectangle 'fill',
-            --                         player.x,
-            --                         player.y,
-            --                         player.width,
-            --                         player.height
-            --print player.state.facing
             facing = player.direction
             offset = 0
             if facing == Constants.Direction.LEFT
@@ -86,6 +87,7 @@ class SimpleRenderer
             love.graphics.draw(image, player.x, player.y + (1 - player.scale_y)*player.height, 0, facing, player.scale_y, offset)
 
         love.graphics.setColor 0, 255, 0
+
 
         for k, player in pairs model.models['player']
             player.collider_shape\draw('line')
@@ -107,6 +109,29 @@ class SimpleRenderer
         for k, player in pairs model.models['player']
             @bullet_renderer\draw(player\get_equipped_gun()\get_bullets!)
             @gun_renderer\draw(player\get_equipped_gun(), mx, my)
+
+        -- GRUNTS
+
+        for k, grunt in pairs model.models['grunt']
+            facing = grunt.direction
+            offset = 0
+            if facing == Constants.Direction.LEFT
+                offset = grunt.width
+
+            image = @grunt_images.normal
+            if math.abs(grunt.vy) > 25
+                image = @grunt_images.jump
+
+            for l,sensor in pairs grunt.sensors
+                r,g,b,a = love.graphics.getColor!
+                if sensor.detected
+                    love.graphics.setColor 0, 255, 0
+                else
+                    love.graphics.setColor 255, 255, 255
+                draw_thing(sensor)
+                love.graphics.setColor r,g,b,a
+
+            love.graphics.draw(image, grunt.x, grunt.y + (1 - grunt.scale_y)*grunt.height, 0, facing, grunt.scale_y, offset)
 
         @camera\detach!
 

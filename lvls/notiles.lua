@@ -695,6 +695,28 @@ return {
           height = 35,
           visible = true,
           properties = {}
+        },
+        {
+          name = "grunt",
+          type = "",
+          shape = "rectangle",
+          x = 286,
+          y = 879,
+          width = 37,
+          height = 35,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "grunt",
+          type = "",
+          shape = "rectangle",
+          x = 466,
+          y = 315,
+          width = 37,
+          height = 35,
+          visible = true,
+          properties = {}
         }
       }
     }
