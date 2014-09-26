@@ -49,11 +49,13 @@ class Grunt
         @collider\addToGroup('grunt',@collider_shape)        
         @collider_shape.model = @
 
+        target_player = (phys) -> phys.model.model_type == 'player'
+        target_wall   = (phys) -> phys.model.model_type == 'wall' 
 
         @sensors =
-            player_visible: Sensor(@, 'grunt', {name:'player_visible', shape:'ellipse',   width:500})
-            cliff_left:     Sensor(@, 'grunt', {name:'cliff_left',     shape:'polyline', polyline:{{x:-16, y:16},{x:-16.1, y:16+32*2}}})
-            cliff_right:    Sensor(@, 'grunt', {name:'cliff_right',    shape:'polyline', polyline:{{x:16, y:16},{x:16.1, y:16+32*2}}})
+            player_visible: Sensor(@, target_player, 'grunt', {name:'player_visible', shape:'ellipse',  width:200})
+            cliff_right:    Sensor(@, target_wall,   'grunt', {name:'cliff_right',    shape:'rectangle', x:15,  y:0, width:1, height:80})
+            cliff_left:     Sensor(@, target_wall,   'grunt', {name:'cliff_left',     shape:'rectangle', x:-16, y:0, width:1, height:80})
 
         @collision =
             hasCollided: false
@@ -71,7 +73,6 @@ class Grunt
             @collider_shape\move @collision.mx, @collision.my
             @x += @collision.mx
             @y += @collision.my
-
 
             if @jump_dur <= 0
                 @vy = 0
@@ -123,9 +124,6 @@ class Grunt
     update_collider: () =>
         @collider_shape\moveTo (@x + @width * 0.5), (@y + @height * 0.5)
 
-        -- for k, sensor in pairs @sensors
-        --     sensor\moveTo (@x + @width * 0.5), (@y + @height * 0.5)
-
     move: (direction) =>
         --@move_state\move direction 
         if direction == Constants.Direction.LEFT
@@ -162,6 +160,8 @@ class Grunt
         @collision.hasCollided = true
         @collision.mx += mx
         @collision.my += my
+
+    stop_collide: (...) =>
 
     get_center: =>
         return @collider_shape\center!

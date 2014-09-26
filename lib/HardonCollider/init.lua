@@ -266,6 +266,10 @@ function HC:setPassive(shape, ...)
 	return self:setPassive(...)
 end
 
+function HC:isPassive(shape)
+	return self._passive_shapes[shape] ~= nil
+end
+
 function HC:setActive(shape, ...)
 	if not shape then return end
 	if not self._ghost_shapes[shape] then

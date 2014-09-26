@@ -10,19 +10,22 @@ BulletRenderer      = require 'renderers/bullet'
 SamusCannonRenderer = require 'renderers/guns/samus_cannon'
 
 draw_thing = (thing) ->
-    if thing.shape_name == 'ellipse'
-        love.graphics.circle 'line', 
-                              thing.x, 
-                              thing.y, 
-                              thing.width, 
-                              50
+    -- if thing.shape_name == 'ellipse'
+    --     love.graphics.circle 'line', 
+    --                           thing.x, 
+    --                           thing.y, 
+    --                           thing.width, 
+    --                           50
 
-    elseif thing.shape_name == 'rectangle'
-        love.graphics.rectangle 'line',
-                                thing.x,
-                                thing.y,
-                                thing.width,
-                                thing.height
+    -- elseif thing.shape_name == 'rectangle'
+    --     love.graphics.rectangle 'line',
+    --                             thing.x,
+    --                             thing.y,
+    --                             thing.width,
+    --                             thing.height
+    if thing.shape_name == 'ellipse' or thing.shape_name == 'rectangle'
+        for k,shape in ipairs thing.collider_shapes
+            shape\draw('line') 
 
     else
         points = thing.vertices
@@ -121,13 +124,15 @@ class SimpleRenderer
             image = @grunt_images.normal
             if math.abs(grunt.vy) > 25
                 image = @grunt_images.jump
+            if grunt.sensors.player_visible.detected
+                image = @grunt_images.psycho[1]
 
             for l,sensor in pairs grunt.sensors
                 r,g,b,a = love.graphics.getColor!
                 if sensor.detected
-                    love.graphics.setColor 0, 255, 0
+                    love.graphics.setColor 255, 0, 0
                 else
-                    love.graphics.setColor 255, 255, 255
+                    love.graphics.setColor 50, 50, 50
                 draw_thing(sensor)
                 love.graphics.setColor r,g,b,a
 

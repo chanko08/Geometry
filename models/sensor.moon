@@ -9,18 +9,19 @@ export *
 
 
 class Sensor
-	new: (model, collision_group, sensor_obj) =>
+	new: (model, target_fun, collision_group, sensor_obj) =>
 		@model = model
 
         @model_type = 'sensor'
 
-        @x          = @model.x
-        @y          = @model.y
-        @shape_name = sensor_obj.shape
-        print @shape_name
-        @properties = sensor_obj.properties
-        @collider   = @model.collider
-        @collider_shape = nil
+        @is_target = (self, t) -> target_fun(t)
+
+        @x, @y          = @model\get_center!
+        @shape_name     = sensor_obj.shape
+        @properties     = sensor_obj.properties
+        @collider       = @model.collider
+
+        @collider_shapes = nil
 
         @detected   = false
 
@@ -28,18 +29,18 @@ class Sensor
             @width  = sensor_obj.width
             @height = sensor_obj.height
 
-            box = @collider\addRectangle @x, @y, @width, @height
-            box.model = @
-            @collider\addToGroup(collision_group, box)
+            print 'RECTANGLE SENSOR'
+            print '--- ',@x + sensor_obj.x
+            print '--- ',@y + sensor_obj.y
+
+            @collider_shapes = {@collider\addRectangle(@x + sensor_obj.x, @y + sensor_obj.y, @width, @height)}
 
 
         elseif @shape_name == 'ellipse'
             @width  = sensor_obj.width
             if @width <= 0 then @width = 14
 
-            circle = @collider\addCircle @x, @y, @width
-            circle.model = @
-            @collider\addToGroup(collision_group, circle)
+            @collider_shapes = {@collider\addCircle(@x, @y, @width)}
 
 
         elseif @shape_name == 'polyline'
@@ -54,11 +55,9 @@ class Sensor
             -- Create a triangle that closely approximates a line
             -- as HardonCollider does not have line collision objects
             create_line = (L) ->
-                line = @collider\addPolygon(L[1].x, L[1].y, L[2].x, L[2].y, (L[1].x + L[2].x) * 0.5, (L[1].y + L[2].y) * 0.5 + .001)
-                line.model = @
-                @collider\addToGroup(collision_group, line)
+                @collider\addPolygon(L[1].x, L[1].y, L[2].x, L[2].y, (L[1].x + L[2].x) * 0.5, (L[1].y + L[2].y) * 0.5 + .001)
 
-            _.map(@lines, create_line)
+            @collider_shapes = _.map(@lines, create_line)
 
         elseif @shape_name = 'polygon'
             @vertices = [{pt.x + @x, pt.y + @y} for pt in *sensor_obj.polygon ]
@@ -66,19 +65,30 @@ class Sensor
 
             @vertices  = [c for v in *@vertices for c in *v]
 
-            polygon = @collider\addPolygon(unpack @vertices)
-            polygon.model = @
-            @collider\addToGroup(collision_group, polygon)
+            @collider_shapes = {@collider\addPolygon(unpack @vertices)}
 
         else
         	error 'Unknown shape!'
+
+        for k, shape in ipairs @collider_shapes
+            shape.model = @
+            @collider\addToGroup(collision_group, shape)
 
     reset: () =>
     	@detected = false
 
     collide: (dt, sensor_physics, other_physics, mx, my) =>
-    	@detected = true
+        print 'Sensor: ', sensor_physics.model.model_type, other_physics.model.model_type
+        if @is_target(other_physics)
+            print 'Detected: ', other_physics.model.model_type
+        	@detected = true
+
+    stop_collide: (...) =>
+        @detected = false
 
     update: (dt) =>
-        @detected = false
+        newx,newy = @model\get_center!
+        for k, shape in ipairs @collider_shapes
+            shape\move newx-@x, newy-@y
+        @x,@y = newx,newy
 

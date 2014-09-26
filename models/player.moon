@@ -90,10 +90,6 @@ class PlayerModel
                 @vy = 0
 
 
-            --@update_collider!
-
-
-
         for k,tw in pairs(@tweens)
             tw\update(dt)
 
@@ -171,17 +167,11 @@ class PlayerModel
             @\get_equipped_gun()\release_trigger({x: cross_x, y:cross_y})
 
     collide: (dt, player_physics, other_physics, mx, my) =>
-        --@state\collide dt, A, B, mx, my
-        --@vy = 0
         @collision.hasCollided = true
         @collision.mx += mx
         @collision.my += my
 
-        
-
-
-
-
+    stop_collide: (...) =>
 
     get_center: =>
         return @collider_shape\center!
