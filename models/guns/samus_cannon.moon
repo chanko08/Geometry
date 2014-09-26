@@ -11,10 +11,14 @@ class SamusCannonBullet extends Bullet
         print gun, start, crosshair, size_ratio
         super(gun, 'samus-cannon-bullet', start, crosshair)
 
-        @max_bullet_speed = 500       
+        @max_bullet_speed = 500
+        @damage_info =
+            damage: 100*radius/@gun.max_bullet_radius
+            damage_type: 'energy'
 
         @radius = radius
         @t = t
+
 
         @collider_shape = @collider\addCircle(@x, @y, @radius)
         @collider\addToGroup('player',@collider_shape)
@@ -24,11 +28,14 @@ class SamusCannonBullet extends Bullet
         @vy = @dir_y * @max_bullet_speed
 
     collide: (dt, A, B, mx, my) =>
+        B.model\damage(@damage_info)
+
         if @tunneling_dong
             @collider\remove(@tunneling_dong)
         @collider\remove(@collider_shape)
         @gun.bullets[@] = nil
 
+    stop_collide: (...) =>
 
     update: (dt) =>
         @t += dt

@@ -45,6 +45,8 @@ class Grunt
         @collider     = level.collider
         @level        = level
 
+        @health       = 100
+
         @collider_shape = @collider\addCircle(@x,@y,@width/2)
         @collider\addToGroup('grunt',@collider_shape)        
         @collider_shape.model = @
@@ -162,6 +164,12 @@ class Grunt
         @collision.my += my
 
     stop_collide: (...) =>
+
+    damage: (dmg_info) =>
+        
+
+        @health -= dmg_info.damage
+        print "I'm HIT! MEDIC!!!", @health
 
     get_center: =>
         return @collider_shape\center!

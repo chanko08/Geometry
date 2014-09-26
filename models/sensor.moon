@@ -29,10 +29,6 @@ class Sensor
             @width  = sensor_obj.width
             @height = sensor_obj.height
 
-            print 'RECTANGLE SENSOR'
-            print '--- ',@x + sensor_obj.x
-            print '--- ',@y + sensor_obj.y
-
             @collider_shapes = {@collider\addRectangle(@x + sensor_obj.x, @y + sensor_obj.y, @width, @height)}
 
 
@@ -75,16 +71,14 @@ class Sensor
             @collider\addToGroup(collision_group, shape)
 
     reset: () =>
-    	@detected = false
+    	@detected = nil
 
     collide: (dt, sensor_physics, other_physics, mx, my) =>
-        print 'Sensor: ', sensor_physics.model.model_type, other_physics.model.model_type
         if @is_target(other_physics)
-            print 'Detected: ', other_physics.model.model_type
-        	@detected = true
+        	@detected = other_physics.model
 
     stop_collide: (...) =>
-        @detected = false
+        @detected = nil
 
     update: (dt) =>
         newx,newy = @model\get_center!

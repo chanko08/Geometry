@@ -62,3 +62,5 @@ class WallModel
     collide: (...) =>
 
     stop_collide: (...) =>
+
+    damage: (...) =>

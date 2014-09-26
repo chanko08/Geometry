@@ -173,6 +173,8 @@ class PlayerModel
 
     stop_collide: (...) =>
 
+    damage: (...) =>
+
     get_center: =>
         return @collider_shape\center!
 
