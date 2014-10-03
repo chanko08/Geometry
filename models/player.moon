@@ -1,3 +1,5 @@
+Hub         = require 'hub'
+
 Constants   = require 'constants'
 Bullet      = require 'models/bullet'
 SamusCannon = require 'models/guns/samus_cannon'
@@ -5,30 +7,44 @@ SamusCannon = require 'models/guns/samus_cannon'
 inspect     = require 'lib/inspect'
 _           = require 'lib/underscore'
 tween       = require 'lib/tween'
+vector      = require 'lib/hump/vector'
 
-physics = require 'systems/physics'
+physics     = require 'systems/physics_system'
 
 
 export * 
 
 
-class PlayerModel
+class PlayerModel extends Hub
 
     new: (player_object, level, id) =>
+        super(level.level_state.entity_manager)
         @id = id
         @model_type = 'player'
 
-        @x = player_object.x
-        @y = player_object.y
-        @vx = 0
-        @vy = 0
-        @ax = 0
-        @ay = Constants.GRAVITY
+        physics   = {}
+        physics.s = vector(player_object.x, player_object.y)
+        physics.v = vector(0,0)
+        physics.a = vector(0,Constants.GRAVITY)
+
+        @physics  = @\register('physics', physics)
+        
+
+        shape_info         = {}
+        shape_info.shape   = 'circle'
+        shape_info.s       = @physics.s
+        shape_info.radius  = @width/2
+        shape_info.entity  = @
+        shape_info.groups  = {'player'}
+        shape_info.passive = false
+
+        @collider_shape = @\register('collision', shape_info)
+
+
 
         @direction = Constants.Direction.RIGHT
 
         @jump_dur = 0
-
 
         @properties = player_object.properties
         @width        = 32
@@ -52,9 +68,9 @@ class PlayerModel
         @level        = level
 
         -- @collider_shape = @collider\addPolygon( @x + 0.5*@width, @y, @x + @width, @y + 0.5*@height, @x + 0.5*@width, @y + @height, @x, @y + 0.5*@height )
-        @collider_shape = @collider\addCircle(@x,@y,@width/2)
-        @collider\addToGroup('player',@collider_shape)
-        @collider_shape.model = @
+        -- @collider_shape = @collider\addCircle(@physics.s.x, @physics.s.y, @width/2)
+        -- @collider\addToGroup('player',@collider_shape)
+        -- @collider_shape.model = @
 
         @collision =
             hasCollided: false
@@ -63,11 +79,11 @@ class PlayerModel
 
         @tweens = { }
 
-        @equipped_gun_index = 1
+        @equipped_gun_index = nil
         @backpack = {}
         @backpack.guns = {}
-        print inspect(SamusCannon)
-        table.insert(@backpack.guns, SamusCannon(@))
+        -- print inspect(SamusCannon)
+        -- table.insert(@backpack.guns, SamusCannon(@))
 
 
     get_equipped_gun: () =>

@@ -43,7 +43,7 @@ class SimpleRenderer
             @player = m
 
         @zoom_level = 1.0
-        @px, @py = @player.x, @player.y
+        @px, @py = @player.physics.s.x, @player.physics.s.y
         @camera = Camera(@px, @py)
         @player_images =
             normal: love.graphics.newImage('assets/player/player.png')
@@ -84,10 +84,10 @@ class SimpleRenderer
                 offset = player.width
 
             image = @player_images.normal
-            if math.abs(player.vy) > 25
+            if math.abs(player.physics.v.y) > 25
                 image = @player_images.jump
 
-            love.graphics.draw(image, player.x, player.y + (1 - player.scale_y)*player.height, 0, facing, player.scale_y, offset)
+            love.graphics.draw(image, player.physics.s.x, player.physics.s.y + (1 - player.scale_y)*player.height, 0, facing, player.scale_y, offset)
 
         love.graphics.setColor 0, 255, 0
 
@@ -110,8 +110,9 @@ class SimpleRenderer
         
         -- BULLETS
         for k, player in pairs model.models['player']
-            @bullet_renderer\draw(player\get_equipped_gun()\get_bullets!)
-            @gun_renderer\draw(player\get_equipped_gun(), mx, my)
+            if player\get_equipped_gun()
+                @bullet_renderer\draw(player\get_equipped_gun()\get_bullets!)
+                @gun_renderer\draw(player\get_equipped_gun(), mx, my)
 
         -- GRUNTS
 
@@ -143,7 +144,7 @@ class SimpleRenderer
 
 
     update: (dt) =>
-        @px, @py = @player.x, @player.y
+        @px, @py = @player.physics.s.x, @player.physics.s.y
         dx, dy = @px - @camera.x, @py - @camera.y
         @camera\move(dt*4*dx, dt*4*dy)
 

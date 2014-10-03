@@ -1,32 +1,46 @@
-inspect     = require('lib/inspect')
-_           = require('lib/underscore')
-Camera      = require('lib/hump/camera')
+inspect       = require('lib/inspect')
+_             = require('lib/underscore')
+Camera        = require('lib/hump/camera')
 
-Renderer    = require('renderers/simple')
+Renderer      = require('renderers/simple')
 
-State       = require('state')
-Constants   = require('constants')
+State         = require('state')
+Constants     = require('constants')
 
-Level       = require('models/level')
+Level         = require('models/level')
+SystemManager = require('managers/system_manager')
 
-
-
+PhysicsSystem = require('systems/physics_system')
 
 ---------------------------------------
 -- Level Sate
-class LevelState
+class LevelState extends SystemManager
     new: (lvlfile) =>
+        super!
+
+        physics = PhysicsSystem(@)
+
+        -- print inspect(@connections)
+        
         lvlpath = 'lvls/'
         lvl = love.filesystem.load lvlpath .. lvlfile
-        print('here')
-        print(Level lvl!)
-        @model = Level lvl!
+        
+        @model = Level(@,lvl!)
         @renderer = Renderer @model
 
 
     update: (dt) =>
-        @model\update dt
+        systems = @\get_connection_hubs('update')
+        for i,system in ipairs(systems)
+            print 'System: ', system.__class
+            system\update(@entity_manager,dt)
+
+
+        -- @model\update dt
         @renderer\update dt
+
+        -- for k,system in ipairs(@systems)
+        --     system\update(dt)
 
 
     draw: =>

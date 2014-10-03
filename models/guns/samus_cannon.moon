@@ -3,7 +3,7 @@ Bullet = require 'models/bullet'
 
 inspect = require 'lib/inspect'
 
-physics = require 'systems/physics'
+physics = require 'systems/physics_system'
 vector  = require 'lib/HardonCollider/vector-light'
 
 class SamusCannonBullet extends Bullet

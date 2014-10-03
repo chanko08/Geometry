@@ -13,7 +13,9 @@ debug_count_refs = (tbl, tbl_name) ->
     -- print "DEBUG: table #{tbl_name} has #{c} keys"
 
 class LevelModel
-    new: (lvl) =>
+    new: (level_state,lvl) =>
+        @level_state = level_state
+
         @next_id = 1
 
         on_collision = (dt, A, B, mx, my) ->
@@ -43,7 +45,8 @@ class LevelModel
         elseif obj.name == 'wall'
             constructor = Wall
         elseif obj.name == 'grunt'
-            constructor = Grunt
+            -- constructor = Grunt
+            return
 
         if constructor
             -- table.insert(@models[obj.name], constructor(obj, @, @next_id))

@@ -4,7 +4,7 @@ inspect     = require 'lib/inspect'
 _           = require 'lib/underscore'
 tween       = require 'lib/tween'
 
-physics = require 'systems/physics'
+physics 	= require 'systems/physics_system'
 
 export *
 
