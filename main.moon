@@ -12,25 +12,26 @@ love.load = ->
 
 
 love.update = (dt) ->
-    state\update(dt)
+    state\broadcast('UPDATE',dt)
 
 
 love.draw = ->
-    state\draw!
+    state\broadcast('DRAW')
 
 
 love.keypressed = (key) ->
+    -- for now
     if key == 'escape'
         love.event.quit!
-    state\keypressed key
+    state\broadcast('KEY_PRESSED',key)
 
 
 love.keyreleased = (key) ->
-    state\keyreleased key
+    state\broadcast('KEY_RELEASED',key)
 
 love.mousepressed = (x,y,button) ->
-    state\mousepressed x,y,button
+    state\broadcast('MOUSE_PRESSED', x, y, button)
 
 
 love.mousereleased = (x,y,button) ->
-    state\mousereleased x,y,button
+    state\broadcast('MOUSE_RELEASED', x, y, button)

@@ -27,6 +27,7 @@ class PlayerModel extends Hub
         physics.v = vector(0,0)
         physics.a = vector(0,Constants.GRAVITY)
 
+        print('to before:', inspect physics)
         @physics  = @\register('physics', physics)
         
 
@@ -110,38 +111,38 @@ class PlayerModel extends Hub
             tw\update(dt)
 
 
-        phys_x =
-            x:  @x
-            vx: @vx
-            ax: @ax
+        -- phys_x =
+        --     x:  @x
+        --     vx: @vx
+        --     ax: @ax
 
-        phys_y =
-            x:  @y
-            vx: @vy
-            ax: @ay
-
-        
-        if @jump_dur > 0
-            phys_y.ax = 0
-            @jump_dur -= dt
-        else
-            @jump_dur = 0
-            phys_y.ax = Constants.GRAVITY
+        -- phys_y =
+        --     x:  @y
+        --     vx: @vy
+        --     ax: @ay
 
         
+        -- if @jump_dur > 0
+        --     phys_y.ax = 0
+        --     @jump_dur -= dt
+        -- else
+        --     @jump_dur = 0
+        --     phys_y.ax = Constants.GRAVITY
 
-        phys_x = physics(phys_x, dt, Constants.MAX_VELOCITY)
-        phyx_y = physics(phys_y, dt, Constants.MAX_VELOCITY)
+        
 
-        @x = phys_x.x
-        @y = phys_y.x
+        -- phys_x = physics(phys_x, dt, Constants.MAX_VELOCITY)
+        -- phyx_y = physics(phys_y, dt, Constants.MAX_VELOCITY)
 
-        @vx = phys_x.vx
-        @vy = phys_y.vx
+        -- @x = phys_x.x
+        -- @y = phys_y.x
 
-        @update_collider!
-        @collision.mx = 0
-        @collision.my = 0
+        -- @vx = phys_x.vx
+        -- @vy = phys_y.vx
+
+        -- @update_collider!
+        -- @collision.mx = 0
+        -- @collision.my = 0
         
 
         --check if we're in the air

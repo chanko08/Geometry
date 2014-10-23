@@ -36,4 +36,5 @@ class PhysicsSystem extends Hub
 
 	register: (connection, to) =>
 		super(connection)
+		print('to', inspect(to))
 		return to

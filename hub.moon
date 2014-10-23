@@ -5,7 +5,7 @@ class Hub
 
 	register: (connection, ...) =>
 		@connections[connection] = true
-		@manager\register(connection, @, ... )
+		return @manager\register(connection, @, ... )
 
 	unregister: (connection) =>
 		@manager\unregister(connection, @)
