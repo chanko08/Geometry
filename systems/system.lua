@@ -3,17 +3,20 @@ local Set   = require('utils.set')
 
 local System = class({})
 
-function System:init(entity_manager)
-    self.manager  = entity_manager
-    self.entities = Set({}, true)
+function System:init( manager )
+    self.manager  = manager
+    self.entities = Set({},true) 
 end
 
-function System:add_entity(entity)
-    self.entities:add(entity)
+function System:add_entity( e )
+    
+    self.entities:add(e)
 end
 
-function System:execute(...)
+function System:run( ... )
+    -- body
 end
 
 
-return System
+
+return System 
