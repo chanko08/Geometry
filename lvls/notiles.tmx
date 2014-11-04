@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="200" height="50" tilewidth="32" tileheight="32">
- <objectgroup name="Object Layer 1" width="200" height="50">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="50" tilewidth="32" tileheight="32">
+ <objectgroup name="Object Layer 1">
   <object name="wall" x="74" y="145">
    <polyline points="0,0 491,-3 584,48"/>
   </object>
@@ -142,7 +142,12 @@
   <object name="wall" x="449" y="1107">
    <polygon points="0,0 118,12 119,25 189,27 207,64 164,80 189,52 164,43 96,48 98,27 -9,20 -180,-61"/>
   </object>
-  <object name="player" x="94" y="55" width="37" height="35"/>
+  <object name="player" x="94" y="55" width="37" height="35">
+   <properties>
+    <property name="bbox" value="true"/>
+    <property name="physics" value="{v={x=0, y=0}, a={x=0, y=0}, gravity=10}"/>
+   </properties>
+  </object>
   <object name="grunt" x="286" y="879" width="37" height="35"/>
   <object name="grunt" x="466" y="315" width="37" height="35"/>
  </objectgroup>

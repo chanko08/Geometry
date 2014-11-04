@@ -36,17 +36,10 @@ function Set:contains(val)
     return self.values[val] == true
 end
 
-function Set:iter()
-    local i = 0
+function Set:items()
     local ks = _.keys(self.values)
-    local n = #ks
     
-    return function()
-        i = i + 1
-        local k = ks[i]
-        
-        if i <= n then return k end
-    end    
+    return ks
 end
 
 return Set

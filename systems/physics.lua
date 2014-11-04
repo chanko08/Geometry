@@ -1,7 +1,6 @@
-class   = require 'lib.hump.class'
-System  = require 'systems.system'
+local System  = require 'systems.system'
 
-inspect = require 'lib.inspect'
+
 -- vector  = require 'lib.hump.vector'
 
 local PhysicsSystem = class({})
@@ -13,7 +12,9 @@ function PhysicsSystem:init( manager )
 end
 
 function PhysicsSystem:run( dt )
-    for ent in self.entities:iter() do
+    
+    
+    for i,ent in ipairs(self.entities:items()) do
         
         local max_velocity = ent.max_velocity or  math.huge
         
@@ -29,8 +30,9 @@ function PhysicsSystem:run( dt )
 
         ent.physics.s = s
         ent.physics.v = v
-        
+        print(ent.physics.s)    
     end
+    
 end
 
 return PhysicsSystem

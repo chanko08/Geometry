@@ -24,6 +24,7 @@ return {
           y = 145,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           polyline = {
             { x = 0, y = 0 },
@@ -40,6 +41,7 @@ return {
           y = 221,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           polyline = {
             { x = 0, y = 0 },
@@ -58,6 +60,7 @@ return {
           y = 401,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           polyline = {
             { x = 0, y = 0 },
@@ -73,6 +76,7 @@ return {
           y = 352,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           polyline = {
             { x = 0, y = 0 },
@@ -88,6 +92,7 @@ return {
           y = 313,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           polyline = {
             { x = 0, y = 0 },
@@ -103,6 +108,7 @@ return {
           y = 269,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           polyline = {
             { x = 0, y = 0 },
@@ -118,6 +124,7 @@ return {
           y = 232,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           polyline = {
             { x = 0, y = 0 },
@@ -133,6 +140,7 @@ return {
           y = 199,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           polyline = {
             { x = 0, y = 0 },
@@ -148,6 +156,7 @@ return {
           y = 588,
           width = 252,
           height = 171,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -159,6 +168,7 @@ return {
           y = 675,
           width = 451,
           height = 40,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -170,6 +180,7 @@ return {
           y = 496,
           width = 70,
           height = 79,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -181,6 +192,7 @@ return {
           y = 550,
           width = 90,
           height = 62,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -192,6 +204,7 @@ return {
           y = 580,
           width = 49,
           height = 35,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -203,6 +216,7 @@ return {
           y = 925,
           width = 517,
           height = 41,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -214,6 +228,7 @@ return {
           y = 958,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -225,6 +240,7 @@ return {
           y = 960,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -236,6 +252,7 @@ return {
           y = 963,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -247,6 +264,7 @@ return {
           y = 974,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -258,6 +276,7 @@ return {
           y = 974,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -269,6 +288,7 @@ return {
           y = 983,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -280,6 +300,7 @@ return {
           y = 993,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -291,6 +312,7 @@ return {
           y = 1001,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -302,6 +324,7 @@ return {
           y = 986,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -313,6 +336,7 @@ return {
           y = 993,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -324,6 +348,7 @@ return {
           y = 985,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -335,6 +360,7 @@ return {
           y = 974,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -346,6 +372,7 @@ return {
           y = 1002,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -357,6 +384,7 @@ return {
           y = 993,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -368,6 +396,7 @@ return {
           y = 1008,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -379,6 +408,7 @@ return {
           y = 1008,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -390,6 +420,7 @@ return {
           y = 1009,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -401,6 +432,7 @@ return {
           y = 1015,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -412,6 +444,7 @@ return {
           y = 1020,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -423,6 +456,7 @@ return {
           y = 1001,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -434,6 +468,7 @@ return {
           y = 979,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -445,6 +480,7 @@ return {
           y = 985,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -456,6 +492,7 @@ return {
           y = 1011,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -467,6 +504,7 @@ return {
           y = 1027,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -478,6 +516,7 @@ return {
           y = 1033,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -489,6 +528,7 @@ return {
           y = 999,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -500,6 +540,7 @@ return {
           y = 979,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -511,6 +552,7 @@ return {
           y = 954,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -522,6 +564,7 @@ return {
           y = 956,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -533,6 +576,7 @@ return {
           y = 963,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -544,6 +588,7 @@ return {
           y = 983,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -555,6 +600,7 @@ return {
           y = 997,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -566,6 +612,7 @@ return {
           y = 1009,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -577,6 +624,7 @@ return {
           y = 1139,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           polyline = {
             { x = 0, y = 0 },
@@ -632,6 +680,7 @@ return {
           y = 1150,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           polygon = {
             { x = 0, y = 0 },
@@ -649,6 +698,7 @@ return {
           y = 1050,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           polygon = {
             { x = 0, y = 0 },
@@ -668,6 +718,7 @@ return {
           y = 1107,
           width = 0,
           height = 0,
+          rotation = 0,
           visible = true,
           polygon = {
             { x = 0, y = 0 },
@@ -693,8 +744,12 @@ return {
           y = 55,
           width = 37,
           height = 35,
+          rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["bbox"] = true,
+            ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=10}
+          }
         },
         {
           name = "grunt",
@@ -704,6 +759,7 @@ return {
           y = 879,
           width = 37,
           height = 35,
+          rotation = 0,
           visible = true,
           properties = {}
         },
@@ -715,6 +771,7 @@ return {
           y = 315,
           width = 37,
           height = 35,
+          rotation = 0,
           visible = true,
           properties = {}
         }

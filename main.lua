@@ -1,3 +1,7 @@
+inspect = require('lib.inspect')
+class   = require 'lib.hump.class'
+
+
 local State      = require('lib.hump.gamestate')
 local LevelState = require('states.level')
 
