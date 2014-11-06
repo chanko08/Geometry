@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32">
+ <objectgroup name="Actors">
+  <object name="Grunt1" x="631.333" y="363" width="32" height="32">
+   <properties>
+    <property name="bbox" value="true"/>
+    <property name="collision" value="{is_passive=false, group='grunt'}"/>
+    <property name="physics" value="{v={x=0,y=0}, a={x=0,y=0}, gravity=10}"/>
+   </properties>
+  </object>
+  <object name="player" x="64.1667" y="45.1667" width="32" height="32">
+   <properties>
+    <property name="bbox" value="true"/>
+    <property name="collision" value="{is_passive=false, group='player'}"/>
+    <property name="physics" value="{v={x=0, y=0}, a={x=0, y=0}, gravity=10}"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="Terrain">
+  <object name="rect wall" x="34" y="170" width="743" height="34">
+   <properties>
+    <property name="bbox" value="true"/>
+    <property name="collision" value="{}"/>
+    <property name="physics" value="{}"/>
+   </properties>
+  </object>
+  <object name="sloped wall" x="92" y="447">
+   <properties>
+    <property name="bbox" value="true"/>
+    <property name="collision" value="{}"/>
+    <property name="physics" value="{}"/>
+   </properties>
+   <polyline points="0,0 566,410 1233,408"/>
+  </object>
+  <object name="rect wall" x="602" y="454" width="668" height="43">
+   <properties>
+    <property name="bbox" value="true"/>
+    <property name="collision" value="{}"/>
+    <property name="physics" value="{}"/>
+   </properties>
+  </object>
+  <object name="boundary" x="8" y="5">
+   <properties>
+    <property name="bbox" value="true"/>
+    <property name="collision" value="{}"/>
+    <property name="physics" value="{}"/>
+   </properties>
+   <polyline points="0,0 1,1195 1561,1193 1560,1 1,1"/>
+  </object>
+ </objectgroup>
+ <objectgroup name="Items">
+  <object name="item1" x="739" y="791" width="40" height="40"/>
+  <object name="item2" x="856" y="803" width="52" height="25"/>
+  <object name="item3" x="1019" y="800" width="35" height="28"/>
+  <object name="gun" x="1224" y="795" width="69" height="29"/>
+ </objectgroup>
+</map>

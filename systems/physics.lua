@@ -1,4 +1,5 @@
 local System  = require 'systems.system'
+local PhysicsComponent = require 'components.physics'
 
 
 -- vector  = require 'lib.hump.vector'
@@ -30,9 +31,13 @@ function PhysicsSystem:run( dt )
 
         ent.physics.s = s
         ent.physics.v = v
-        print(ent.physics.s)    
+        print('\tVelocity'..tostring(ent.physics.v))    
     end
     
+end
+
+function PhysicsSystem:build_component( ... )
+    return PhysicsComponent(...)
 end
 
 return PhysicsSystem

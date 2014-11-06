@@ -17,6 +17,9 @@ function System:run( ... )
     -- body
 end
 
+function System:build_component( obj, comp_data )
+end
+
 
 
 return System 

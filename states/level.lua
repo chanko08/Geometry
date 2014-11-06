@@ -11,6 +11,7 @@ local Constants = require('constants')
 -- Renderer     = require('renderers.simple')
 EntityManager   = require('entitymanager')
 PhysicsSystem   = require('systems.physics')
+CollisionSystem = require('systems.collision')
 BBoxRenderer    = require('systems.renderers.bbox')
 player_entity   = require('entities.player')
 load_level      = require('loaders.level')
@@ -27,11 +28,16 @@ function LevelState:enter(previous, lvlfile)
     self.manager = EntityManager()
     
     -- local p = player_entity(Vector(0,0), Vector(0,0), Vector(0, 10))
-    local ents = load_level('lvls/'..lvlfile)
     
+    
+    
+    self.physics   = PhysicsSystem(self.manager)
+    self.bbox      = BBoxRenderer(self.manager)
+    self.collision = CollisionSystem(self.manager)
 
-    self.physics = PhysicsSystem(self.manager)
-    self.bbox    = BBoxRenderer(self.manager)
+    local systems = {physics = self.physics, bbox = self.bbox, collision = self.collision}
+
+    local ents = load_level(systems, 'lvls/'..lvlfile)
 
     for i,ent in ipairs(ents) do
         for component_name, c in pairs(ent) do
@@ -49,6 +55,7 @@ end
 
 function LevelState:update(dt)
     self.physics:run(dt)
+    self.collision:run(dt)
 end
 
 function LevelState:draw()

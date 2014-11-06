@@ -2,18 +2,18 @@ local class   = require 'lib.hump.class'
 local _       = require 'lib.underscore'
 
 
-local function load_level( lvl_file_path )
+local function load_level( systems, lvl_file_path )
     local dir = "components"
     local part_files = love.filesystem.getDirectoryItems("components")
 
-    local components = {}
-    for i,cfile in ipairs(part_files) do
+    -- local components = {}
+    -- for i,cfile in ipairs(part_files) do
         
-        component_key = cfile:match("([^.]+)")
+    --     component_key = cfile:match("([^.]+)")
         
-        components[component_key] = love.filesystem.load(dir..'/'..cfile)()
+    --     components[component_key] = love.filesystem.load(dir..'/'..cfile)()
         
-    end
+    -- end
 
     print(lvl_file_path)
     local lvl = love.filesystem.load(lvl_file_path)()
@@ -27,10 +27,19 @@ local function load_level( lvl_file_path )
 
                 for comp_name,comp_data in pairs(obj.properties) do
                     print('component name: '..comp_name)
-                    entity[comp_name] = components[comp_name](obj,comp_data)
+                    local sys = systems[comp_name]
+                    local status, err = pcall(
+                            function()
+                                entity[comp_name] = sys:build_component(layer,obj,comp_data)
+                            end
+                        )
+                    
+                    if err then
+                        print(err)
+                    end
                 end
                 table.insert(entities, entity)
-                print(inspect(entity))
+                -- print(inspect(entity))
             end
 
         end

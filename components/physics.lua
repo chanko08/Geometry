@@ -2,7 +2,7 @@ local class  = require('lib.hump.class')
 local Vector = require('lib.hump.vector')
 
 local PhysicsComponent = class({})
-function PhysicsComponent:init(obj,comp_data)
+function PhysicsComponent:init(layer,obj,comp_data)
     -- TODO: Maybe give error if no position?
     local s = Vector(obj.x,obj.y) or Vector(0, 0)
     local v = comp_data.v or Vector(0, 0)

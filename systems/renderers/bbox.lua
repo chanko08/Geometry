@@ -1,5 +1,5 @@
 local System  = require 'systems.system'
-
+local BoundingBoxComponent = require 'components.bbox'
 
 local BBoxRenderer = class({})
 BBoxRenderer:include(System)
@@ -22,6 +22,10 @@ function BBoxRenderer:run( )
         love.graphics.setColor(r,g,b,a)
     end
     
+end
+
+function BBoxRenderer:build_component( ... )
+    return BoundingBoxComponent(...)
 end
 
 return BBoxRenderer
