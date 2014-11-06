@@ -5,7 +5,7 @@ local CollisionComponent = class({})
 function CollisionComponent:init(collider, layer, obj, comp_data)
     -- TODO: Maybe give error if no position?
     
-    self.shape_name = obj.shape
+    self.shape_name = comp_data.shape or obj.shape 
     
     -- We might want to change this later... assumption is
     -- that there will be more walls and static objects than
@@ -25,6 +25,17 @@ function CollisionComponent:init(collider, layer, obj, comp_data)
 
     if self.shape_name == 'rectangle' then
         self.shape = collider:addRectangle(obj.x, obj.y, obj.width, obj.height)
+        self.shape.component = self
+
+        collider:addToGroup(self.group, self.shape)
+        if self.is_passive then
+            collider:setPassive(self.shape)
+            print(self.group)
+        end
+
+        self.offset = Vector(obj.width / 2, obj.height / 2)
+    elseif self.shape_name == 'circle' then
+        self.shape = collider:addCircle(obj.x, obj.y, obj.width / 2)
         self.shape.component = self
 
         collider:addToGroup(self.group, self.shape)

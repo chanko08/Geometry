@@ -8,11 +8,11 @@
     <property name="physics" value="{v={x=0,y=0}, a={x=0,y=0}, gravity=10}"/>
    </properties>
   </object>
-  <object name="player" x="64.1667" y="45.1667" width="32" height="32">
+  <object name="player" x="65" y="45" width="32" height="32">
    <properties>
     <property name="bbox" value="true"/>
-    <property name="collision" value="{is_passive=false, group='player'}"/>
-    <property name="physics" value="{v={x=0, y=0}, a={x=0, y=0}, gravity=10}"/>
+    <property name="collision" value="{is_passive=false, group='player', shape='circle'}"/>
+    <property name="physics" value="{v={x=0, y=0}, a={x=0, y=0}, gravity=500}"/>
    </properties>
   </object>
  </objectgroup>

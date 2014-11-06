@@ -6,6 +6,6 @@ local settings = {
     fullscreen = false
   },
   STARTING_STATE = LevelState,
-  START_LEVEL = 'notiles.lua'
+  START_LEVEL = 'simple.lua'
 }
 return settings
