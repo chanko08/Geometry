@@ -11,5 +11,5 @@ function love.load()
     love.window.setMode(settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT, settings.WINDOW_OPTIONS)
 
     State.registerEvents()
-    State.switch(LevelState, settings.START_LEVEL)
+    State.switch(LevelState, State, settings.START_LEVEL)
 end

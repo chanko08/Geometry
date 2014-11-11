@@ -35,7 +35,8 @@ function CollisionComponent:init(collider, layer, obj, comp_data)
 
         self.offset = Vector(obj.width / 2, obj.height / 2)
     elseif self.shape_name == 'circle' then
-        self.shape = collider:addCircle(obj.x, obj.y, obj.width / 2)
+        self.offset = Vector(obj.width / 2, obj.width / 2)
+        self.shape = collider:addCircle(obj.x + self.offset.x, obj.y + self.offset.y, obj.width / 2)
         self.shape.component = self
 
         collider:addToGroup(self.group, self.shape)
@@ -44,7 +45,6 @@ function CollisionComponent:init(collider, layer, obj, comp_data)
             print(self.group)
         end
 
-        self.offset = Vector(obj.width / 2, obj.height / 2)
     else
         error('Unknown Shape: '..self.shape_name..' for '..obj.name)
     end
