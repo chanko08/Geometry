@@ -16,6 +16,7 @@ function PhysicsComponent:init(layer,obj,comp_data)
     self.s = Vector(s.x, s.y)
     self.v = Vector(v.x, v.y)
     self.a = Vector(a.x, a.y)
+    self.gravity = comp_data.gravity or 0
 end
 
 return PhysicsComponent

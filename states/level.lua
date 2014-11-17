@@ -12,7 +12,12 @@ local Constants = require('constants')
 EntityManager   = require('entitymanager')
 PhysicsSystem   = require('systems.physics')
 CollisionSystem = require('systems.collision')
+
+KeyboardController = require('systems.controllers.keyboard')
+
 BBoxRenderer    = require('systems.renderers.bbox')
+
+
 player_entity   = require('entities.player')
 load_level      = require('loaders.level')
 -- ---------------------------------------
@@ -31,11 +36,16 @@ function LevelState:enter(previous, lvlfile)
     
     
     
-    self.physics   = PhysicsSystem(self.manager)
-    self.bbox      = BBoxRenderer(self.manager)
-    self.collision = CollisionSystem(self.manager)
+    self.physics         = PhysicsSystem(self.manager)
+    self.bbox            = BBoxRenderer(self.manager)
+    self.collision       = CollisionSystem(self.manager)
+    self.player_keyboard = KeyboardController(self.manager, {})
 
-    local systems = {physics = self.physics, bbox = self.bbox, collision = self.collision}
+    local systems = { physics   = self.physics
+                    , bbox      = self.bbox
+                    , collision = self.collision
+                    , keyboard  = self.player_keyboard
+                    }
 
     local ents = load_level(systems, 'lvls/'..lvlfile)
 
@@ -56,6 +66,7 @@ end
 function LevelState:update(dt)
     self.physics:run(dt)
     self.collision:run(dt)
+    self.player_keyboard:run(dt)
 end
 
 function LevelState:draw()
@@ -64,9 +75,11 @@ end
 
 function LevelState:keypressed(key)
     if key == 'escape' then love.event.quit() end
+    self.player_keyboard:keypressed(key)
 end
 
 function LevelState:keyreleased(key)
+    self.player_keyboard:keyreleased(key)
 end
 
 function LevelState:mousepressed(x, y, button)
