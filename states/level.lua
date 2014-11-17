@@ -24,7 +24,10 @@ local LevelState = class({})
 function LevelState:init()
 end
 
-function LevelState:enter(previous, lvlfile)
+function LevelState:enter(previous, state_manager, lvlfile)
+    self.pause   = false
+    self.state_manager = state_manager
+    self.lvlfile = lvlfile
     self.manager = EntityManager()
     
     -- local p = player_entity(Vector(0,0), Vector(0,0), Vector(0, 10))
@@ -44,18 +47,16 @@ function LevelState:enter(previous, lvlfile)
             self.manager:broadcast(component_name, ent)
         end
     end
-    -- self.manager:broadcast('physics', p)
-        
-    -- self.model = Level(self,lvl())
-    -- renderer   = Renderer @model
 end
 
 function LevelState:leave()
 end
 
 function LevelState:update(dt)
-    self.physics:run(dt)
-    self.collision:run(dt)
+    if not self.pause then
+        self.physics:run(dt)
+        self.collision:run(dt)
+    end
 end
 
 function LevelState:draw()
@@ -64,6 +65,20 @@ end
 
 function LevelState:keypressed(key)
     if key == 'escape' then love.event.quit() end
+    if key == 'backspace' then
+        self.state_manager.switch(
+            LevelState,
+            self.state_manager,
+            self.lvlfile)
+    end
+    if key == 'kp0' then
+        self.pause = true
+    end
+    if key == 'kp+' then
+        self.pause = false
+        self:update(1/60)
+        self.pause = true
+    end
 end
 
 function LevelState:keyreleased(key)

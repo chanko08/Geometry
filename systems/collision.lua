@@ -18,24 +18,29 @@ function CollisionSystem:init( manager )
 end
 
 function CollisionSystem:run( dt )
+    for i,ent in ipairs(self.entities:items()) do
+        local v = ent.physics.s + ent.collision.offset
+        ent.collision.shape:moveTo(v:unpack())
+    end
     self.collider:update(dt)
     for i,ent in ipairs(self.entities:items()) do
-        -- ent.collision.shape:move(ent.collision.resolve_vector:unpack())
 
         ent.physics.s = ent.physics.s + ent.collision.resolve_vector
-        local s = ent.physics.s + ent.collision.offset
+        -- local s = ent.physics.s + ent.collision.offset
 
         if ent.collision.has_collided then
             ent.physics.v.y = 0
         end
 
-        ent.collision.shape:moveTo(s:unpack())
+        -- ent.collision.shape:moveTo(s:unpack())
+        ent.collision.shape:move(ent.collision.resolve_vector:unpack())
         ent.collision.resolve_vector = Vector(0,0)
     end
 end
 
 function CollisionSystem:on_collision(dt, shape, other_shape, mx, my)
     print('COLLIDING: '..shape.component.shape_name..' with '..other_shape.component.shape_name)
+    print('\tResolve vector: ('..mx..','..my..')')
     shape.component.has_collided = true
     shape.component.resolve_vector = shape.component.resolve_vector + Vector(mx,my)
 end

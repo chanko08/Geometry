@@ -14,7 +14,7 @@ end
 
 function PhysicsSystem:run( dt )
     
-    
+    -- dt = dt / 4
     for i,ent in ipairs(self.entities:items()) do
         
         local max_velocity = ent.max_velocity or  math.huge
@@ -31,7 +31,10 @@ function PhysicsSystem:run( dt )
 
         ent.physics.s = s
         ent.physics.v = v
-        print('\tVelocity'..tostring(ent.physics.v))    
+        -- print('\tVelocity'..tostring(ent.physics.v))
+        -- if ent.collision then
+        --     ent.collision.shape:moveTo(s:unpack())
+        -- end            
     end
     
 end

@@ -11,7 +11,6 @@ function love.load(args)
     love.window.setMode(settings.DISPLAY_WIDTH, settings.DISPLAY_HEIGHT, settings.WINDOW_OPTIONS)
 
     State.registerEvents()
-
     local start_level = settings.START_LEVEL
     if args[2] then
         start_level = args[2]
