@@ -17,41 +17,37 @@ return {
       properties = {},
       objects = {
         {
-          name = "Player",
-          type = "",
-          shape = "rectangle",
-          x = 57.7589,
-          y = 96.6975,
-          width = 64,
-          height = 64,
-          rotation = -90.4551,
-          visible = true,
-          properties = {
-            ["bboxHeight"] = 32.0,
-            ["bboxWidth"] = 32,
-            ["debugColor"] = {r=255,g=0,b=0},
-            ["fallDamageHeight"] = 500,
-            ["gravity"] = 10,
-            ["maxJumpVelocity"] = 100,
-            ["maxLateralSpeed"] = 75,
-            ["prototypes"] = 'player',
-            ["shape"] = 'square',
-            ["spritemap"] = 'assets/player/map.lua',
-            ["states"] = {'idle',' jump', 'shoot', 'land', 'death', 'crouch', 'walljump', 'damaged'},
-            ["static"] = false
-          }
-        },
-        {
           name = "Grunt1",
           type = "",
           shape = "rectangle",
-          x = 1210,
-          y = 375,
-          width = 45,
-          height = 62,
+          x = 631.333,
+          y = 363,
+          width = 32,
+          height = 32,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["bbox"] = true,
+            ["collision"] = {is_passive=false, group='grunt'},
+            ["physics"] = {v={x=0,y=0}, a={x=0,y=0}, gravity=10}
+          }
+        },
+        {
+          name = "player",
+          type = "",
+          shape = "rectangle",
+          x = 65,
+          y = 45,
+          width = 32,
+          height = 32,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["bbox"] = true,
+            ["collision"] = {is_passive=false, group='player', shape='circle'},
+            ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=500},
+            ["keyboard"] = {}
+          }
         }
       }
     },
@@ -72,7 +68,11 @@ return {
           height = 34,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["bbox"] = true,
+            ["collision"] = {},
+            ["physics"] = {}
+          }
         },
         {
           name = "sloped wall",
@@ -89,7 +89,11 @@ return {
             { x = 566, y = 410 },
             { x = 1233, y = 408 }
           },
-          properties = {}
+          properties = {
+            --["bbox"] = true,
+            ["collision"] = {},
+            ["physics"] = {}
+          }
         },
         {
           name = "rect wall",
@@ -101,7 +105,11 @@ return {
           height = 43,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            -- ["bbox"] = true,
+            ["collision"] = {},
+            ["physics"] = {}
+          }
         },
         {
           name = "boundary",
@@ -120,7 +128,11 @@ return {
             { x = 1560, y = 1 },
             { x = 1, y = 1 }
           },
-          properties = {}
+          properties = {
+            -- ["bbox"] = true,
+            ["collision"] = {},
+            ["physics"] = {}
+          }
         }
       }
     },

@@ -89,7 +89,6 @@ return {
             { x = 1233, y = 408 }
           },
           properties = {
-            ["bbox"] = true,
             ["collision"] = {},
             ["physics"] = {}
           }
@@ -128,7 +127,6 @@ return {
             { x = 1, y = 1 }
           },
           properties = {
-            ["bbox"] = true,
             ["collision"] = {},
             ["physics"] = {}
           }
