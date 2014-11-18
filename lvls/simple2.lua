@@ -28,7 +28,16 @@ return {
           visible = true,
           properties = {
             ["bbox"] = true,
-            ["collision"] = {is_passive=false, group='grunt'},
+            ["collision"] = {
+              is_passive=false,
+              groups={'grunt'},
+              sensors = {
+                {name='player_visible', is_passive=false, groups={'sensors'}, shape='circle', width=200, rel_x=0, rel_y=0},
+                {name='cliff_left',     is_passive=false, groups={'sensors'}, shape='rectangle', width=1, height=80, rel_x=-15, rel_y=0},
+                {name='cliff_right',    is_passive=false, groups={'sensors'}, shape='rectangle', width=1, height=80, rel_x=16, rel_y=0}
+              }
+            },
+            
             ["physics"] = {v={x=0,y=0}, a={x=0,y=0}, gravity=10}
           }
         },
@@ -44,7 +53,7 @@ return {
           visible = true,
           properties = {
             ["bbox"] = true,
-            ["collision"] = {is_passive=false, group='player', shape='circle'},
+            ["collision"] = {is_passive=false, groups={'player'}, shape='circle'},
             ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=500},
             ["keyboard"] = {}
           }
@@ -106,7 +115,7 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            -- ["bbox"] = true,
+            ["bbox"] = true,
             ["collision"] = {},
             ["physics"] = {}
           }

@@ -11,9 +11,10 @@ CollisionSystem:include(System)
 function CollisionSystem:init( manager )
     System.init(self,manager)
     manager:register('collision', self)
+    manager:register('sensors', self)
 
-    local on_collision = function(...) return self:on_collision(...) end
-    local on_stop_collision = function(...) return self:on_stop_collision(...) end
+    local on_collision = _.curry(CollisionSystem.on_collision, self)
+    local on_stop_collision = _.curry(CollisionSystem.on_collision, self)
     self.collider = HC(100, on_collision, on_stop_collision)
 end
 
@@ -22,6 +23,11 @@ function CollisionSystem:run( dt )
     for i,ent in ipairs(self.entities:items()) do
         local v = ent.physics.s + ent.collision.offset
         ent.collision.shape:moveTo(v:unpack())
+
+        local cx, cy = ent.collision.shape:center()
+        for j, sensor in ipairs(ent.collision.sensors) do
+            sensor.shape:moveTo(cx + sensor.rel_x, cy + sensor.rel_y)
+        end
     end
 
     self.collider:update(dt)
@@ -45,8 +51,10 @@ end
 function CollisionSystem:on_collision(dt, shape, other_shape, mx, my)
     print('COLLIDING: '..shape.component.shape_name..' with '..other_shape.component.shape_name)
     print('\tResolve vector: ('..mx..','..my..')')
-    shape.component.has_collided = true
-    shape.component.resolve_vector = shape.component.resolve_vector + Vector(mx,my)
+    if not other_shape.is_sensor then
+        shape.component.has_collided = true
+        shape.component.resolve_vector = shape.component.resolve_vector + Vector(mx,my)
+    end
 end
 
 function CollisionSystem:on_stop_collision(dt, shape, other_shape)
@@ -55,8 +63,9 @@ function CollisionSystem:on_stop_collision(dt, shape, other_shape)
     
 end
 
-function CollisionSystem:build_component( ... )
-    return CollisionComponent(self.collider, ...)
+function CollisionSystem:build_component( layer, obj, comp_data )
+
+    return CollisionComponent(self.collider, layer, obj, comp_data)
 end
 
 return CollisionSystem

@@ -1,10 +1,8 @@
 local class  = require('lib.hump.class')
 local Vector = require('lib.hump.vector')
 
-local CollisionComponent = class({})
-function CollisionComponent:init(collider, layer, obj, comp_data)
-    -- TODO: Maybe give error if no position?
-    
+
+local function build_shape( self, collider, layer, obj, comp_data )
     self.shape_name = comp_data.shape or obj.shape 
     
     -- We might want to change this later... assumption is
@@ -17,7 +15,7 @@ function CollisionComponent:init(collider, layer, obj, comp_data)
     end
 
 
-    self.group          = comp_data.group or layer.name or 'NO GROUP: '..obj.name
+    self.groups          = comp_data.groups or {layer.name} or {obj.name}
     
     self.has_collided   = false
     self.resolve_vector = Vector(0,0)
@@ -27,28 +25,58 @@ function CollisionComponent:init(collider, layer, obj, comp_data)
         self.shape = collider:addRectangle(obj.x, obj.y, obj.width, obj.height)
         self.shape.component = self
 
-        collider:addToGroup(self.group, self.shape)
-        if self.is_passive then
-            collider:setPassive(self.shape)
-            print(self.group)
-        end
-
         self.offset = Vector(obj.width / 2, obj.height / 2)
+
     elseif self.shape_name == 'circle' then
+
         self.offset = Vector(obj.width / 2, obj.width / 2)
         self.shape = collider:addCircle(obj.x + self.offset.x, obj.y + self.offset.y, obj.width / 2)
         self.shape.component = self
 
-        collider:addToGroup(self.group, self.shape)
-        if self.is_passive then
-            collider:setPassive(self.shape)
-            print(self.group)
-        end
 
     else
         error('Unknown Shape: '..self.shape_name..' for '..obj.name)
     end
+   
+    if self.is_passive then
+        collider:setPassive(self.shape)
+    end
+
+    for i,group in ipairs(self.groups) do
+        collider:addToGroup(group, self.shape)
+    end
+end
+
+local CollisionComponent = class({})
+function CollisionComponent:init(collider, layer, obj, comp_data)
+    -- TODO: Maybe give error if no position?
+
+    -- builds the collision info for the component
+    
+    build_shape(self, collider, layer, obj, comp_data)
+
+    local cx, cy = self.shape:center()
+    self.sensors = {}
+    
+
+    comp_data.sensors = comp_data.sensors or {}
+    for i, sensor_data in ipairs(comp_data.sensors) do
+        local sensor = {}
+        sensor_data.x = sensor_data.rel_x + cx
+        sensor_data.y = sensor_data.rel_y + cy
+        sensor_data.groups = _.extend(sensor_data.groups, comp_data.groups)
+        build_shape(sensor, collider, layer, sensor_data, sensor_data)
+
+        sensor.shape.is_sensor = true
+
+        sensor.rel_x = sensor_data.rel_x
+        sensor.rel_y = sensor_data.rel_y
+        table.insert(self.sensors, sensor)
+    end
 
 end
+
+
+
 
 return CollisionComponent
