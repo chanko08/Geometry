@@ -77,7 +77,6 @@ function KeyboardController:check_move( entity, key, keypressed )
 
     --checking jump
     if entity.keyboard.jump == key and keypressed then
-        entity.physics.s.y = entity.physics.s.y - 20
 
         entity.physics.a.y = 0
         entity.physics.v.y = - entity.keyboard.jump_spd

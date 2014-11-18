@@ -18,7 +18,16 @@ function CollisionSystem:init( manager )
 end
 
 function CollisionSystem:run( dt )
+    -- Update the collision box to the current physics position
+    for i,ent in ipairs(self.entities:items()) do
+        local s = ent.physics.s + ent.collision.offset
+        ent.collision.shape:moveTo(s:unpack())
+    end
+
+    -- Tell the collider to think about shit
     self.collider:update(dt)
+
+    -- Resolve da collisions, bitch
     for i,ent in ipairs(self.entities:items()) do
         -- ent.collision.shape:move(ent.collision.resolve_vector:unpack())
 

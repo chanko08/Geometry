@@ -64,9 +64,10 @@ function LevelState:leave()
 end
 
 function LevelState:update(dt)
+    self.player_keyboard:run(dt)
     self.physics:run(dt)
     self.collision:run(dt)
-    self.player_keyboard:run(dt)
+    
 end
 
 function LevelState:draw()

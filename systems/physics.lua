@@ -26,8 +26,8 @@ function PhysicsSystem:run( dt )
 
         
         v = v + dt * a
-        v = v:trimmed(max_velocity)
         s = s + dt * v
+        v = v:trimmed(max_velocity)
 
         ent.physics.s = s
         ent.physics.v = v
