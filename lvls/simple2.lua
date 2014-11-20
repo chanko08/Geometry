@@ -38,7 +38,7 @@ return {
               }
             },
             
-            ["physics"] = {v={x=0,y=0}, a={x=0,y=0}, gravity=10}
+            ["physics"] = {v={x=0,y=0}, a={x=0,y=0}, gravity=500}
           }
         },
         {

@@ -88,11 +88,11 @@ function LevelState:keypressed(key)
             self.lvlfile)
     end
     if key == 'kp0' then
-        self.pause = true
+        self.pause = not self.pause
     end
     if key == 'kp+' then
         self.pause = false
-        self:update(1/60)
+        self:update(1/60 + math.random() * 1/60 * 0.25)
         self.pause = true
     end
 
