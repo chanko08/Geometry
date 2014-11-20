@@ -30,7 +30,7 @@ function KeyboardController:run( dt )
 
         --check that jump duration is capped
         if ent.keyboard.jump_time_left > 0 then
-            ent.physics.a.y = 0
+            -- ent.physics.a.y = 0
             local t = ent.keyboard.jump_time_left 
             ent.keyboard.jump_time_left = t - dt
             print('jumping...')
@@ -78,11 +78,11 @@ function KeyboardController:check_move( entity, key, keypressed )
     --checking jump
     if entity.keyboard.jump == key and keypressed then
 
-        entity.physics.a.y = 0
+        -- entity.physics.a.y = 0
         entity.physics.v.y = - entity.keyboard.jump_spd
         entity.keyboard.jumping = true
         entity.keyboard.jump_time_left = entity.keyboard.max_jump_dur
-    elseif entity.keyboard.jump == key and not keypressed then
+    elseif entity.keyboard.jump == key and not keypressed and entity.physics.v.y > 0 then
         entity.physics.a.y = entity.physics.gravity
         entity.physics.v.y = 0
         entity.keyboard.jumping = false

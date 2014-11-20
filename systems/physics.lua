@@ -25,8 +25,8 @@ function PhysicsSystem:run( dt )
         local a = ent.physics.a
 
         
-        v = v + dt * a
         s = s + dt * v
+        v = v + dt * a
         v = v:trimmed(max_velocity)
 
         ent.physics.s = s

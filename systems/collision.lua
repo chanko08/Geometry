@@ -14,7 +14,7 @@ function CollisionSystem:init( manager )
     manager:register('sensors', self)
 
     local on_collision = _.curry(CollisionSystem.on_collision, self)
-    local on_stop_collision = _.curry(CollisionSystem.on_collision, self)
+    local on_stop_collision = _.curry(CollisionSystem.on_stop_collision, self)
     self.collider = HC(100, on_collision, on_stop_collision)
 end
 
@@ -49,9 +49,30 @@ function CollisionSystem:run( dt )
 end
 
 function CollisionSystem:on_collision(dt, shape, other_shape, mx, my)
-    print('COLLIDING: '..shape.component.shape_name..' with '..other_shape.component.shape_name)
+    print('COLLIDING: '.. inspect(shape.component.groups)..' with '.. inspect(other_shape.component.groups))
+
+    if shape.is_sensor and other_shape.is_sensor then
+        return
+    end
+
     print('\tResolve vector: ('..mx..','..my..')')
-    if not other_shape.is_sensor then
+
+    if shape.is_sensor then
+        shape.component.resolve_vector = shape.component.resolve_vector + Vector(mx,my)
+        shape.component.has_collided = true
+        
+    elseif other_shape.is_sensor then
+        other_shape.component.resolve_vector = other_shape.component.resolve_vector - Vector(mx,my)
+        other_shape.component.has_collided = true
+
+    elseif not other_shape.component.is_passive then
+        shape.component.has_collided = true
+        other_shape.component.has_collided = true
+
+        shape.component.resolve_vector       = shape.component.resolve_vector + 0.5*Vector(mx,my)
+        other_shape.component.resolve_vector = shape.component.resolve_vector - 0.5*Vector(mx,my)
+
+    else
         shape.component.has_collided = true
         shape.component.resolve_vector = shape.component.resolve_vector + Vector(mx,my)
     end
@@ -59,8 +80,15 @@ end
 
 function CollisionSystem:on_stop_collision(dt, shape, other_shape)
     print('\tSTOP COLLIDING: '..shape.component.shape_name..' with '..other_shape.component.shape_name)
+    if shape.is_sensor and other_shape.is_sensor then
+        return
+    end
+
     shape.component.has_collided = false
-    
+    if not other_shape.component.is_passive then
+        other_shape.component.has_collided = false
+    end
+
 end
 
 function CollisionSystem:build_component( layer, obj, comp_data )
