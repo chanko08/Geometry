@@ -14,6 +14,7 @@ PhysicsSystem   = require('systems.physics')
 CollisionSystem = require('systems.collision')
 
 KeyboardController = require('systems.controllers.keyboard')
+GruntAIController = require('systems.controllers.gruntai')
 
 BBoxRenderer    = require('systems.renderers.bbox')
 
@@ -43,11 +44,13 @@ function LevelState:enter(previous, state_manager, lvlfile)
     self.bbox            = BBoxRenderer(self.manager)
     self.collision       = CollisionSystem(self.manager)
     self.player_keyboard = KeyboardController(self.manager, {})
+    self.grunt_ai        = GruntAIController(self.manager,{})
 
     local systems = { physics   = self.physics
                     , bbox      = self.bbox
                     , collision = self.collision
                     , keyboard  = self.player_keyboard
+                    , gruntai   = self.grunt_ai
                     }
 
     local ents = load_level(systems, 'lvls/'..lvlfile)
@@ -66,6 +69,7 @@ function LevelState:update(dt)
     
     if not self.pause then
         self.player_keyboard:run(dt)
+        self.grunt_ai:run(dt)
         self.physics:run(dt)
         self.collision:run(dt)
     end

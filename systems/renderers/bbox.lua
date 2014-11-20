@@ -37,7 +37,7 @@ function BBoxRenderer:run( )
 
         render(ent.collision)
 
-        for i,sensor in ipairs(ent.collision.sensors) do
+        for k,sensor in pairs(ent.collision.sensors) do
             render(sensor)
         end
 

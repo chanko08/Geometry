@@ -25,7 +25,7 @@ function CollisionSystem:run( dt )
         ent.collision.shape:moveTo(v:unpack())
 
         local cx, cy = ent.collision.shape:center()
-        for j, sensor in ipairs(ent.collision.sensors) do
+        for j, sensor in pairs(ent.collision.sensors) do
             sensor.shape:moveTo(cx + sensor.rel_x, cy + sensor.rel_y)
         end
     end
@@ -44,6 +44,9 @@ function CollisionSystem:run( dt )
 
         -- ent.collision.shape:moveTo(s:unpack())
         ent.collision.shape:move(ent.collision.resolve_vector:unpack())
+        for j, sensor in pairs(ent.collision.sensors) do
+            sensor.shape:move(ent.collision.resolve_vector:unpack())
+        end
         ent.collision.resolve_vector = Vector(0,0)
     end
 end
@@ -60,7 +63,7 @@ function CollisionSystem:on_collision(dt, shape, other_shape, mx, my)
     if shape.is_sensor then
         shape.component.resolve_vector = shape.component.resolve_vector + Vector(mx,my)
         shape.component.has_collided = true
-        
+
     elseif other_shape.is_sensor then
         other_shape.component.resolve_vector = other_shape.component.resolve_vector - Vector(mx,my)
         other_shape.component.has_collided = true

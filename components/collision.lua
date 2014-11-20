@@ -71,7 +71,8 @@ function CollisionComponent:init(collider, layer, obj, comp_data)
 
         sensor.rel_x = sensor_data.rel_x
         sensor.rel_y = sensor_data.rel_y
-        table.insert(self.sensors, sensor)
+        -- table.insert(self.sensors, sensor)
+        self.sensors[sensor_data.name] = sensor
     end
 
 end
