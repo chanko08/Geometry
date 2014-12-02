@@ -38,7 +38,7 @@ function CollisionSystem:run( dt )
         ent.physics.s = ent.physics.s + ent.collision.resolve_vector
         -- local s = ent.physics.s + ent.collision.offset
 
-        if ent.collision.has_collided then
+        if ent.collision.stop_vertical_movement then
             ent.physics.v.y = 0
         end
 
@@ -59,6 +59,13 @@ function CollisionSystem:on_collision(dt, shape, other_shape, mx, my)
     end
 
     print('\tResolve vector: ('..mx..','..my..')')
+
+    if _.any(other_shape.component.groups, function(group) return group == 'Terrain' end) then
+        shape.component.stop_vertical_movement = true
+        print('I AM STOPPING!')
+    else
+        shape.component.stop_vertical_movement = shape.component.stop_vertical_movement or false
+    end
 
     if shape.is_sensor then
         shape.component.resolve_vector = shape.component.resolve_vector + Vector(mx,my)
@@ -88,6 +95,7 @@ function CollisionSystem:on_stop_collision(dt, shape, other_shape)
     end
 
     shape.component.has_collided = false
+    shape.component.stop_vertical_movement = false
     if not other_shape.component.is_passive then
         other_shape.component.has_collided = false
     end
