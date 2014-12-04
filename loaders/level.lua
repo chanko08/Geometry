@@ -24,8 +24,11 @@ local function load_level( systems, lvl_file_path )
         if layer.type == 'objectgroup' then
             for j, obj in ipairs(layer.objects) do
                 local entity = {}
+                entity.name = obj.name
 
                 for comp_name,comp_data in pairs(obj.properties) do
+                    if comp_name == 'name' then error("wtf, you cant have a component with this name") end
+                    
                     print('component name: '..comp_name)
                     local sys = systems[comp_name]
                     local status, err = pcall(

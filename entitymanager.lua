@@ -24,4 +24,23 @@ function EntityManager:remove(entity)
     self.entities:remove(entity)
 end
 
+function EntityManager:getEntities(name)
+    print("in get entities")
+    local es = {}
+    for i,ent in ipairs(self.entities:items()) do
+        print("FUCKFUCK" .. ent.name)
+        if ent.name == name then
+            table.insert(es, ent)
+        end
+    end
+    return es
+    -- return _.filter(
+    --     self.entities:items(),
+    --     function ( ent )
+    --         print("\t\tFUCKFUCK "..ent.name)
+    --         return ent.name == name
+    --     end
+    -- )
+end
+
 return EntityManager
