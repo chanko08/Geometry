@@ -6,6 +6,6 @@ local settings = {
     fullscreen = false
   },
   STARTING_STATE = LevelState,
-  START_LEVEL = 'simple.lua'
+  START_LEVEL = 'simple2.lua'
 }
 return settings
