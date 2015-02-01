@@ -12,6 +12,7 @@ local Constants = require('constants')
 EntityManager   = require('entitymanager')
 PhysicsSystem   = require('systems.physics')
 CollisionSystem = require('systems.collision')
+CameraSystem    = require('systems.camera')
 
 KeyboardController = require('systems.controllers.keyboard')
 GruntAIController = require('systems.controllers.gruntai')
@@ -45,12 +46,14 @@ function LevelState:enter(previous, state_manager, lvlfile)
     self.collision       = CollisionSystem(self.manager)
     self.player_keyboard = KeyboardController(self.manager, {})
     self.grunt_ai        = GruntAIController(self.manager,{})
+    self.camera          = CameraSystem(self.manager)
 
     local systems = { physics   = self.physics
                     , bbox      = self.bbox
                     , collision = self.collision
                     , keyboard  = self.player_keyboard
                     , gruntai   = self.grunt_ai
+                    , camera    = self.camera
                     }
 
     local ents = load_level(systems, 'lvls/'..lvlfile)
@@ -72,12 +75,15 @@ function LevelState:update(dt)
         self.grunt_ai:run(dt)
         self.physics:run(dt)
         self.collision:run(dt)
+        self.camera:run(dt)
     end
 
 end
 
 function LevelState:draw()
+    self.camera:attach()
     self.bbox:run()
+    self.camera:detach()
 end
 
 function LevelState:keypressed(key)
