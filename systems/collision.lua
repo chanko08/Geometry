@@ -52,17 +52,17 @@ function CollisionSystem:run( dt )
 end
 
 function CollisionSystem:on_collision(dt, shape, other_shape, mx, my)
-    print('COLLIDING: '.. inspect(shape.component.groups)..' with '.. inspect(other_shape.component.groups))
+    -- print('COLLIDING: '.. inspect(shape.component.groups)..' with '.. inspect(other_shape.component.groups))
 
     if shape.is_sensor and other_shape.is_sensor then
         return
     end
 
-    print('\tResolve vector: ('..mx..','..my..')')
+    -- print('\tResolve vector: ('..mx..','..my..')')
 
     if _.any(other_shape.component.groups, function(group) return group == 'Terrain' end) then
         shape.component.stop_vertical_movement = true
-        print('I AM STOPPING!')
+        -- print('I AM STOPPING!')
     else
         shape.component.stop_vertical_movement = shape.component.stop_vertical_movement or false
     end
@@ -89,7 +89,7 @@ function CollisionSystem:on_collision(dt, shape, other_shape, mx, my)
 end
 
 function CollisionSystem:on_stop_collision(dt, shape, other_shape)
-    print('\tSTOP COLLIDING: '..shape.component.shape_name..' with '..other_shape.component.shape_name)
+    -- print('\tSTOP COLLIDING: '..shape.component.shape_name..' with '..other_shape.component.shape_name)
     if shape.is_sensor and other_shape.is_sensor then
         return
     end

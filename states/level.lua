@@ -14,8 +14,10 @@ PhysicsSystem   = require('systems.physics')
 CollisionSystem = require('systems.collision')
 CameraSystem    = require('systems.camera')
 
-KeyboardController = require('systems.controllers.keyboard')
-GruntAIController = require('systems.controllers.gruntai')
+InputSystem     = require('systems.input')
+
+PlayerBrain     = require('systems.brains.player')
+GruntBrain      = require('systems.brains.grunt')
 
 BBoxRenderer    = require('systems.renderers.bbox')
 
@@ -44,14 +46,15 @@ function LevelState:enter(previous, state_manager, lvlfile)
     self.physics         = PhysicsSystem(self.manager)
     self.bbox            = BBoxRenderer(self.manager)
     self.collision       = CollisionSystem(self.manager)
-    self.player_keyboard = KeyboardController(self.manager, {})
-    self.grunt_ai        = GruntAIController(self.manager,{})
+    self.player_input    = InputSystem(self.manager)
+    self.player          = PlayerBrain(self.manager, self.player_input)
+    self.grunt_ai        = GruntBrain(self.manager,{})
     self.camera          = CameraSystem(self.manager)
 
     local systems = { physics   = self.physics
                     , bbox      = self.bbox
                     , collision = self.collision
-                    , keyboard  = self.player_keyboard
+                    , player  = self.player
                     , gruntai   = self.grunt_ai
                     , camera    = self.camera
                     }
@@ -70,8 +73,10 @@ end
 
 function LevelState:update(dt)
     
+    
     if not self.pause then
-        self.player_keyboard:run(dt)
+        self.player_input:run(dt)
+        self.player:run(dt)
         self.grunt_ai:run(dt)
         self.physics:run(dt)
         self.collision:run(dt)
@@ -89,7 +94,7 @@ end
 function LevelState:keypressed(key)
     if key == 'escape' then love.event.quit() end
 
-    self.player_keyboard:keypressed(key)
+    self.player_input:keypressed(key)
 
     if key == 'backspace' then
         self.state_manager.switch(
@@ -109,7 +114,7 @@ function LevelState:keypressed(key)
 end
 
 function LevelState:keyreleased(key)
-    self.player_keyboard:keyreleased(key)
+    self.player_input:keyreleased(key)
 end
 
 function LevelState:mousepressed(x, y, button)

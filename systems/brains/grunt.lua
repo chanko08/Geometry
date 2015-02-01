@@ -13,7 +13,7 @@ local function sign( x )
 end
 
 local function check_move( entity, dir )
-    print('GRUNT DIRECTION: ' .. dir)
+    -- print('GRUNT DIRECTION: ' .. dir)
 
     if dir ~= 0 then
         entity.physics.a.x = dir * entity.gruntai.lat_acc
@@ -73,7 +73,7 @@ end
 
 function GruntAIController:run( dt )
     for i,grunt in ipairs(self.entities:items()) do
-        print('THINKING...')
+        -- print('THINKING...')
         local sensors = grunt.collision.sensors
 
         --check that walk speed is capped
@@ -88,11 +88,11 @@ function GruntAIController:run( dt )
             -- grunt.physics.a.y = 0
             local t = grunt.gruntai.jump_time_left 
             grunt.gruntai.jump_time_left = t - dt
-            print('jumping...')
+            -- print('jumping...')
         else
             grunt.gruntai.jump_time_left = 0
             grunt.physics.a.y = grunt.physics.gravity
-            print('stopped jumping ...')
+            -- print('stopped jumping ...')
         end
         
         if     grunt.gruntai.state == 'move_left' then

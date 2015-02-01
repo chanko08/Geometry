@@ -56,7 +56,7 @@ return {
             ["bbox"] = true,
             ["collision"] = {is_passive=false, groups={'player','actor'}, shape='circle'},
             ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=500},
-            ["keyboard"] = {},
+            ["player"] = {},
             ["camera"] = {}
           }
         }
