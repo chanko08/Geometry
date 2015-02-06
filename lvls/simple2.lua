@@ -59,6 +59,23 @@ return {
             ["player"] = {},
             ["camera"] = {}
           }
+        },
+        {
+        name = "gun",
+          type = "",
+          shape = "rectangle",
+          x = 65,
+          y = 45,
+          width = 32,
+          height = 8,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["bbox"] = true,
+            ["collision"] = {is_passive=false, groups={'gun','actor'}, shape='rectangle'},
+            ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=0},
+            ["hitscan_gun"] = {}
+          }
         }
       }
     },
