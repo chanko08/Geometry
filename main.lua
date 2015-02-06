@@ -12,12 +12,6 @@ function love.load(args)
 
     State.registerEvents()
     local start_level = settings.START_LEVEL
-    print(inspect(args))
-    print(args[2])
-    if args[2] then
-        start_level = args[2]
-        print('changed level to: ' .. args[2])
-    end
 
     print(inspect(settings))
     print(start_level)
