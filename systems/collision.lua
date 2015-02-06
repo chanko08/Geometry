@@ -80,7 +80,7 @@ function CollisionSystem:on_collision(dt, shape, other_shape, mx, my)
         other_shape.component.has_collided = true
 
         shape.component.resolve_vector       = shape.component.resolve_vector + 0.5*Vector(mx,my)
-        other_shape.component.resolve_vector = shape.component.resolve_vector - 0.5*Vector(mx,my)
+        other_shape.component.resolve_vector = other_shape.component.resolve_vector - 0.5*Vector(mx,my)
 
     else
         shape.component.has_collided = true
