@@ -15,8 +15,9 @@ end
 local BBoxRenderer = class({})
 BBoxRenderer:include(System)
 
-function BBoxRenderer:init( manager )
+function BBoxRenderer:init( manager, state )
     System.init(self,manager)
+    self.state = state
     manager:register('bbox', self)
 end
 
@@ -43,7 +44,6 @@ function BBoxRenderer:run( )
 
         --draw collision box
     end
-    
 end
 
 

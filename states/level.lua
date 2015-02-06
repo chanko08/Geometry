@@ -44,17 +44,17 @@ function LevelState:enter(previous, state_manager, lvlfile)
     
     
     self.physics         = PhysicsSystem(self.manager)
-    self.bbox            = BBoxRenderer(self.manager)
+    self.bbox            = BBoxRenderer(self.manager,self)
     self.collision       = CollisionSystem(self.manager)
-    self.player_input    = InputSystem(self.manager)
-    self.player          = PlayerBrain(self.manager, self.player_input)
     self.grunt_ai        = GruntBrain(self.manager,{})
-    self.camera          = CameraSystem(self.manager)
+    self.camera          = CameraSystem(self.manager,self,{self.bbox},{},{})
+    self.player_input    = InputSystem(self.manager, self.camera)
+    self.player          = PlayerBrain(self.manager, self.player_input)
 
     local systems = { physics   = self.physics
                     , bbox      = self.bbox
                     , collision = self.collision
-                    , player  = self.player
+                    , player    = self.player
                     , gruntai   = self.grunt_ai
                     , camera    = self.camera
                     }
@@ -86,9 +86,7 @@ function LevelState:update(dt)
 end
 
 function LevelState:draw()
-    self.camera:attach()
-    self.bbox:run()
-    self.camera:detach()
+    self.camera:draw()
 end
 
 function LevelState:keypressed(key)

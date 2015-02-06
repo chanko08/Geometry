@@ -4,8 +4,11 @@ local Vector             = require 'lib.hump.vector'
 local InputSystem = class({})
 InputSystem:include(System)
 
-function InputSystem:init(...)
+function InputSystem:init(entity_manager, camera)
     local settings = require('settings')
+
+    self.camera_system = camera
+
     self.aimer        = settings.CONTROLS.aim_controller
     self.keyboard_map = settings.CONTROLS.keyboard
     self.mouse_map    = settings.CONTROLS.mouse
@@ -15,6 +18,8 @@ function InputSystem:init(...)
     self.v_direction = 0
     self.main_trigger = false
     self.alt_trigger  = false
+    self.weapon_zoom  = false
+    self.target = {}
     self.jump = false
     self.use  = false
     self.inv_direction = 0
@@ -22,7 +27,7 @@ end
 
 function InputSystem:run(dt)
     if self.aimer == 'mouse' then
-        self.aim_x, self.aim_y = love.mouse.getPosition()
+        self.aim_x, self.aim_y = self.camera_system:mouse_world_coords()
         -- TODO: save a look direction?
     else
         error('Not here yet...')
@@ -68,11 +73,35 @@ function InputSystem:keyreleased(key)
 end
 
 function InputSystem:mousepressed(x,y,button)
-
+    if     button == 'l' then
+        self.main_trigger = true
+    elseif button == 'r' then
+        self.alt_trigger = true
+    elseif button == 'm' then
+        self.weapon_zoom = true
+    elseif button == 'wd' then
+        self.inv_direction = -1
+    elseif button == 'wu' then
+        self.inv_direction = 1
+    else
+        print('Unknown button: '..button)
+    end
 end
 
 function InputSystem:mousereleased(x,y,button)
-    -- body
+    if     button == 'l' then
+        self.main_trigger = false
+    elseif button == 'r' then
+        self.alt_trigger = false
+    elseif button == 'm' then
+        self.weapon_zoom = false
+    elseif button == 'wd' then
+        -- self.inv_direction = 0
+    elseif button == 'wu' then
+        -- self.inv_direction = 0
+    else
+        print('Unknown button: '..button)
+    end
 end
 
 function InputSystem:joystickpressed(x,y,button)
