@@ -16,9 +16,9 @@ function CameraSystem:init( manager, state, renderers,pre_renderers,post_rendere
 
     self.state = state
 
-    self.renderers      = renderers
-    self.pre_renderers  = pre_renderers
-    self.post_renderers = post_renderers
+    self.renderers      = renderers or {}
+    self.pre_renderers  = pre_renderers or {}
+    self.post_renderers = post_renderers or {}
     --manager:register('sensors', self)
 
     
@@ -55,6 +55,18 @@ function CameraSystem:draw()
         renderer:run()
     end
     self:draw_reticle()
+end
+
+function CameraSystem:add_renderer(renderer)
+    table.insert(self.renderers, renderer)
+end
+
+function CameraSystem:add_pre_renderer(renderer)
+    table.insert(self.pre_renderers, renderer)
+end
+
+function CameraSystem:add_post_renderer(renderer)
+    table.insert(self.post_renderers, renderer)
 end
 
 function CameraSystem:attach()

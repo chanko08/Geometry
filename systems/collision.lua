@@ -43,6 +43,7 @@ function CollisionSystem:run( dt )
         end
 
         -- ent.collision.shape:moveTo(s:unpack())
+        ent.collision.shape:setRotation(ent.physics.rot)
         ent.collision.shape:move(ent.collision.resolve_vector:unpack())
         for j, sensor in pairs(ent.collision.sensors) do
             sensor.shape:move(ent.collision.resolve_vector:unpack())

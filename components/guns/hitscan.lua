@@ -4,8 +4,11 @@ local Vector = require('lib.hump.vector')
 local HitScanComponent = class({})
 
 function HitScanComponent:init( layer, obj, comp_data )
-    self.visibility_delay = 2000
-    self.is_visible = false
+    self.visibility_delay = 1
+    self.firing           = false
+    self.aim_direction    = nil
+    self.fire_position    = nil
+    self.fire_direction   = nil
 end
 
 return HitScanComponent

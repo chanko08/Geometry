@@ -8,6 +8,8 @@ function PhysicsComponent:init(layer,obj,comp_data)
     local v = comp_data.v or Vector(0, 0)
     local a = comp_data.a or Vector(0, 0)
 
+    local rot = comp_data.rot or 0
+
     if comp_data.gravity then
         a.y = comp_data.gravity
     end
@@ -17,6 +19,7 @@ function PhysicsComponent:init(layer,obj,comp_data)
     self.v = Vector(v.x, v.y)
     self.a = Vector(a.x, a.y)
     self.gravity = comp_data.gravity or 0
+    self.rot = rot
 end
 
 return PhysicsComponent

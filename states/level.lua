@@ -22,7 +22,7 @@ GruntBrain      = require('systems.brains.grunt')
 HitScanGunSystem = require('systems.guns.hitscan')
 
 BBoxRenderer    = require('systems.renderers.bbox')
-
+LaserRenderer   = require('systems.renderers.laser')
 
 player_entity   = require('entities.player')
 load_level      = require('loaders.level')
@@ -43,22 +43,30 @@ function LevelState:enter(previous, state_manager, lvlfile)
     
     -- local p = player_entity(Vector(0,0), Vector(0,0), Vector(0, 10))
     
+    self.camera          = CameraSystem(self.manager,self)
     
+    self.player_input    = InputSystem(self.manager, self.camera)
     
     self.physics         = PhysicsSystem(self.manager)
-    self.bbox            = BBoxRenderer(self.manager,self)
     self.collision       = CollisionSystem(self.manager)
+
     self.grunt_ai        = GruntBrain(self.manager,{})
-    self.camera          = CameraSystem(self.manager,self,{self.bbox},{},{})
-    self.player_input    = InputSystem(self.manager, self.camera)
     self.player          = PlayerBrain(self.manager, self.player_input)
-    self.hitscan_gun      = HitScanGunSystem(self.manager, self.player_input)
+    
+    self.hitscan_gun     = HitScanGunSystem(self.manager, self.player_input)
+    
+    self.laser_renderer  = LaserRenderer(self.manager,self.hitscan_gun) 
+    self.bbox            = BBoxRenderer(self.manager,self)
+
+    self.camera:add_renderer( self.bbox )
+    self.camera:add_renderer( self.laser_renderer )
 
     local systems = { physics   = self.physics
-                    , bbox      = self.bbox
                     , collision = self.collision
                     , player    = self.player
                     , gruntai   = self.grunt_ai
+                    , bbox      = self.bbox
+                    , laser_renderer = self.laser_renderer
                     , camera    = self.camera
                     , hitscan_gun = self.hitscan_gun
                     }
@@ -121,10 +129,12 @@ function LevelState:keyreleased(key)
     self.player_input:keyreleased(key)
 end
 
-function LevelState:mousepressed(x, y, button)
+function LevelState:mousepressed(...)
+    self.player_input:mousepressed(...)
 end
 
-function LevelState:mousereleased(x, y, button)
+function LevelState:mousereleased(...)
+    self.player_input:mousereleased(...)
 end
 
 return LevelState

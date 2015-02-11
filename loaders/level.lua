@@ -36,6 +36,8 @@ local function load_level( systems, lvl_file_path )
                     
                     if err then
                         print(err)
+                        print('ERRORING COMPONENT: '..comp_name)
+                        print(inspect(comp_data))
                     end
                 end
                 table.insert(entities, entity)
