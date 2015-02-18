@@ -323,11 +323,13 @@ function Tween:set(clock)
   if self.clock <= 0 then
 
     self.clock = 0
+    self.finished = false
     copyTables(self.subject, self.initial)
 
   elseif self.clock >= self.duration then -- the tween has expired
 
     self.clock = self.duration
+    self.finished = true
     copyTables(self.subject, self.target)
 
   else
@@ -361,7 +363,8 @@ function tween.new(duration, subject, target, easing)
     easing    = easing,
 
     initial   = copyTables({},target,subject),
-    clock     = 0
+    clock     = 0,
+    finished  = false
   }, Tween_mt)
 end
 

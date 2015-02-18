@@ -19,6 +19,7 @@ InputSystem     = require('systems.input')
 PlayerBrain     = require('systems.brains.player')
 GruntBrain      = require('systems.brains.grunt')
 
+GunSystem        = require('systems.gun')
 HitScanGunSystem = require('systems.guns.hitscan')
 
 BBoxRenderer    = require('systems.renderers.bbox')
@@ -53,6 +54,9 @@ function LevelState:enter(previous, state_manager, lvlfile)
     self.grunt_ai        = GruntBrain(self.manager,{})
     self.player          = PlayerBrain(self.manager, self.player_input)
     
+
+
+    self.gun             = GunSystem(self.manager, self.player_input)
     self.hitscan_gun     = HitScanGunSystem(self.manager, self.player_input)
     
     self.laser_renderer  = LaserRenderer(self.manager,self.hitscan_gun) 
@@ -69,6 +73,7 @@ function LevelState:enter(previous, state_manager, lvlfile)
                     , laser_renderer = self.laser_renderer
                     , camera    = self.camera
                     , hitscan_gun = self.hitscan_gun
+                    , gun = self.gun
                     }
 
     local ents = load_level(systems, 'lvls/'..lvlfile)
@@ -91,7 +96,10 @@ function LevelState:update(dt)
 
         self.grunt_ai:run(dt)
         self.physics:run(dt)
+        
+        self.gun:run(dt)
         self.hitscan_gun:run(dt)
+
         self.collision:run(dt)
         self.camera:run(dt)
 

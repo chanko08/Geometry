@@ -74,7 +74,25 @@ return {
             ["bbox"] = true,
             ["collision"] = {is_passive=false, groups={'gun','actor'}, shape='rectangle'},
             ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=0},
-            ["hitscan_gun"] = {}
+            ["hitscan_gun"] = {},
+            ["gun"] = {
+              -- fire rate, pull trigger, wait until we can fire again
+              initial = {
+                spin_speed = 10,
+                muzzle_velocity = 0,
+                cone_angle = 0
+              },
+
+              pull_trigger = {
+                spin_speed = {duration=1, type="linear", target=7, start="self"}
+                --muzzle_velocity = {duration = 5, type="quadIn", start=2, target=15},
+                --cone_angle = {duration = 6, type="wibbly?", start=5, target=1414}
+              },
+
+              release_trigger = {
+                spin_speed = {duration=1, type="linear", target=0, start="self"}
+              }
+            }
           }
         }
       }

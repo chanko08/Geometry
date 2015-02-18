@@ -16,8 +16,15 @@ function InputSystem:init(entity_manager, camera)
     
     self.direction = 0
     self.v_direction = 0
+    
+    self.main_trigger_delta = false
     self.main_trigger = false
+    self.main_trigger_prev = false
+
+    self.alt_trigger_delta = false
     self.alt_trigger  = false
+    self.alt_trigger_prev = false
+
     self.weapon_zoom  = false
     self.target = {}
     self.jump = false
@@ -32,6 +39,17 @@ function InputSystem:run(dt)
     else
         error('Not here yet...')
     end
+
+
+
+    self.main_trigger_delta = self.main_trigger ~= self.main_trigger_prev
+    self.main_trigger_prev = self.main_trigger
+
+    
+
+    self.alt_trigger_delta = self.main_trigger ~= self.main_trigger_prev
+    self.alt_trigger_prev = self.alt_trigger
+    
 end
 
 function InputSystem:keypressed(key)
