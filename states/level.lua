@@ -76,13 +76,13 @@ function LevelState:enter(previous, state_manager, lvlfile)
                     , gun = self.gun
                     }
 
-    local ents = load_level(systems, 'lvls/'..lvlfile)
+    local ents = load_level(self.manager, systems, 'lvls/'..lvlfile)
 
-    for i,ent in ipairs(ents) do
+    --[[for i,ent in ipairs(ents) do
         for component_name, c in pairs(ent) do
             self.manager:broadcast(component_name, ent)
         end
-    end
+    end--]]
 end
 
 function LevelState:leave()

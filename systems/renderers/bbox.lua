@@ -24,17 +24,17 @@ end
 function BBoxRenderer:run( )
     
     
-    for i,ent in ipairs(self.entities:items()) do
-        local s = ent.physics.s
-        -- print(inspect(ent))
-        -- print(inspect(ent))
-        local cx,cy = ent.collision.shape:center() 
-        local w,h = ent.bbox.dim:unpack()
+    for i,ent in ipairs(self:get_entities('bbox')) do
+        -- local s = ent.physics.s
+        -- -- print(inspect(ent))
+        -- -- print(inspect(ent))
+        -- local cx,cy = ent.collision.shape:center() 
+        -- local w,h = ent.bbox.dim:unpack()
         
-        local r,g,b,a = love.graphics.getColor()
-        love.graphics.setColor(255,255,255)
-        love.graphics.rectangle('line',s.x,s.y,w,h)
-        love.graphics.setColor(r,g,b,a)
+        -- local r,g,b,a = love.graphics.getColor()
+        -- love.graphics.setColor(255,255,255)
+        -- love.graphics.rectangle('line',s.x,s.y,w,h)
+        -- love.graphics.setColor(r,g,b,a)
 
         render(ent.collision)
 

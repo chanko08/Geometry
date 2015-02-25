@@ -18,15 +18,10 @@ function HitScanGunSystem:init( manager, input )
 end
 
 function HitScanGunSystem:run( dt )
-    player = nil
-    for i,ent in ipairs(self.entities:items()) do
-        if not ent.hitscan_gun then
-            player = ent
-        end
-    end
+    player = _.first(self:get_entities('player'))
 
 
-    for i,ent in ipairs(self.entities:items()) do
+    for i,ent in ipairs(self:get_entities('hitscan_gun')) do
         if ent.hitscan_gun then
             ent.physics.s = player.physics.s + Vector(20,0)
 

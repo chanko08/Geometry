@@ -72,7 +72,7 @@ function GruntAIController:init( manager, conf )
 end
 
 function GruntAIController:run( dt )
-    for i,grunt in ipairs(self.entities:items()) do
+    for i,grunt in ipairs(self:get_entities('gruntai')) do
         -- print('THINKING...')
         local sensors = grunt.collision.sensors
 

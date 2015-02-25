@@ -15,7 +15,7 @@ end
 function PhysicsSystem:run( dt )
     
     -- dt = dt / 4
-    for i,ent in ipairs(self.entities:items()) do
+    for i,ent in ipairs(self:get_entities('physics')) do
         
         local max_velocity = ent.max_velocity or  math.huge
         

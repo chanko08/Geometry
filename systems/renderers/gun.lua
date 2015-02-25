@@ -1,3 +1,5 @@
+
+
 local System  = require 'systems.system'
 
 local function render(gun)
@@ -12,25 +14,26 @@ local function render(gun)
     love.graphics.setColor(r,g,b,a)
 end
 
-local LaserRenderer = class({})
-LaserRenderer:include(System)
+local GunRenderer = class({})
+GunRenderer:include(System)
 
-function LaserRenderer:init( manager)
+function GunRenderer:init( manager)
     System.init(self,manager)
-    manager:register('hitscan_gun', self)
+    manager:register('gun', self)
 end
 
-function LaserRenderer:run( )
+function GunRenderer:run( )
     for i,ent in ipairs(self:get_entities('hitscan_gun')) do
         if ent.hitscan_gun and ent.hitscan_gun.firing then
+
             render(ent.hitscan_gun)
         end
     end
 end
 
 
-function LaserRenderer:build_component( ... )
+function GunRenderer:build_component( ... )
     -- print(inspect(...))
 end
 
-return LaserRenderer
+return GunRenderer

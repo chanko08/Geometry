@@ -1,8 +1,9 @@
 local class   = require 'lib.hump.class'
 local _       = require 'lib.underscore'
+-- local Entity = require('entity')
 
 
-local function load_level( systems, lvl_file_path )
+local function load_level( manager, systems, lvl_file_path )
     local dir = "components"
     local part_files = love.filesystem.getDirectoryItems("components")
 
@@ -23,14 +24,17 @@ local function load_level( systems, lvl_file_path )
     for i,layer in ipairs(lvl.layers) do
         if layer.type == 'objectgroup' then
             for j, obj in ipairs(layer.objects) do
-                local entity = {}
+                local comps = {}
+                comps.lifetime = 0
+                
 
                 for comp_name,comp_data in pairs(obj.properties) do
                     print('component name: '..comp_name)
                     local sys = systems[comp_name]
                     local status, err = pcall(
                             function()
-                                entity[comp_name] = sys:build_component(layer,obj,comp_data)
+                                comps[comp_name] = sys:build_component(layer, obj, comp_data)
+                                comps[comp_name].entity = comps
                             end
                         )
                     
@@ -40,15 +44,14 @@ local function load_level( systems, lvl_file_path )
                         print(inspect(comp_data))
                     end
                 end
-                table.insert(entities, entity)
+
+                manager:add_entity(comps)
+                --table.insert(entities, entity)
                 -- print(inspect(entity))
             end
 
         end
     end
-
-
-    return entities
 end
 
 return load_level

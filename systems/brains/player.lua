@@ -20,7 +20,7 @@ function PlayerBrain:init( manager, input )
 end
 
 function PlayerBrain:run( dt )
-    for i,ent in ipairs(self.entities:items()) do
+    for i,ent in ipairs(self:get_entities('player')) do
         self:check_move(ent)
    
         ent.physics.a.x = self.input.direction * ent.player.lat_acc

@@ -25,7 +25,7 @@ function CameraSystem:init( manager, state, renderers,pre_renderers,post_rendere
 end
 
 function CameraSystem:run( dt )
-    local target = _.first(self.entities:items())
+    local target = _.first(self:get_entities('camera'))
 
     if not target.camera.lag_factor then
         self.camera:lookAt(target.physics.s:unpack())

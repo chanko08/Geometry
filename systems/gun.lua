@@ -15,9 +15,10 @@ end
 function GunSystem:run( dt )
     -- check input for if we're pulling trigger
     --if just fired
+    local guns = self:get_entities('gun')
     if self.input.main_trigger_delta and self.input.main_trigger then
         --initializing pull trigger tweens
-        for i, ent in ipairs(self.entities:items()) do
+        for i, ent in ipairs(guns) do
             ent.gun.current_tweens = {}
 
             for k,tween in pairs(ent.gun.pull_trigger) do
@@ -29,7 +30,7 @@ function GunSystem:run( dt )
     elseif self.input.main_trigger_delta and not self.input.main_trigger then
         print(self.input.main_trigger_duration)
         --initializing release trigger tweens
-        for i, ent in ipairs(self.entities:items()) do
+        for i, ent in ipairs(guns) do
             ent.gun.current_tweens = {}
 
             for k,tween in pairs(ent.gun.release_trigger) do
@@ -40,7 +41,7 @@ function GunSystem:run( dt )
     end
 
     --update tweens, if they're done remove them from queue
-    for i, ent in ipairs(self.entities:items()) do
+    for i, ent in ipairs(guns) do
 
         for k,tween in pairs(ent.gun.current_tweens) do
             if not tween:finished() then
@@ -52,7 +53,7 @@ function GunSystem:run( dt )
         end
     end
 
-    for i, ent in ipairs(self.entities:items()) do
+    for i, ent in ipairs(guns) do
         print(inspect(ent.gun.spin_speed))    
     end
 end

@@ -11,7 +11,7 @@ CollisionSystem:include(System)
 function CollisionSystem:init( manager )
     System.init(self,manager)
     manager:register('collision', self)
-    manager:register('sensors', self)
+    --manager:register('sensors', self)
 
     local on_collision = _.curry(CollisionSystem.on_collision, self)
     local on_stop_collision = _.curry(CollisionSystem.on_stop_collision, self)
@@ -20,7 +20,7 @@ end
 
 function CollisionSystem:run( dt )
     -- Tell the collider to think about shit
-    for i,ent in ipairs(self.entities:items()) do
+    for i,ent in ipairs(self:get_entities('collision')) do
         local v = ent.physics.s + ent.collision.offset
         ent.collision.shape:moveTo(v:unpack())
 
@@ -33,7 +33,7 @@ function CollisionSystem:run( dt )
     self.collider:update(dt)
 
     -- Resolve da collisions, bitch
-    for i,ent in ipairs(self.entities:items()) do
+    for i,ent in ipairs(self:get_entities('collision')) do
 
         ent.physics.s = ent.physics.s + ent.collision.resolve_vector
         -- local s = ent.physics.s + ent.collision.offset
