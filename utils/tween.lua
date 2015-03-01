@@ -22,9 +22,6 @@ function Tween:reset(subject)
         subject[k] = self.start
     end
 
-    print('making tween')
-    print(self.duration)
-    print(inspect(t))
     self.tween = KTween.new(self.duration, subject, t, self.type)
 end
 

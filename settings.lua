@@ -9,6 +9,7 @@ local settings = {
     START_LEVEL = 'simple2.lua',
     CONTROLS = {
         aim_controller = 'mouse',
+        gamepad_sensitivity = 1.0,
         keyboard = {
             w = 'up',
             a = 'left',
@@ -25,6 +26,10 @@ local settings = {
             wu = 'inv_prev'
         },
         gamepad = {
+            a            = 'jump',
+            triggerright = 'fire',
+            triggerleft  = 'alt_fire',
+
         }
     }
 }

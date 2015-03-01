@@ -24,6 +24,7 @@ HitScanGunSystem = require('systems.guns.hitscan')
 
 BBoxRenderer    = require('systems.renderers.bbox')
 LaserRenderer   = require('systems.renderers.laser')
+ReticleRenderer = require('systems.renderers.reticle')
 
 player_entity   = require('entities.player')
 load_level      = require('loaders.level')
@@ -61,9 +62,11 @@ function LevelState:enter(previous, state_manager, lvlfile)
     
     self.laser_renderer  = LaserRenderer(self.manager,self.hitscan_gun) 
     self.bbox            = BBoxRenderer(self.manager,self)
+    self.reticle_renderer= ReticleRenderer(self.manager, self.player_input)
 
     self.camera:add_renderer( self.bbox )
     self.camera:add_renderer( self.laser_renderer )
+    self.camera:add_renderer( self.reticle_renderer )
 
     local systems = { physics   = self.physics
                     , collision = self.collision
@@ -143,6 +146,18 @@ end
 
 function LevelState:mousereleased(...)
     self.player_input:mousereleased(...)
+end
+
+function LevelState:joystickadded(...)
+    self.player_input:joystickadded(...)
+end
+
+function LevelState:gamepadpressed(...)
+    self.player_input:gamepadpressed(...)
+end
+
+function LevelState:gamepadreleased(...)
+    self.player_input:gamepadreleased(...)
 end
 
 return LevelState

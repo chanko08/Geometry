@@ -13,8 +13,10 @@ function CameraSystem:init( manager, state, renderers,pre_renderers,post_rendere
     System.init(self,manager)
     manager:register('camera', self)
     self.camera = HumpCamera(0,0)
+    self.target_position = {x=0, y=0}
 
     self.state = state
+
 
     self.renderers      = renderers or {}
     self.pre_renderers  = pre_renderers or {}
@@ -26,6 +28,7 @@ end
 
 function CameraSystem:run( dt )
     local target = _.first(self:get_entities('camera'))
+    self.target_position = target.physics.s
 
     if not target.camera.lag_factor then
         self.camera:lookAt(target.physics.s:unpack())
@@ -54,7 +57,7 @@ function CameraSystem:draw()
     for i,renderer in ipairs(self.post_renderers) do
         renderer:run()
     end
-    self:draw_reticle()
+    -- self:draw_reticle()
 end
 
 function CameraSystem:add_renderer(renderer)
@@ -91,14 +94,14 @@ function CameraSystem:mouse_world_coords()
     return self.camera:worldCoords(mx,my)
 end
 
-function CameraSystem:draw_reticle()
-    local aim_x, aim_y = love.mouse.getPosition()
+-- function CameraSystem:draw_reticle()
+--     local aim_x, aim_y = love.mouse.getPosition()
 
-    local r,g,b,a = love.graphics.getColor()
-        love.graphics.setColor(255,0,255) -- Hawkguy special
-        love.graphics.line(aim_x - 3, aim_y, aim_x + 3, aim_y)
-        love.graphics.line(aim_x, aim_y - 3, aim_x, aim_y + 3)
-    love.graphics.setColor(r,g,b,a)
-end
+--     local r,g,b,a = love.graphics.getColor()
+--         love.graphics.setColor(255,0,255) -- Hawkguy special
+--         love.graphics.line(aim_x - 3, aim_y, aim_x + 3, aim_y)
+--         love.graphics.line(aim_x, aim_y - 3, aim_x, aim_y + 3)
+--     love.graphics.setColor(r,g,b,a)
+-- end
 
 return CameraSystem

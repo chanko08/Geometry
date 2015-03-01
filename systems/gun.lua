@@ -45,7 +45,6 @@ function GunSystem:run( dt )
 
         for k,tween in pairs(ent.gun.current_tweens) do
             if not tween:finished() then
-                print('the fuck')
                 tween:update(dt)
             else
                 ent.gun.current_tweens[k] = nil
@@ -54,7 +53,7 @@ function GunSystem:run( dt )
     end
 
     for i, ent in ipairs(guns) do
-        print(inspect(ent.gun.spin_speed))    
+        -- print(inspect(ent.gun.spin_speed))    
     end
 end
 

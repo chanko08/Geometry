@@ -13,6 +13,8 @@ function InputSystem:init(entity_manager, camera)
     self.keyboard_map = settings.CONTROLS.keyboard
     self.mouse_map    = settings.CONTROLS.mouse
     self.gamepad_map  = settings.CONTROLS.gamepad
+
+    self.gamepad = nil
     
     self.direction = 0
     self.v_direction = 0
@@ -36,8 +38,16 @@ function InputSystem:run(dt)
     if self.aimer == 'mouse' then
         self.aim_x, self.aim_y = self.camera_system:mouse_world_coords()
         -- TODO: save a look direction?
-    else
-        error('Not here yet...')
+    elseif self.aimer == 'gamepad' then
+        if self.gamepad ~= nil then
+            local gp_x = self.gamepad:getGamepadAxis('rightx')
+            local gp_y = self.gamepad:getGamepadAxis('righty')
+
+            if gp_x*gp_x + gp_y*gp_y > (0.05)*(0.05) then
+                self.aim_x = self.camera_system.target_position.x + 100*gp_x
+                self.aim_y = self.camera_system.target_position.y + 100*gp_y
+            end
+        end
     end
 
 
@@ -53,81 +63,83 @@ function InputSystem:run(dt)
 end
 
 function InputSystem:keypressed(key)
-    local k = self.keyboard_map[key]
-
-    -- only non-nil if used key
-    if     k == 'up' then
-        self.v_direction = 1
-    elseif k == 'down' then
-        self.v_direction = -1
-    elseif k == 'left' then
-        self.direction = -1
-    elseif k == 'right' then
-        self.direction = 1
-    elseif k == 'jump' then
-        self.jump = true
-    elseif k == 'use' then
-        self.use = true
-    end
+    self:press_event(self.keyboard_map[key])
 end
 
 function InputSystem:keyreleased(key)
-    local k = self.keyboard_map[key]
-
-    -- only non-nil if used key
-    if     k == 'up'    and self.v_direction == 1 then
-        self.v_direction = 0
-    elseif k == 'down'  and self.v_direction == -1 then
-        self.v_direction = 0
-    elseif k == 'left'  and self.direction   == -1 then
-        self.direction = 0
-    elseif k == 'right' and self.direction   ==  1 then
-        self.direction = 0
-    elseif k == 'jump' then
-        self.jump = false
-    elseif k == 'use' then
-        self.use = false
-    end
+    self:release_event(self.keyboard_map[key])
 end
 
 function InputSystem:mousepressed(x,y,button)
-    if     button == 'l' then
-        self.main_trigger = true
-    elseif button == 'r' then
-        self.alt_trigger = true
-    elseif button == 'm' then
-        self.weapon_zoom = true
-    elseif button == 'wd' then
-        self.inv_direction = -1
-    elseif button == 'wu' then
-        self.inv_direction = 1
-    else
-        print('Unknown button: '..button)
-    end
+    self:press_event(self.mouse_map[button])
 end
 
 function InputSystem:mousereleased(x,y,button)
-    if     button == 'l' then
-        self.main_trigger = false
-    elseif button == 'r' then
-        self.alt_trigger = false
-    elseif button == 'm' then
-        self.weapon_zoom = false
-    elseif button == 'wd' then
-        -- self.inv_direction = 0
-    elseif button == 'wu' then
-        -- self.inv_direction = 0
-    else
-        print('Unknown button: '..button)
+    self:release_event(self.mouse_map[button])
+end
+
+function InputSystem:joystickadded(gamepad)
+    self.gamepad = gamepad
+end
+
+function InputSystem:gamepadpressed(gamepad,button)
+    self:press_event(self.gamepad_map[button])
+end
+
+function InputSystem:gamepadreleased(gamepad,button)
+    self:release_event(self.gamepad_map[button])
+end
+
+function InputSystem:press_event(event)
+    if     event == 'up' then
+        self.v_direction = 1
+    elseif event == 'down' then
+        self.v_direction = -1
+    elseif event == 'left' then
+        self.direction = -1
+    elseif event == 'right' then
+        self.direction = 1
+    elseif event == 'jump' then
+        self.jump = true
+    elseif event == 'use' then
+        self.use = true
+    elseif event == 'fire' then
+        self.main_trigger = true
+    elseif event == 'alt_fire' then
+        self.alt_trigger = true
+    elseif event == 'zoom' then
+        self.weapon_zoom = true
+    elseif event == 'inv_prev' then
+        self.inv_direction = -1
+    elseif event == 'inv_next' then
+        self.inv_direction = 1
     end
 end
 
-function InputSystem:joystickpressed(x,y,button)
-
-end
-
-function InputSystem:joystickreleased(x,y,button)
-    -- body
+function InputSystem:release_event(event)
+    if     event == 'up'    and self.v_direction == 1 then
+        self.v_direction = 0
+    elseif event == 'down'  and self.v_direction == -1 then
+        self.v_direction = 0
+    elseif event == 'left'  and self.direction   == -1 then
+        self.direction = 0
+    elseif event == 'right' and self.direction   ==  1 then
+        self.direction = 0
+    elseif event == 'jump' then
+        self.jump = false
+    elseif event == 'use' then
+        self.use = false
+    elseif event == 'fire' then
+        self.main_trigger = false
+    elseif event == 'alt_fire' then
+        self.alt_trigger = false
+    elseif event == 'zoom' then
+        self.weapon_zoom = false
+    elseif event == 'inv_prev' then
+        -- self.inv_direction = 0
+    elseif event == 'inv_next' then
+        -- self.inv_direction = 0
+    end
 end
 
 return InputSystem

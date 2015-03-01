@@ -32,7 +32,6 @@ function HitScanGunSystem:run( dt )
             ent.physics.rot = ent.hitscan_gun.aim_direction:angleTo()
 
             if self.input.main_trigger then
-                print('PEW PEW PEW!')
                 ent.hitscan_gun.firing = true
                 ent.hitscan_gun.fire_position  = ent.physics.s
                 ent.hitscan_gun.fire_direction = ent.hitscan_gun.aim_direction
