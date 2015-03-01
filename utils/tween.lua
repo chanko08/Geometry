@@ -19,7 +19,7 @@ function Tween:reset(subject)
 
     print(self.key)
     if self.start ~= 'self' then
-        subject[k] = self.start
+        subject[self.key] = self.start
     end
 
     self.tween = KTween.new(self.duration, subject, t, self.type)
