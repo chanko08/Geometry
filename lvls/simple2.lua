@@ -61,7 +61,7 @@ return {
           }
         },
         {
-        name = "gun",
+          name = "laser-gun",
           type = "",
           shape = "rectangle",
           x = 65,
@@ -78,23 +78,56 @@ return {
             ["gun"] = {
               -- fire rate, pull trigger, wait until we can fire again
               initial = {
-                spin_speed = 10,
-                muzzle_velocity = 0,
-                cone_angle = 0
+                warmup = 0,
+                cooldown = 0,
+                number_shots = 1,
+                accuracy = 0.85,
+                projectile_speed = math.huge,
+                automatic = false,
+                fired=false
               },
 
               pull_trigger = {
-                spin_speed = {duration=1, type="linear", target=7, start="self"}
-                --muzzle_velocity = {duration = 5, type="quadIn", start=2, target=15},
-                --cone_angle = {duration = 6, type="wibbly?", start=5, target=1414}
+                cooldown = {duration=1, type="linear", target=0, start=1, loop=true}
               },
 
-              release_trigger = {
-                spin_speed = {duration=1, type="linear", target=0, start="self"}
-              }
+              release_trigger = {},
+              bullet_render_tag = "laser"
+
             }
           }
         }
+        --[[,
+        {
+          name = "pistol",
+          type = "",
+          shape = "rectangle",
+          x = 65,
+          y = 45,
+          width = 32,
+          height = 8,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["bbox"] = true,
+            ["collision"] = {is_passive=false, groups={'gun','actor'}, shape='rectangle'},
+            ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=0},
+            ["hitscan_gun"] = {},
+            ["gun"] = {
+              -- fire rate, pull trigger, wait until we can fire again
+              initial = {
+                fire_rate = 1
+              },
+
+              pull_trigger = {
+                fire_rate = {duration=1, type="linear", target=0, start=1}
+              },
+
+              release_trigger = {}
+            }
+          }
+        }
+        ]]--
       }
     },
     {

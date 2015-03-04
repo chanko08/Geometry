@@ -11,17 +11,20 @@ function Tween:init(key, tween_info)
     self.type     = tween_info.type
     self.target   = tween_info.target
     self.start    = tween_info.start
+    self.loop     = tween_info.loop or false
+
+    self.is_looping = true
 end
 
 function Tween:reset(subject)
     local t = {}
     t[self.key] = self.target
 
-    print(self.key)
     if self.start ~= 'self' then
         subject[self.key] = self.start
     end
 
+    self.is_looping = self.loop
     self.tween = KTween.new(self.duration, subject, t, self.type)
 end
 
