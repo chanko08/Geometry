@@ -27,8 +27,8 @@ local settings = {
         },
         gamepad = {
             a            = 'jump',
-            triggerright = 'fire',
-            triggerleft  = 'alt_fire',
+            triggerright = 'main_trigger',
+            triggerleft  = 'alt_trigger',
 
         }
     }

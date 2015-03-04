@@ -43,14 +43,17 @@ function InputSystem:run(dt)
             local gp_x = self.gamepad:getGamepadAxis('rightx')
             local gp_y = self.gamepad:getGamepadAxis('righty')
 
-            if gp_x*gp_x + gp_y*gp_y > (0.05)*(0.05) then
+            if gp_x*gp_x + gp_y*gp_y > (0.25)*(0.25) then
                 self.aim_x = self.camera_system.target_position.x + 100*gp_x
                 self.aim_y = self.camera_system.target_position.y + 100*gp_y
+            else
+                self.aim_x = self.camera_system.target_position.x + 100
+                self.aim_y = self.camera_system.target_position.y + 0
             end
         end
     end
 
-
+    self.direction = self.gamepad:getGamepadAxis('leftx')
 
     self.main_trigger_delta = self.main_trigger ~= self.main_trigger_prev
     self.main_trigger_prev = self.main_trigger
@@ -90,6 +93,20 @@ function InputSystem:gamepadreleased(gamepad,button)
     self:release_event(self.gamepad_map[button])
 end
 
+function InputSystem:gamepadaxis(gamepad,axis,value)
+    if gamepad ~= nil and self.gamepad == gamepad then
+        if axis == "triggerright" or axis == "triggerleft" then
+            if value >= 0.5 and self[self.gamepad_map[axis]] == false then
+                print("Firing trigger: "..axis)
+                self:press_event(self.gamepad_map[axis])
+            elseif value < 0.5 and self[self.gamepad_map[axis]] == true then
+                print("Releasing trigger: "..axis)
+                self:release_event(self.gamepad_map[axis])
+            end
+        end
+    end
+end
+
 function InputSystem:press_event(event)
     if     event == 'up' then
         self.v_direction = 1
@@ -103,9 +120,9 @@ function InputSystem:press_event(event)
         self.jump = true
     elseif event == 'use' then
         self.use = true
-    elseif event == 'fire' then
+    elseif event == 'main_trigger' then
         self.main_trigger = true
-    elseif event == 'alt_fire' then
+    elseif event == 'alt_trigger' then
         self.alt_trigger = true
     elseif event == 'zoom' then
         self.weapon_zoom = true
@@ -129,9 +146,9 @@ function InputSystem:release_event(event)
         self.jump = false
     elseif event == 'use' then
         self.use = false
-    elseif event == 'fire' then
+    elseif event == 'main_trigger' then
         self.main_trigger = false
-    elseif event == 'alt_fire' then
+    elseif event == 'alt_trigger' then
         self.alt_trigger = false
     elseif event == 'zoom' then
         self.weapon_zoom = false

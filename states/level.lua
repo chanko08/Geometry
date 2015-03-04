@@ -160,4 +160,8 @@ function LevelState:gamepadreleased(...)
     self.player_input:gamepadreleased(...)
 end
 
+function LevelState:gamepadaxis(...)
+    self.player_input:gamepadaxis(...)
+end
+
 return LevelState
