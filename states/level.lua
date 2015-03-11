@@ -60,7 +60,7 @@ function LevelState:enter(previous, state_manager, lvlfile)
     self.gun             = GunSystem(self.manager, self.player_input)
     self.hitscan_gun     = HitScanGunSystem(self.manager, self.player_input)
     
-    self.laser_renderer  = LaserRenderer(self.manager,self.hitscan_gun) 
+    self.laser_renderer  = LaserRenderer(self.manager,self.player_input) 
     self.bbox            = BBoxRenderer(self.manager,self)
     self.reticle_renderer= ReticleRenderer(self.manager, self.player_input)
 

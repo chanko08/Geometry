@@ -27,6 +27,9 @@ function InputSystem:init(entity_manager, camera)
     self.alt_trigger  = false
     self.alt_trigger_prev = false
 
+    self.aim_x = 0
+    self.aim_y = 0
+
     self.weapon_zoom  = false
     self.target = {}
     self.jump = false
@@ -50,10 +53,12 @@ function InputSystem:run(dt)
                 self.aim_x = self.camera_system.target_position.x + 100
                 self.aim_y = self.camera_system.target_position.y + 0
             end
+
+            self.direction = self.gamepad:getGamepadAxis('leftx')
         end
     end
 
-    self.direction = self.gamepad:getGamepadAxis('leftx')
+    
 
     self.main_trigger_delta = self.main_trigger ~= self.main_trigger_prev
     self.main_trigger_prev = self.main_trigger
@@ -97,10 +102,8 @@ function InputSystem:gamepadaxis(gamepad,axis,value)
     if gamepad ~= nil and self.gamepad == gamepad then
         if axis == "triggerright" or axis == "triggerleft" then
             if value >= 0.5 and self[self.gamepad_map[axis]] == false then
-                print("Firing trigger: "..axis)
                 self:press_event(self.gamepad_map[axis])
             elseif value < 0.5 and self[self.gamepad_map[axis]] == true then
-                print("Releasing trigger: "..axis)
                 self:release_event(self.gamepad_map[axis])
             end
         end

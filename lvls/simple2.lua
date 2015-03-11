@@ -78,17 +78,24 @@ return {
             ["gun"] = {
               -- fire rate, pull trigger, wait until we can fire again
               initial = {
-                warmup = 0,
-                cooldown = 0,
+                fire_delay = 0,
+                --cooldown = 0,
                 number_shots = 1,
                 accuracy = 0.85,
                 projectile_speed = math.huge,
                 automatic = false,
-                fired=false
+                fired=false,
+                visibility_delay = 0
               },
 
               pull_trigger = {
-                cooldown = {duration=1, type="linear", target=0, start=1, loop=true}
+                fire_delay   = {duration=1, type="linear", target=0, start=1},
+
+              },
+
+              fire_bullet = {
+                fire_delay = {duration=0.125, type="linear", target=0, start=1},
+                visibility_delay = {duration=0.25, type="linear", target=0, start=20 }
               },
 
               release_trigger = {},

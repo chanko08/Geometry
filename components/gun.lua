@@ -18,6 +18,12 @@ function GunComponent:init( layer, obj, comp_data )
         self.pull_trigger[k] = Tween(k, v)
     end
 
+    self.fire_bullet = {}
+    for k,v in pairs(comp_data.fire_bullet) do
+        --self.pull_trigger['muzzle_spin'] = tween to run on muzzle_spin variable 
+        self.fire_bullet[k] = Tween(k, v)
+    end
+
     self.release_trigger = {}
     for k,v in pairs(comp_data.release_trigger) do
         --self.release_trigger['muzzle_spin'] = tween to run on muzzle_spin variable 
@@ -25,6 +31,7 @@ function GunComponent:init( layer, obj, comp_data )
     end
 
     self.current_tweens = {}
+    self.fire_position = Vector(0,0)
 end
 
 return GunComponent

@@ -19,9 +19,9 @@ local settings = {
             e = 'use'
         },
         mouse = {
-            l  = 'fire',
+            l  = 'main_trigger',
             m  = 'zoom',
-            r  = 'alt_fire',
+            r  = 'alt_trigger',
             wd = 'inv_next',
             wu = 'inv_prev'
         },

@@ -15,6 +15,8 @@ end
 function GunSystem:run( dt )
     -- check input for if we're pulling trigger
     --if just fired
+    local player = _.first(self:get_entities('player'))
+
     local guns = self:get_entities('gun')
     if self.input.main_trigger_delta and self.input.main_trigger then
         --initializing pull trigger tweens
@@ -24,6 +26,7 @@ function GunSystem:run( dt )
             ent.gun.current_tweens = {}
 
             for k,tween in pairs(ent.gun.pull_trigger) do
+                -- if == cooldown
                 ent.gun.current_tweens[k] = tween
                 tween:reset(ent.gun)
             end
@@ -35,7 +38,7 @@ function GunSystem:run( dt )
         --print(self.input.main_trigger_duration)
         --initializing release trigger tweens
         for i, ent in ipairs(guns) do
-            ent.gun.current_tweens = {}
+            --ent.gun.current_tweens = {}
 
             for k,tween in pairs(ent.gun.release_trigger) do
                 ent.gun.current_tweens[k] = tween
@@ -51,10 +54,18 @@ function GunSystem:run( dt )
     end
     
     for i, ent in ipairs(guns) do
+        ent.gun.fired = false
+        ent.gun.fire_position = player.physics.s
         -- print(inspect(ent.gun.spin_speed))
-        if ent.gun.warmup <= 0 and ent.gun.cooldown <=0 and self.input.main_trigger then
+        --if ent.gun.warmup <= 0 and ent.gun.cooldown <=0 and self.input.main_trigger then
+        if ent.gun.fire_delay <= 0 and self.input.main_trigger then
             -- fire bullet
             print('fire bullet', love.timer.getTime())
+            ent.gun.fired = true
+            for k,tween in pairs(ent.gun.fire_bullet) do
+                ent.gun.current_tweens[k] = tween
+                tween:reset(ent.gun)
+            end
         end
     end
 
@@ -71,8 +82,6 @@ function GunSystem:run( dt )
             end
         end
     end
-
-    
 end
 
 
