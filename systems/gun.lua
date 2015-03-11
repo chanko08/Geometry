@@ -1,4 +1,6 @@
 local System  = require 'systems.system'
+local Vector = require('lib.hump.vector')
+
 local GunComponent = require 'components.gun'
 
 
@@ -54,6 +56,10 @@ function GunSystem:run( dt )
     end
     
     for i, ent in ipairs(guns) do
+        ent.physics.s = player.physics.s + Vector(20,0)
+        ent.physics.rot = ent.gun.aim_direction:angleTo()
+
+
         ent.gun.fired = false
         ent.gun.fire_position = player.physics.s
         -- print(inspect(ent.gun.spin_speed))

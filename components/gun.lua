@@ -32,6 +32,7 @@ function GunComponent:init( layer, obj, comp_data )
 
     self.current_tweens = {}
     self.fire_position = Vector(0,0)
+    self.aim_direction = Vector(0,0)
 end
 
 return GunComponent

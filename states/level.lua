@@ -20,7 +20,6 @@ PlayerBrain     = require('systems.brains.player')
 GruntBrain      = require('systems.brains.grunt')
 
 GunSystem        = require('systems.gun')
-HitScanGunSystem = require('systems.guns.hitscan')
 
 BBoxRenderer    = require('systems.renderers.bbox')
 LaserRenderer   = require('systems.renderers.laser')
@@ -58,7 +57,6 @@ function LevelState:enter(previous, state_manager, lvlfile)
 
 
     self.gun             = GunSystem(self.manager, self.player_input)
-    self.hitscan_gun     = HitScanGunSystem(self.manager, self.player_input)
     
     self.laser_renderer  = LaserRenderer(self.manager,self.player_input) 
     self.bbox            = BBoxRenderer(self.manager,self)
@@ -75,7 +73,6 @@ function LevelState:enter(previous, state_manager, lvlfile)
                     , bbox      = self.bbox
                     , laser_renderer = self.laser_renderer
                     , camera    = self.camera
-                    , hitscan_gun = self.hitscan_gun
                     , gun = self.gun
                     }
 
@@ -101,7 +98,6 @@ function LevelState:update(dt)
         self.physics:run(dt)
         
         self.gun:run(dt)
-        self.hitscan_gun:run(dt)
 
         self.collision:run(dt)
         self.camera:run(dt)
