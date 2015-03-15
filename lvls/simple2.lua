@@ -77,27 +77,35 @@ return {
             ["gun"] = {
               -- fire rate, pull trigger, wait until we can fire again
               initial = {
-                fire_delay = 0,
+                fire_delay = 1,
                 --cooldown = 0,
                 number_shots = 1,
                 accuracy = 0.85,
                 projectile_speed = math.huge,
-                automatic = false,
+                -- automatic = false,
+                -- burst = infinity would be automatic
+                max_burst = 3,
                 fired=false,
                 visibility_delay = 0
               },
 
+              at_rest = {
+                fire_delay = {duration=1, type='instant',target=1,start=1} -- Imagine a gun that slowly gets more powerful the longer you don't fire 
+              },
+
               pull_trigger = {
                 fire_delay   = {duration=1, type="linear", target=0, start=1},
-
               },
 
               fire_bullet = {
-                fire_delay = {duration=0.125, type="linear", target=0, start=1},
-                visibility_delay = {duration=0.25, type="linear", target=0, start=20 }
+                fire_delay       = {duration=1, type="linear", target=0, start=1},
+                visibility_delay = {duration=1,  type="linear", target=0, start=1}
               },
 
-              release_trigger = {},
+              release_trigger = {
+                -- fire_delay = {duration=1, type='instant',target=0,start=1}
+              },
+
               bullet_render_tag = "laser"
 
             }
@@ -159,27 +167,27 @@ return {
             ["physics"] = {}
           }
         },
-        {
-          name = "sloped wall",
-          type = "",
-          shape = "polyline",
-          x = 92,
-          y = 447,
-          width = 0,
-          height = 0,
-          rotation = 0,
-          visible = true,
-          polyline = {
-            { x = 0, y = 0 },
-            { x = 566, y = 410 },
-            { x = 1233, y = 408 }
-          },
-          properties = {
-            --["bbox"] = true,
-            ["collision"] = {},
-            ["physics"] = {}
-          }
-        },
+        -- {
+        --   name = "sloped wall",
+        --   type = "",
+        --   shape = "polyline",
+        --   x = 92,
+        --   y = 447,
+        --   width = 0,
+        --   height = 0,
+        --   rotation = 0,
+        --   visible = true,
+        --   polyline = {
+        --     { x = 0, y = 0 },
+        --     { x = 566, y = 410 },
+        --     { x = 1233, y = 408 }
+        --   },
+        --   properties = {
+        --     --["bbox"] = true,
+        --     ["collision"] = {},
+        --     ["physics"] = {}
+        --   }
+        -- },
         {
           name = "rect wall",
           type = "",
@@ -195,30 +203,30 @@ return {
             ["collision"] = {},
             ["physics"] = {}
           }
-        },
-        {
-          name = "boundary",
-          type = "",
-          shape = "polyline",
-          x = 8,
-          y = 5,
-          width = 0,
-          height = 0,
-          rotation = 0,
-          visible = true,
-          polyline = {
-            { x = 0, y = 0 },
-            { x = 1, y = 1195 },
-            { x = 1561, y = 1193 },
-            { x = 1560, y = 1 },
-            { x = 1, y = 1 }
-          },
-          properties = {
-            -- ["bbox"] = true,
-            ["collision"] = {},
-            ["physics"] = {}
-          }
-        }
+        }--,
+        -- {
+        --   name = "boundary",
+        --   type = "",
+        --   shape = "polyline",
+        --   x = 8,
+        --   y = 5,
+        --   width = 0,
+        --   height = 0,
+        --   rotation = 0,
+        --   visible = true,
+        --   polyline = {
+        --     { x = 0, y = 0 },
+        --     { x = 1, y = 1195 },
+        --     { x = 1561, y = 1193 },
+        --     { x = 1560, y = 1 },
+        --     { x = 1, y = 1 }
+        --   },
+        --   properties = {
+        --     -- ["bbox"] = true,
+        --     ["collision"] = {},
+        --     ["physics"] = {}
+        --   }
+        -- }
       }
     },
     {

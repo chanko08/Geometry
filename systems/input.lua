@@ -88,6 +88,7 @@ end
 
 function InputSystem:joystickadded(gamepad)
     self.gamepad = gamepad
+    print('VIBES? ', gamepad:isVibrationSupported())
 end
 
 function InputSystem:gamepadpressed(gamepad,button)

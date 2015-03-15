@@ -2,30 +2,31 @@ local KTween = require('lib.tween')
 
 local Tween = class({})
 
-function Tween:init(key, tween_info)
+function Tween:init(key, tween_info, subject)
     -- {duration=1, type="linear", target=7, start="self"}
     self.tween = nil
 
-    self.key = key
+    self.key      = key
     self.duration = tween_info.duration
     self.type     = tween_info.type
     self.target   = tween_info.target
     self.start    = tween_info.start
-    self.loop     = tween_info.loop or false
 
-    self.is_looping = true
+    self.subject  = subject or nil
 end
 
-function Tween:reset(subject)
+function Tween:reset(s)
+    self.subject = s or self.subject
+    
     local t = {}
+    -- print('Reset key:',self.key, 'Start:', self.start, 'Target:',self.target)
     t[self.key] = self.target
 
     if self.start ~= 'self' then
-        subject[self.key] = self.start
+        self.subject[self.key] = self.start
     end
 
-    self.is_looping = self.loop
-    self.tween = KTween.new(self.duration, subject, t, self.type)
+    self.tween = KTween.new(self.duration, self.subject, t, self.type)
 end
 
 function Tween:update( dt )

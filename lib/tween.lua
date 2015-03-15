@@ -42,6 +42,18 @@ local pow, sin, cos, pi, sqrt, abs, asin = math.pow, math.sin, math.cos, math.pi
 -- linear
 local function linear(t, b, c, d) return c * t / d + b end
 
+-- instant
+local function instant(t, b, c, d)
+  if t > 0 then return b + c end
+  return b
+end
+
+-- heaviside
+local function heaviside(t, b, c, d) 
+   if t <= d then return b end
+   return b + c 
+end
+
 -- quad
 local function inQuad(t, b, c, d) return c * pow(t / d, 2) + b end
 local function outQuad(t, b, c, d)
@@ -229,6 +241,8 @@ end
 
 tween.easing = {
   linear    = linear,
+  instant   = instant,
+  heaviside = heaviside,
   inQuad    = inQuad,    outQuad    = outQuad,    inOutQuad    = inOutQuad,    outInQuad    = outInQuad,
   inCubic   = inCubic,   outCubic   = outCubic,   inOutCubic   = inOutCubic,   outInCubic   = outInCubic,
   inQuart   = inQuart,   outQuart   = outQuart,   inOutQuart   = inOutQuart,   outInQuart   = outInQuart,
