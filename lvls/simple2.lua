@@ -79,14 +79,21 @@ return {
               initial = {
                 fire_delay = 1,
                 --cooldown = 0,
-                number_shots = 1,
+                bullets_per_shot = 5,
                 accuracy = 0.85,
-                projectile_speed = math.huge,
+                hitscan = false,
+                projectile_speed = 500,
                 -- automatic = false,
                 -- burst = infinity would be automatic
                 max_burst = 3,
                 fired=false,
-                visibility_delay = 0
+                visibility_delay = 0,
+              },
+
+              bullet = {
+                hitscan  = false,
+                velocity = 500,
+                size     = 50
               },
 
               at_rest = {
@@ -107,7 +114,6 @@ return {
               },
 
               bullet_render_tag = "laser"
-
             }
           }
         }

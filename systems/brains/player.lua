@@ -1,5 +1,6 @@
 local System            = require 'systems.system'
 local KeyboardComponent = require 'components.keyboard' 
+local Vector            = require 'lib.hump.vector'
 
 local function sign( x )
     if     x > 0 then return 1
@@ -22,6 +23,8 @@ end
 function PlayerBrain:run( dt )
     for i,ent in ipairs(self:get_entities('player')) do
         self:check_move(ent)
+
+        ent.player.aim_target = Vector(self.input.aim_x, self.input.aim_y)
    
         ent.physics.a.x = self.input.direction * ent.player.lat_acc
         ent.physics.v.x = math.abs(self.input.direction) * ent.physics.v.x
@@ -32,7 +35,6 @@ function PlayerBrain:run( dt )
 
         speed = math.min(speed, ent.player.max_lat_spd)
         ent.physics.v.x = speed * dir
-
 
         if self.input.jump then
             --check that jump duration is capped

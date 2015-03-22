@@ -60,14 +60,14 @@ function GunComponent:init( layer, obj, comp_data )
 
     self.gun_state:enter( self.at_rest_state )
     
+    self.bullet = comp_data.bullet
+
     self.burst         = 0
     self.fire_position = Vector(0,0)
     self.aim_direction = Vector(0,0)
 end
 
 function GunComponent:reset_tweens(tweens)
-    print('self: ', self)
-    print('tweens: ', tweens)
     for k,tween in pairs(tweens) do
         self.tweens[k] = tweens[k]
         self.tweens[k]:reset()
@@ -76,7 +76,7 @@ end
 
 function GunComponent:update(dt)
     for k,tween in pairs(self.tweens) do
-        print('Updating: ',k,tween.subject[k],'dt: ',dt)
+        -- print('Updating: ',k,tween.subject[k],'dt: ',dt)
         tween:update(dt)
     end
 end

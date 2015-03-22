@@ -23,7 +23,11 @@ function EntityManager:get_entities( component_name )
         return comp.entity
     end
 
-    return _.map(self.component_sets[component_name]:items(), get_ent)
+    if self.component_sets[component_name] then
+        return _.map(self.component_sets[component_name]:items(), get_ent)
+    else
+        return {}
+    end
 end
 
 function EntityManager:add_entity( entity )

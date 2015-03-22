@@ -7,10 +7,11 @@ local GunComponent = require 'components.gun'
 local GunSystem = class({})
 GunSystem:include(System)
 
-function GunSystem:init( manager, input )
+function GunSystem:init( manager, input, bullet_system )
     System.init(self,manager)
     manager:register('gun', self)
     self.input = input
+    self.bullet_system = bullet_system
 
 end
 
@@ -29,7 +30,7 @@ function GunSystem:run( dt )
     for i,ent in ipairs(guns) do
         local gun = ent.gun
 
-        print('state: '..gun.gun_state.state.name, gun.fire_delay)
+        -- print('state: '..gun.gun_state.state.name, gun.fire_delay)
         
         if self.input.main_trigger_delta then
             if self.input.main_trigger then
@@ -49,9 +50,11 @@ function GunSystem:run( dt )
                 gun.fire_position = player.physics.s
                 gun.gun_state:enter(gun.fire_bullet_state)
 
+                self.bullet_system:create_bullet(ent)
+
             elseif gun.gun_state.state == gun.release_trigger_state then
                 gun.gun_state:enter(gun.at_rest_state)
-                print('RETURNING TO REST')
+                -- print('RETURNING TO REST')
             end
         end        
 

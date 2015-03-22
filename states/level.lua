@@ -19,10 +19,12 @@ InputSystem     = require('systems.input')
 PlayerBrain     = require('systems.brains.player')
 GruntBrain      = require('systems.brains.grunt')
 
-GunSystem        = require('systems.gun')
+GunSystem       = require('systems.gun')
+BulletSystem    = require('systems.bullet')
 
 BBoxRenderer    = require('systems.renderers.bbox')
 LaserRenderer   = require('systems.renderers.laser')
+BulletRenderer  = require('systems.renderers.bullet')
 ReticleRenderer = require('systems.renderers.reticle')
 
 player_entity   = require('entities.player')
@@ -56,14 +58,17 @@ function LevelState:enter(previous, state_manager, lvlfile)
     
 
 
-    self.gun             = GunSystem(self.manager, self.player_input)
+    self.bullet          = BulletSystem(self.manager, self.player_input, self.collision)
+    self.gun             = GunSystem(self.manager, self.player_input, self.bullet)
     
-    self.laser_renderer  = LaserRenderer(self.manager,self.player_input) 
+    -- self.laser_renderer  = LaserRenderer(self.manager,self.player_input) 
     self.bbox            = BBoxRenderer(self.manager,self)
+    self.bullet_renderer = BulletRenderer(self.manager)
     self.reticle_renderer= ReticleRenderer(self.manager, self.player_input)
 
     self.camera:add_renderer( self.bbox )
-    self.camera:add_renderer( self.laser_renderer )
+    -- self.camera:add_renderer( self.laser_renderer )
+    self.camera:add_renderer( self.bullet_renderer )
     self.camera:add_renderer( self.reticle_renderer )
 
     local systems = { physics   = self.physics
@@ -71,9 +76,10 @@ function LevelState:enter(previous, state_manager, lvlfile)
                     , player    = self.player
                     , gruntai   = self.grunt_ai
                     , bbox      = self.bbox
-                    , laser_renderer = self.laser_renderer
+                    -- , laser_renderer = self.laser_renderer
                     , camera    = self.camera
                     , gun = self.gun
+                    , bullet = self.bullet
                     }
 
     local ents = load_level(self.manager, systems, 'lvls/'..lvlfile)
@@ -98,6 +104,7 @@ function LevelState:update(dt)
         self.physics:run(dt)
         
         self.gun:run(dt)
+        self.bullet:run(dt)
 
         self.collision:run(dt)
         self.camera:run(dt)
