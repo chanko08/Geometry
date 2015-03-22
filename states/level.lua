@@ -14,7 +14,8 @@ PhysicsSystem   = require('systems.physics')
 CollisionSystem = require('systems.collision')
 CameraSystem    = require('systems.camera')
 
-InputSystem     = require('systems.input')
+--InputSystem     = require('systems.input')
+
 
 PlayerBrain     = require('systems.brains.player')
 GruntBrain      = require('systems.brains.grunt')
@@ -27,7 +28,9 @@ LaserRenderer   = require('systems.renderers.laser')
 BulletRenderer  = require('systems.renderers.bullet')
 ReticleRenderer = require('systems.renderers.reticle')
 
-player_entity   = require('entities.player')
+GamepadHardware       = require('hardware.gamepad')
+KeyboardMouseHardware = require('hardware.keyboardmouse')
+
 load_level      = require('loaders.level')
 -- ---------------------------------------
 -- -- Level Sate
@@ -44,11 +47,16 @@ function LevelState:enter(previous, state_manager, lvlfile)
     self.lvlfile = lvlfile
     self.manager = EntityManager()
     
-    -- local p = player_entity(Vector(0,0), Vector(0,0), Vector(0, 10))
     
-    self.camera          = CameraSystem(self.manager,self)
+    self.camera = CameraSystem(self.manager,self)
+
+    local settings = require 'settings'
+    self.player_input = KeyboardMouseHardware(self)
+    if settings.aim_controller == 'gamepad' then
+        self.player_input = GamepadHardware(self)
+    end
     
-    self.player_input    = InputSystem(self.manager, self.camera)
+    -- self.player_input    = InputSystem(self.manager, self.camera)
     
     self.physics         = PhysicsSystem(self.manager)
     self.collision       = CollisionSystem(self.manager)

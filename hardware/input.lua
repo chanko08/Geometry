@@ -4,18 +4,13 @@ local Vector             = require 'lib.hump.vector'
 local InputSystem = class({})
 InputSystem:include(System)
 
-function InputSystem:init(entity_manager, camera)
+function InputSystem:init(state, entity_manager)
     local settings = require('settings')
 
-    self.camera_system = camera
+    self.camera_system = state.camera
 
-    self.aimer        = settings.CONTROLS.aim_controller
-    self.keyboard_map = settings.CONTROLS.keyboard
-    self.mouse_map    = settings.CONTROLS.mouse
-    self.gamepad_map  = settings.CONTROLS.gamepad
+    -- self.aimer        = settings.CONTROLS.aim_controller
 
-    self.gamepad = nil
-    
     self.direction = 0
     self.v_direction = 0
     
@@ -38,78 +33,13 @@ function InputSystem:init(entity_manager, camera)
 end
 
 function InputSystem:run(dt)
-    if self.aimer == 'mouse' then
-        self.aim_x, self.aim_y = self.camera_system:mouse_world_coords()
-        -- TODO: save a look direction?
-    elseif self.aimer == 'gamepad' then
-        if self.gamepad ~= nil then
-            local gp_x = self.gamepad:getGamepadAxis('rightx')
-            local gp_y = self.gamepad:getGamepadAxis('righty')
-
-            if gp_x*gp_x + gp_y*gp_y > (0.25)*(0.25) then
-                self.aim_x = self.camera_system.target_position.x + 100*gp_x
-                self.aim_y = self.camera_system.target_position.y + 100*gp_y
-            else
-                self.aim_x = self.camera_system.target_position.x + 100
-                self.aim_y = self.camera_system.target_position.y + 0
-            end
-
-            self.direction = self.gamepad:getGamepadAxis('leftx')
-        end
-    end
-
-    
-
     self.main_trigger_delta = self.main_trigger ~= self.main_trigger_prev
     self.main_trigger_prev = self.main_trigger
 
-    
-
     self.alt_trigger_delta = self.main_trigger ~= self.main_trigger_prev
     self.alt_trigger_prev = self.alt_trigger
-    
 end
 
-function InputSystem:keypressed(key)
-    self:press_event(self.keyboard_map[key])
-end
-
-function InputSystem:keyreleased(key)
-    self:release_event(self.keyboard_map[key])
-end
-
-function InputSystem:mousepressed(x,y,button)
-    self:press_event(self.mouse_map[button])
-end
-
-function InputSystem:mousereleased(x,y,button)
-    self:release_event(self.mouse_map[button])
-end
-
-function InputSystem:joystickadded(gamepad)
-    self.gamepad = gamepad
-    print('VIBES? ', gamepad:isVibrationSupported())
-end
-
-function InputSystem:gamepadpressed(gamepad,button)
-    self:press_event(self.gamepad_map[button])
-end
-
-function InputSystem:gamepadreleased(gamepad,button)
-    self:release_event(self.gamepad_map[button])
-end
-
-function InputSystem:gamepadaxis(gamepad,axis,value)
-    if gamepad ~= nil and self.gamepad == gamepad then
-        if axis == "triggerright" or axis == "triggerleft" then
-            if value >= 0.5 and self[self.gamepad_map[axis]] == false then
-                self:press_event(self.gamepad_map[axis])
-            elseif value < 0.5 and self[self.gamepad_map[axis]] == true then
-                self:release_event(self.gamepad_map[axis])
-            end
-        end
-    end
-end
 
 function InputSystem:press_event(event)
     if     event == 'up' then
@@ -162,5 +92,32 @@ function InputSystem:release_event(event)
         -- self.inv_direction = 0
     end
 end
+
+function InputSystem:keypressed(key)
+end
+
+function InputSystem:keyreleased(key)
+end
+
+function InputSystem:mousepressed(x,y,button)
+end
+
+function InputSystem:mousereleased(x,y,button)
+end
+
+
+function InputSystem:joystickadded(gamepad)
+end
+
+function InputSystem:gamepadpressed(gamepad,button)
+end
+
+function InputSystem:gamepadreleased(gamepad,button)
+end
+
+function InputSystem:gamepadaxis(gamepad,axis,value)
+end
+
+
 
 return InputSystem
