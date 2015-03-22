@@ -85,9 +85,11 @@ return {
                 projectile_speed = 500,
                 -- automatic = false,
                 -- burst = infinity would be automatic
-                max_burst = 3,
+                max_burst = 1,
                 fired=false,
                 visibility_delay = 0,
+                vibration_duration = 0.25,
+                vibration_strength = 1.0,
               },
 
               bullet = {

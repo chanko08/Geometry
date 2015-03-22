@@ -7,7 +7,7 @@ local function render(input, bullet)
         love.graphics.setColor(255*math.random(),255*math.random(),255*math.random())
         local t = love.timer.getTime()
         love.graphics.circle('fill',bullet.physics.s.x, bullet.physics.s.y, bullet.bullet.size + 3*love.math.randomNormal() , 50)
-    
+        
     love.graphics.setColor(r,g,b,a)
 end
 

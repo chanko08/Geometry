@@ -51,6 +51,10 @@ function GunSystem:run( dt )
                 gun.fire_position = player.physics.s
                 gun.gun_state:enter(gun.fire_bullet_state)
                 self.camera:shake(20, 2)
+                if self.input.gamepad ~= nil then
+                    local successQ = self.input.gamepad:setVibration(gun.vibration_strength,gun.vibration_strength,gun.vibration_duration)
+                    -- print('Vibration applied successfully: ', successQ)
+                end
 
                 self.bullet_system:create_bullet(ent)
 
