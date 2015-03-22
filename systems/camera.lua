@@ -1,8 +1,9 @@
-local System             = require 'systems.system'
+ System             = require 'systems.system'
 local CameraComponent    = require 'components.camera'
 local HC                 = require 'lib.HardonCollider'
 local Vector             = require 'lib.hump.vector'
 local HumpCamera         = require 'lib.hump.camera'
+local Tween              = require 'utils.tween'
 
 -- vector  = require 'lib.hump.vector'
 
@@ -14,19 +15,26 @@ function CameraSystem:init( manager, state, renderers,pre_renderers,post_rendere
     manager:register('camera', self)
     self.camera = HumpCamera(0,0)
     self.target_position = {x=0, y=0}
+    self.shake_offset = Vector(0,0)
 
     self.state = state
-
 
     self.renderers      = renderers or {}
     self.pre_renderers  = pre_renderers or {}
     self.post_renderers = post_renderers or {}
     --manager:register('sensors', self)
 
-    
+    self.shake_direction = Vector(0,0)
+    self.shake_intensity = 0
+    self.shake_tween = nil
 end
 
 function CameraSystem:run( dt )
+
+    if self.shake_tween then
+        self.shake_tween:update(dt)
+    end
+
     local target = _.first(self:get_entities('camera'))
     self.target_position = target.physics.s
 
@@ -35,8 +43,8 @@ function CameraSystem:run( dt )
     else
         local px, py = target.physics.s:unpack()
         local dx, dy = px - self.camera.x, py - self.camera.y
-        self.camera:move( dt * dx * target.camera.lag_factor,
-                          dt * dy * target.camera.lag_factor)
+        self.camera:move( dt * dx * target.camera.lag_factor + self.shake_direction.x * self.shake_intensity,
+                          dt * dy * target.camera.lag_factor + self.shake_direction.y + self.shake_intensity)
     end 
 end
 
@@ -93,6 +101,21 @@ function CameraSystem:mouse_world_coords()
 
     return self.camera:worldCoords(mx,my)
 end
+
+function  CameraSystem:shake( intensity, duration )
+    local angle = math.random(0,math.pi)
+    self.shake_direction = Vector(1,0):rotated(angle)
+    self.shake_intensity = intensity
+    local tween_info = {
+        duration=duration,
+        type="outElastic",
+        target=0,
+        start=intensity
+    }
+    self.shake_tween = Tween("shake_intensity", tween_info, self)
+    self.shake_tween:reset()
+end
+
 
 -- function CameraSystem:draw_reticle()
 --     local aim_x, aim_y = love.mouse.getPosition()

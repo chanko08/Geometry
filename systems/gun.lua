@@ -7,11 +7,12 @@ local GunComponent = require 'components.gun'
 local GunSystem = class({})
 GunSystem:include(System)
 
-function GunSystem:init( manager, input, bullet_system )
+function GunSystem:init( manager, input, bullet_system, camera )
     System.init(self,manager)
     manager:register('gun', self)
     self.input = input
     self.bullet_system = bullet_system
+    self.camera = camera
 
 end
 
@@ -49,6 +50,7 @@ function GunSystem:run( dt )
                 print('FIRING: ',gun.burst)
                 gun.fire_position = player.physics.s
                 gun.gun_state:enter(gun.fire_bullet_state)
+                self.camera:shake(20, 2)
 
                 self.bullet_system:create_bullet(ent)
 
