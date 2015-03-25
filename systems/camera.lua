@@ -10,23 +10,21 @@ local Tween              = require 'utils.tween'
 local CameraSystem = class({})
 CameraSystem:include(System)
 
-function CameraSystem:init( manager, state, renderers,pre_renderers,post_renderers )
-    System.init(self,manager)
-    manager:register('camera', self)
-    self.camera = HumpCamera(0,0)
+function CameraSystem:init( state, renderers, pre_renderers, post_renderers )
+    System.init(self,state)
+    self.cam             = HumpCamera(0,0)
     self.target_position = {x=0, y=0}
-    self.shake_offset = Vector(0,0)
 
     self.state = state
 
-    self.renderers      = renderers or {}
-    self.pre_renderers  = pre_renderers or {}
+    self.renderers      = renderers      or {}
+    self.pre_renderers  = pre_renderers  or {}
     self.post_renderers = post_renderers or {}
-    --manager:register('sensors', self)
 
+    self.shake_offset    = Vector(0,0)
     self.shake_direction = Vector(0,0)
     self.shake_intensity = 0
-    self.shake_tween = nil
+    self.shake_tween     = nil
 end
 
 function CameraSystem:run( dt )
@@ -39,11 +37,11 @@ function CameraSystem:run( dt )
     self.target_position = target.physics.s
 
     if not target.camera.lag_factor then
-        self.camera:lookAt(target.physics.s:unpack())
+        self.cam:lookAt(target.physics.s:unpack())
     else
         local px, py = target.physics.s:unpack()
-        local dx, dy = px - self.camera.x, py - self.camera.y
-        self.camera:move( dt * dx * target.camera.lag_factor + self.shake_direction.x * self.shake_intensity,
+        local dx, dy = px - self.cam.x, py - self.cam.y
+        self.cam:move( dt * dx * target.camera.lag_factor + self.shake_direction.x * self.shake_intensity,
                           dt * dy * target.camera.lag_factor + self.shake_direction.y + self.shake_intensity)
     end 
 end
@@ -81,25 +79,25 @@ function CameraSystem:add_post_renderer(renderer)
 end
 
 function CameraSystem:attach()
-    self.camera:attach()
+    self.cam:attach()
 end
 
 function CameraSystem:detach()
-    self.camera:detach()
+    self.cam:detach()
 end
 
 function CameraSystem:to_world_coords(x,y)
-    return self.camera:worldCoords(x,y)
+    return self.cam:worldCoords(x,y)
 end
 
 function CameraSystem:to_camera_coords(x,y)
-    return self.camera:cameraCoords(x,y)
+    return self.cam:cameraCoords(x,y)
 end
 
 function CameraSystem:mouse_world_coords()
     local mx, my = love.mouse.getPosition()
 
-    return self.camera:worldCoords(mx,my)
+    return self.cam:worldCoords(mx,my)
 end
 
 function  CameraSystem:shake( intensity, duration )

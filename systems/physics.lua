@@ -7,9 +7,8 @@ local PhysicsComponent = require 'components.physics'
 local PhysicsSystem = class({})
 PhysicsSystem:include(System)
 
-function PhysicsSystem:init( manager )
-    System.init(self,manager)
-    manager:register('physics', self)
+function PhysicsSystem:init( state )
+    System.init(self,state)
 end
 
 function PhysicsSystem:run( dt )

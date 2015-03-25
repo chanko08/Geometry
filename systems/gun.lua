@@ -7,13 +7,9 @@ local GunComponent = require 'components.gun'
 local GunSystem = class({})
 GunSystem:include(System)
 
-function GunSystem:init( manager, input, bullet_system, camera )
-    System.init(self,manager)
-    manager:register('gun', self)
-    self.input = input
+function GunSystem:init( state, bullet_system )
+    System.init(self,state)
     self.bullet_system = bullet_system
-    self.camera = camera
-
 end
 
 function GunSystem:run( dt )
@@ -56,7 +52,8 @@ function GunSystem:run( dt )
                     -- print('Vibration applied successfully: ', successQ)
                 end
 
-                self.bullet_system:create_bullet(ent)
+                self.relay:emit('fire',ent)
+                -- self.bullet_system:create_bullet(ent)
 
             elseif gun.gun_state.state == gun.release_trigger_state then
                 gun.gun_state:enter(gun.at_rest_state)

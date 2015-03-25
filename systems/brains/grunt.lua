@@ -57,11 +57,10 @@ end
 local function idle( grunt, dt )
 end
 
-function GruntAIController:init( manager, conf )
-    System.init(self,manager)
+function GruntAIController:init( state )
+    System.init(self,state)
 
-    self.conf = conf
-    manager:register('gruntai', self)
+    self.conf = {}
     self.actions = {
         move_left  = move_left,
         move_right = move_right,

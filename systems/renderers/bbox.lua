@@ -15,10 +15,8 @@ end
 local BBoxRenderer = class({})
 BBoxRenderer:include(System)
 
-function BBoxRenderer:init( manager, state )
-    System.init(self,manager)
-    self.state = state
-    manager:register('bbox', self)
+function BBoxRenderer:init( state )
+    System.init(self,state)
 end
 
 function BBoxRenderer:run( )

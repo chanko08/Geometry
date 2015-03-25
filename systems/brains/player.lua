@@ -13,11 +13,8 @@ end
 local PlayerBrain = class({})
 PlayerBrain:include(System)
 
-function PlayerBrain:init( manager, input )
-    System.init(self,manager)
-
-    self.input = input
-    manager:register('player', self)
+function PlayerBrain:init( state )
+    System.init(self,state)
 end
 
 function PlayerBrain:run( dt )

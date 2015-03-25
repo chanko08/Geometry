@@ -14,8 +14,8 @@ end
 local BulletRenderer = class({})
 BulletRenderer:include(System)
 
-function BulletRenderer:init(manager)
-    System.init(self,manager)
+function BulletRenderer:init(state)
+    System.init(self,state)
 end
 
 function BulletRenderer:run( )

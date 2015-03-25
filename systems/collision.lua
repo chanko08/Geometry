@@ -8,14 +8,12 @@ local Vector             = require 'lib.hump.vector'
 local CollisionSystem = class({})
 CollisionSystem:include(System)
 
-function CollisionSystem:init( manager )
-    System.init(self,manager)
-    manager:register('collision', self)
-    --manager:register('sensors', self)
+function CollisionSystem:init( state )
+    System.init(self,state)
 
-    local on_collision = _.curry(CollisionSystem.on_collision, self)
+    local on_collision      = _.curry(CollisionSystem.on_collision, self)
     local on_stop_collision = _.curry(CollisionSystem.on_stop_collision, self)
-    self.collider = HC(100, on_collision, on_stop_collision)
+    self.collider           = HC(100, on_collision, on_stop_collision)
 end
 
 function CollisionSystem:run( dt )

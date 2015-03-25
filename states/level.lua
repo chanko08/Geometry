@@ -1,37 +1,38 @@
-local class     = require('lib.hump.class')
-local inspect   = require('lib.inspect')
-local _         = require('lib.underscore')
+local class           = require('lib.hump.class')
+local inspect         = require('lib.inspect')
+local _               = require('lib.underscore')
 
-local Camera    = require('lib.hump.camera')
-local State     = require('lib.hump.gamestate')
-local Vector    = require('lib.hump.vector')
+local Camera          = require('lib.hump.camera')
+local State           = require('lib.hump.gamestate')
+local Vector          = require('lib.hump.vector')
+local SignalRegistry  = require('lib.hump.signal')
 
-local Constants = require('constants')
+local Constants       = require('constants')
 
--- Renderer     = require('renderers.simple')
-EntityManager   = require('entitymanager')
-PhysicsSystem   = require('systems.physics')
-CollisionSystem = require('systems.collision')
-CameraSystem    = require('systems.camera')
+-- Renderer           = require('renderers.simple')
+EntityManager         = require('entitymanager')
+PhysicsSystem         = require('systems.physics')
+CollisionSystem       = require('systems.collision')
+CameraSystem          = require('systems.camera')
 
---InputSystem     = require('systems.input')
+--InputSystem         = require('systems.input')
 
 
-PlayerBrain     = require('systems.brains.player')
-GruntBrain      = require('systems.brains.grunt')
+PlayerBrain           = require('systems.brains.player')
+GruntBrain            = require('systems.brains.grunt')
 
-GunSystem       = require('systems.gun')
-BulletSystem    = require('systems.bullet')
+GunSystem             = require('systems.gun')
+BulletSystem          = require('systems.bullet')
 
-BBoxRenderer    = require('systems.renderers.bbox')
-LaserRenderer   = require('systems.renderers.laser')
-BulletRenderer  = require('systems.renderers.bullet')
-ReticleRenderer = require('systems.renderers.reticle')
+BBoxRenderer          = require('systems.renderers.bbox')
+LaserRenderer         = require('systems.renderers.laser')
+BulletRenderer        = require('systems.renderers.bullet')
+ReticleRenderer       = require('systems.renderers.reticle')
 
 GamepadHardware       = require('hardware.gamepad')
 KeyboardMouseHardware = require('hardware.keyboardmouse')
 
-load_level      = require('loaders.level')
+load_level            = require('loaders.level')
 -- ---------------------------------------
 -- -- Level Sate
 -- class LevelState extends SystemManager
@@ -46,36 +47,36 @@ function LevelState:enter(previous, state_manager, lvlfile)
     self.state_manager = state_manager
     self.lvlfile = lvlfile
     self.manager = EntityManager()
-    
-    
-    self.camera = CameraSystem(self.manager,self)
+
+    self.relay    = SignalRegistry()
+
+    self.graphics = nil
+    self.audio    = nil
+    self.log      = nil
+    self.savegame = nil
+    self.camera   = CameraSystem(self)
 
     local settings = require 'settings'
-    self.player_input = KeyboardMouseHardware(self)
+    self.input = KeyboardMouseHardware(self)
     if settings.aim_controller == 'gamepad' then
-        self.player_input = GamepadHardware(self)
+        self.input = GamepadHardware(self)
     end
     
-    -- self.player_input    = InputSystem(self.manager, self.camera)
     
-    self.physics         = PhysicsSystem(self.manager)
-    self.collision       = CollisionSystem(self.manager)
+    self.player          = PlayerBrain(self)
+    self.physics         = PhysicsSystem(self)
+    self.collision       = CollisionSystem(self)
 
-    self.grunt_ai        = GruntBrain(self.manager,{})
-    self.player          = PlayerBrain(self.manager, self.player_input)
-    
+    self.grunt_ai        = GruntBrain(self)
 
+    self.bullet          = BulletSystem(self)
+    self.gun             = GunSystem(self, self.bullet)
 
-    self.bullet          = BulletSystem(self.manager, self.player_input, self.collision)
-    self.gun             = GunSystem(self.manager, self.player_input, self.bullet, self.camera)
-    
-    -- self.laser_renderer  = LaserRenderer(self.manager,self.player_input) 
-    self.bbox            = BBoxRenderer(self.manager,self)
-    self.bullet_renderer = BulletRenderer(self.manager)
-    self.reticle_renderer= ReticleRenderer(self.manager, self.player_input)
+    self.bbox            = BBoxRenderer(self)
+    self.bullet_renderer = BulletRenderer(self)
+    self.reticle_renderer= ReticleRenderer(self)
 
     self.camera:add_renderer( self.bbox )
-    -- self.camera:add_renderer( self.laser_renderer )
     self.camera:add_renderer( self.bullet_renderer )
     self.camera:add_renderer( self.reticle_renderer )
 
@@ -84,19 +85,12 @@ function LevelState:enter(previous, state_manager, lvlfile)
                     , player    = self.player
                     , gruntai   = self.grunt_ai
                     , bbox      = self.bbox
-                    -- , laser_renderer = self.laser_renderer
                     , camera    = self.camera
-                    , gun = self.gun
-                    , bullet = self.bullet
+                    , gun       = self.gun
+                    , bullet    = self.bullet
                     }
 
     local ents = load_level(self.manager, systems, 'lvls/'..lvlfile)
-
-    --[[for i,ent in ipairs(ents) do
-        for component_name, c in pairs(ent) do
-            self.manager:broadcast(component_name, ent)
-        end
-    end--]]
 end
 
 function LevelState:leave()
@@ -105,7 +99,7 @@ end
 function LevelState:update(dt)
     
     if not self.pause then
-        self.player_input:run(dt)
+        self.input:run(dt)
         self.player:run(dt)
 
         self.grunt_ai:run(dt)
@@ -128,7 +122,7 @@ end
 function LevelState:keypressed(key)
     if key == 'escape' then love.event.quit() end
 
-    self.player_input:keypressed(key)
+    self.input:keypressed(key)
 
     if key == 'backspace' then
         self.state_manager.switch(
@@ -148,31 +142,31 @@ function LevelState:keypressed(key)
 end
 
 function LevelState:keyreleased(key)
-    self.player_input:keyreleased(key)
+    self.input:keyreleased(key)
 end
 
 function LevelState:mousepressed(...)
-    self.player_input:mousepressed(...)
+    self.input:mousepressed(...)
 end
 
 function LevelState:mousereleased(...)
-    self.player_input:mousereleased(...)
+    self.input:mousereleased(...)
 end
 
 function LevelState:joystickadded(...)
-    self.player_input:joystickadded(...)
+    self.input:joystickadded(...)
 end
 
 function LevelState:gamepadpressed(...)
-    self.player_input:gamepadpressed(...)
+    self.input:gamepadpressed(...)
 end
 
 function LevelState:gamepadreleased(...)
-    self.player_input:gamepadreleased(...)
+    self.input:gamepadreleased(...)
 end
 
 function LevelState:gamepadaxis(...)
-    self.player_input:gamepadaxis(...)
+    self.input:gamepadaxis(...)
 end
 
 return LevelState
