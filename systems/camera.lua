@@ -1,4 +1,4 @@
- System             = require 'systems.system'
+local System             = require 'systems.system'
 local CameraComponent    = require 'components.camera'
 local HC                 = require 'lib.HardonCollider'
 local Vector             = require 'lib.hump.vector'

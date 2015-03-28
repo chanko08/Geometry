@@ -19,9 +19,9 @@ function BulletSystem:run(dt)
     local bullets = self:get_entities('bullet')
 
     -- look for new bullets
-    for i,e in ipairs(self.event_queue) do
-        print(inspect(e))
-        self:create_bullet(e)
+    for k,event in ipairs(self.event_queue) do
+        print('bullet system:',event.name, event.ent)
+        self:create_bullet(event.ent)
     end
 
     -- FLUSH
@@ -47,7 +47,12 @@ function BulletSystem:create_bullet(gun_ent)
 
         local v = gun_ent.gun.bullet.velocity * dir
 
-        bullet_ent.physics   = {entity=bullet_ent, s=gun_ent.physics.s + love.math.random()*0.01*v, v=v, a=Vector(0,0)}
+        bullet_ent.physics   = {
+            entity=bullet_ent, 
+            s=gun_ent.physics.s + love.math.random()*0.01*v, -- Stagger them slightly coming out of the barrel
+            v=v, 
+            a=Vector(0,0)
+        }
 
         bullet_ent.bullet    = {entity=bullet_ent, size = gun_ent.gun.bullet.size}
 

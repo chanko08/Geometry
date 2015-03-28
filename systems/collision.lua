@@ -37,6 +37,9 @@ function CollisionSystem:run( dt )
         -- local s = ent.physics.s + ent.collision.offset
 
         if ent.collision.stop_vertical_movement then
+            if ent.name == 'player' and math.abs(ent.physics.v.y) > 100 then
+                self.relay:emit('land',ent)
+            end
             ent.physics.v.y = 0
         end
 

@@ -7,6 +7,10 @@ local settings = {
     },
     STARTING_STATE = LevelState,
     START_LEVEL = 'simple2.lua',
+    AUDIO = {
+        SFX_VOLUME   = 1.0,
+        MUSIC_VOLUME = 0.5
+    },
     CONTROLS = {
         aim_controller = 'mouse',
         gamepad_sensitivity = 1.0,

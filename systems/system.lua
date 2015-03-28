@@ -35,13 +35,13 @@ end
 function System:build_component( obj, comp_data )
 end
 
-function System:listen_for(event)
-    local insert = function(self, ev)
-        table.insert(self.event_queue, ev)
+function System:listen_for(event_name)
+    local insert = function(self, name, source_entity, ...)
+        table.insert(self.event_queue, {name=name, ent=source_entity, info={...}})
     end
 
     -- FEED MEEEEE
-    self.relay:register(event, _.curry(insert, self))
+    self.relay:register(event_name, _.curry(_.curry(insert,self), event_name))
 end
 
 

@@ -1,4 +1,4 @@
-local KeyboardComponent = class({})
+local PlayerBrainComponent = class({})
 
 local function set_default( key, def, ... )
     -- body
@@ -12,16 +12,13 @@ local function set_default( key, def, ... )
 end
 
 
-function KeyboardComponent:init( conf, layer, obj, comp_data )
-    local vals     = { 'left'
-                     , 'right'
-                     , 'jump'
-                     , 'max_lat_spd'
+function PlayerBrainComponent:init( conf, layer, obj, comp_data )
+    local vals     = { 'max_lat_spd'
                      , 'lat_acc'
                      , 'jump_spd'
                      , 'max_jump_dur'
                      }
-    local defaults = { 'a', 'd', ' ', 333, 1500, 400, .1}
+    local defaults = { 333, 1500, 400, .1}
 
     --set component values to conf, comp_data or a default, in that order
     for i, v in ipairs(vals) do
@@ -33,4 +30,4 @@ function KeyboardComponent:init( conf, layer, obj, comp_data )
     self.jump_time_left = 0
 end
 
-return KeyboardComponent
+return PlayerBrainComponent

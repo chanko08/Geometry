@@ -26,7 +26,7 @@ local function load_level( manager, systems, lvl_file_path )
             for j, obj in ipairs(layer.objects) do
                 local comps = {}
                 comps.lifetime = 0
-                
+                comps.name     = obj.name
 
                 for comp_name,comp_data in pairs(obj.properties) do
                     print('component name: '..comp_name)

@@ -57,68 +57,13 @@ return {
             ["collision"] = {is_passive=false, groups={'player','actor'}, shape='circle'},
             ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=500},
             ["player"] = {},
-            ["camera"] = {}
+            ["camera"] = {},
+            ["audio"]  = {
+              jump = 'jump.wav',
+              land = 'hit.wav'
+            }
           }
         },
-        -- {
-        --   name = "laser-gun",
-        --   type = "",
-        --   shape = "rectangle",
-        --   x = 65,
-        --   y = 45,
-        --   width = 32,
-        --   height = 8,
-        --   rotation = 0,
-        --   visible = true,
-        --   properties = {
-        --     ["bbox"] = true,
-        --     ["collision"] = {is_passive=false, groups={'gun','actor'}, shape='rectangle'},
-        --     ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=0},
-        --     ["gun"] = {
-        --       -- fire rate, pull trigger, wait until we can fire again
-        --       initial = {
-        --         fire_delay = 1,
-        --         --cooldown = 0,
-        --         bullets_per_shot = 1,
-        --         accuracy = 1.00,
-        --         hitscan = false,
-        --         projectile_speed = 500,
-        --         -- automatic = false,
-        --         -- burst = infinity would be automatic
-        --         max_burst = 1,
-        --         fired=false,
-        --         visibility_delay = 0,
-        --         vibration_duration = 0.25,
-        --         vibration_strength = 1.0,
-        --       },
-
-        --       bullet = {
-        --         hitscan  = false,
-        --         velocity = 500,
-        --         size     = 50
-        --       },
-
-        --       at_rest = {
-        --         fire_delay = {duration=1, type='instant',target=1,start=1} -- Imagine a gun that slowly gets more powerful the longer you don't fire 
-        --       },
-
-        --       pull_trigger = {
-        --         fire_delay   = {duration=1, type="linear", target=0, start=1},
-        --       },
-
-        --       fire_bullet = {
-        --         fire_delay       = {duration=1, type="linear", target=0, start=1},
-        --         visibility_delay = {duration=1,  type="linear", target=0, start=1}
-        --       },
-
-        --       release_trigger = {
-        --         -- fire_delay = {duration=1, type='instant',target=0,start=1}
-        --       },
-
-        --       bullet_render_tag = "laser"
-        --     }
-        --   }
-        -- },
         {
           name = "shotgun",
           type = "",
@@ -133,6 +78,9 @@ return {
             ["bbox"] = true,
             ["collision"] = {is_passive=false, groups={'gun','actor'}, shape='rectangle'},
             ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=0},
+            ['audio'] = {
+              fire = 'pew.wav'
+            },
             ["gun"] = {
               -- fire rate, pull trigger, wait until we can fire again
               initial = {

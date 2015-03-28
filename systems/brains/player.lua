@@ -1,6 +1,6 @@
-local System            = require 'systems.system'
-local KeyboardComponent = require 'components.keyboard' 
-local Vector            = require 'lib.hump.vector'
+local System               = require 'systems.system'
+local PlayerBrainComponent = require 'components.playerbrain' 
+local Vector               = require 'lib.hump.vector'
 
 local function sign( x )
     if     x > 0 then return 1
@@ -19,7 +19,6 @@ end
 
 function PlayerBrain:run( dt )
     for i,ent in ipairs(self:get_entities('player')) do
-        self:check_move(ent)
 
         ent.player.aim_target = Vector(self.input.aim_x, self.input.aim_y)
    
@@ -44,6 +43,7 @@ function PlayerBrain:run( dt )
 
                 ent.player.jump_time_left = math.min(t - dt,0)
                 -- print('jumping...')
+                self.relay:emit('jump',ent)
             else
                 ent.physics.a.y = ent.physics.gravity
                 -- print('stopped jumping ...')
@@ -57,36 +57,8 @@ function PlayerBrain:run( dt )
     end
 end
 
-
-function PlayerBrain:check_move( entity )
-
-    
-
-
-
-
-    -- --checking jump
-    -- if self.input.jump then
-    --     if entity.player.jump_time_left <= 0 then
-    --         -- entity.physics.a.y = 0
-    --         entity.physics.v.y = - entity.player.jump_spd
-    --         entity.player.jumping = true
-    --         entity.player.jump_time_left = entity.player.max_jump_dur
-    --     else
-    --         -- 
-    --     end
-    -- else
-    --     if entity.player.jump_time_left > 0 and entity.physics.v.y > 0 then
-    --         entity.physics.a.y = entity.physics.gravity
-    --         entity.physics.v.y = 0
-    --         entity.player.jumping = false
-    --         entity.player.jump_time_left = 0
-    --     end
-    -- end
-end
-
 function PlayerBrain:build_component( ... )
-    return KeyboardComponent( {},  ...)
+    return PlayerBrainComponent( {},  ...)
 end
 
 return PlayerBrain

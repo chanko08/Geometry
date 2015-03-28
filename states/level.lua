@@ -1,38 +1,34 @@
-local class           = require('lib.hump.class')
-local inspect         = require('lib.inspect')
-local _               = require('lib.underscore')
 
-local Camera          = require('lib.hump.camera')
-local State           = require('lib.hump.gamestate')
-local Vector          = require('lib.hump.vector')
-local SignalRegistry  = require('lib.hump.signal')
+local Camera                = require('lib.hump.camera')
+local State                 = require('lib.hump.gamestate')
+local Vector                = require('lib.hump.vector')
+local SignalRegistry        = require('lib.hump.signal')
 
-local Constants       = require('constants')
+local Constants             = require('constants')
 
--- Renderer           = require('renderers.simple')
-EntityManager         = require('entitymanager')
-PhysicsSystem         = require('systems.physics')
-CollisionSystem       = require('systems.collision')
-CameraSystem          = require('systems.camera')
+local EntityManager         = require('entitymanager')
+local PhysicsSystem         = require('systems.physics')
+local CollisionSystem       = require('systems.collision')
+local CameraSystem          = require('systems.camera')
 
---InputSystem         = require('systems.input')
+local AudioMixer            = require('systems.audiomixer')
 
+local PlayerBrain           = require('systems.brains.player')
+local GruntBrain            = require('systems.brains.grunt')
 
-PlayerBrain           = require('systems.brains.player')
-GruntBrain            = require('systems.brains.grunt')
+local GunSystem             = require('systems.gun')
+local BulletSystem          = require('systems.bullet')
 
-GunSystem             = require('systems.gun')
-BulletSystem          = require('systems.bullet')
+local BBoxRenderer          = require('systems.renderers.bbox')
+local LaserRenderer         = require('systems.renderers.laser')
+local BulletRenderer        = require('systems.renderers.bullet')
+local ReticleRenderer       = require('systems.renderers.reticle')
 
-BBoxRenderer          = require('systems.renderers.bbox')
-LaserRenderer         = require('systems.renderers.laser')
-BulletRenderer        = require('systems.renderers.bullet')
-ReticleRenderer       = require('systems.renderers.reticle')
+local GamepadHardware       = require('hardware.gamepad')
+local KeyboardMouseHardware = require('hardware.keyboardmouse')
 
-GamepadHardware       = require('hardware.gamepad')
-KeyboardMouseHardware = require('hardware.keyboardmouse')
+local load_level            = require('loaders.level')
 
-load_level            = require('loaders.level')
 -- ---------------------------------------
 -- -- Level Sate
 -- class LevelState extends SystemManager
@@ -62,6 +58,7 @@ function LevelState:enter(previous, state_manager, lvlfile)
         self.input = GamepadHardware(self)
     end
     
+    self.audiomixer      = AudioMixer(self)
     
     self.player          = PlayerBrain(self)
     self.physics         = PhysicsSystem(self)
@@ -83,6 +80,7 @@ function LevelState:enter(previous, state_manager, lvlfile)
     local systems = { physics   = self.physics
                     , collision = self.collision
                     , player    = self.player
+                    , audio     = self.audiomixer
                     , gruntai   = self.grunt_ai
                     , bbox      = self.bbox
                     , camera    = self.camera
@@ -109,6 +107,8 @@ function LevelState:update(dt)
         self.bullet:run(dt)
 
         self.collision:run(dt)
+
+        self.audiomixer:run(dt)
         self.camera:run(dt)
 
     end
@@ -141,8 +141,8 @@ function LevelState:keypressed(key)
 
 end
 
-function LevelState:keyreleased(key)
-    self.input:keyreleased(key)
+function LevelState:keyreleased(...)
+    self.input:keyreleased(...)
 end
 
 function LevelState:mousepressed(...)
