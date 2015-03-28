@@ -1,5 +1,10 @@
 local System = require 'systems.system'
 local Vector = require 'lib.hump.vector'
+ 
+
+local function random_float( low, high )
+    return (high - low)*love.math.random()+low
+end
 
 
 local BulletSystem = class({})
@@ -23,21 +28,31 @@ function BulletSystem:run(dt)
     self.event_queue = {}
 
     -- do stuff with current bullets (nothing right now)
-    for i,bullet in ipairs(bullets) do
-        print(i,bullet.physics.s)
-    end
+    -- for i,bullet in ipairs(bullets) do
+    --     print(i,bullet.physics.s)
+    -- end
 end
 
 function BulletSystem:create_bullet(gun_ent)
-    local bullet_ent = {}
+    for i=1,gun_ent.gun.bullets_per_shot do
+        local bullet_ent = {}
 
-    local v = gun_ent.gun.bullet.velocity * Vector(self.input.aim_x - gun_ent.physics.s.x, self.input.aim_y - gun_ent.physics.s.y):normalized()
+        local dir = Vector(self.input.aim_x - gun_ent.physics.s.x, self.input.aim_y - gun_ent.physics.s.y):normalized()
 
-    bullet_ent.physics   = {entity=bullet_ent, s=gun_ent.physics.s, v=v, a=Vector(0,0)}
+        -- Randomly rotate the aim vector within the accuracy percentage of [-pi/2 pi/2]
+        if gun_ent.gun.accuracy < 1.00 then
+            local rotation = random_float(-math.pi/2 * (1-gun_ent.gun.accuracy)/2 ,math.pi/2 * (1-gun_ent.gun.accuracy)/2)
+            dir = dir:rotated(rotation)
+        end
 
-    bullet_ent.bullet    = {entity=bullet_ent, size = gun_ent.gun.bullet.size}
+        local v = gun_ent.gun.bullet.velocity * dir
 
-    self.manager:add_entity(bullet_ent)
+        bullet_ent.physics   = {entity=bullet_ent, s=gun_ent.physics.s + love.math.random()*0.01*v, v=v, a=Vector(0,0)}
+
+        bullet_ent.bullet    = {entity=bullet_ent, size = gun_ent.gun.bullet.size}
+
+        self.manager:add_entity(bullet_ent)
+    end
 end
 
 return BulletSystem
