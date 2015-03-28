@@ -67,7 +67,7 @@ function LevelState:enter(previous, state_manager, lvlfile)
     self.grunt_ai        = GruntBrain(self)
 
     self.bullet          = BulletSystem(self)
-    self.gun             = GunSystem(self, self.bullet)
+    self.gun             = GunSystem(self)
 
     self.bbox            = BBoxRenderer(self)
     self.bullet_renderer = BulletRenderer(self)

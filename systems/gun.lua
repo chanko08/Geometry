@@ -7,9 +7,8 @@ local GunComponent = require 'components.gun'
 local GunSystem = class({})
 GunSystem:include(System)
 
-function GunSystem:init( state, bullet_system )
+function GunSystem:init( state )
     System.init(self,state)
-    self.bullet_system = bullet_system
 end
 
 function GunSystem:run( dt )
@@ -26,8 +25,6 @@ function GunSystem:run( dt )
 
     for i,ent in ipairs(guns) do
         local gun = ent.gun
-
-        -- print('state: '..gun.gun_state.state.name, gun.fire_delay)
         
         if self.input.main_trigger_delta then
             if self.input.main_trigger then
@@ -53,7 +50,6 @@ function GunSystem:run( dt )
                 end
 
                 self.relay:emit('fire',ent)
-                -- self.bullet_system:create_bullet(ent)
 
             elseif gun.gun_state.state == gun.release_trigger_state then
                 gun.gun_state:enter(gun.at_rest_state)
