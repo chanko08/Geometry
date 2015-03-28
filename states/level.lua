@@ -58,7 +58,7 @@ function LevelState:enter(previous, state_manager, lvlfile)
 
     local settings = require 'settings'
     self.input = KeyboardMouseHardware(self)
-    if settings.controls.aim_controller == 'gamepad' then
+    if settings.CONTROLS.aim_controller == 'gamepad' then
         self.input = GamepadHardware(self)
     end
     
