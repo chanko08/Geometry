@@ -12,8 +12,6 @@ function GunSystem:init( state )
 end
 
 function GunSystem:run( dt )
-    -- check input for if we're pulling trigger
-    --if just fired
     local player = _.first(self:get_entities('player'))
 
     local guns = self:get_entities('gun')
@@ -43,7 +41,7 @@ function GunSystem:run( dt )
                 print('FIRING: ',gun.burst)
                 gun.fire_position = player.physics.s
                 gun.gun_state:enter(gun.fire_bullet_state)
-                self.camera:shake(20, 2)
+                -- self.camera:shake(20, 2)
                 if self.input.gamepad ~= nil then
                     local successQ = self.input.gamepad:setVibration(gun.vibration_strength,gun.vibration_strength,gun.vibration_duration)
                     -- print('Vibration applied successfully: ', successQ)
@@ -51,10 +49,10 @@ function GunSystem:run( dt )
 
                 self.relay:emit('fire',ent)
 
-            elseif gun.gun_state.state == gun.release_trigger_state then
-                gun.gun_state:enter(gun.at_rest_state)
-                -- print('RETURNING TO REST')
             end
+        elseif gun.gun_state.state == gun.release_trigger_state then
+            gun.gun_state:enter(gun.at_rest_state)
+            -- print('RETURNING TO REST')
         end        
 
         gun:update(dt)

@@ -6,7 +6,8 @@ local System = class({})
 function System:init( state )
     self.entities = Set({},true)
 
-    self.event_queue = {} 
+    self.event_queue = {}
+    self.subsystems  = {}
     
     self.manager     = state.manager
     self.relay       = state.relay
@@ -28,11 +29,17 @@ function System:get_entities(component)
     return self.manager:get_entities(component)
 end
 
-function System:run( ... )
-    -- body
+function System:run( dt )
+    for i,subsystem in ipairs(self.subsystems) do
+        subsystem:run(dt)
+    end
 end
 
 function System:build_component( obj, comp_data )
+end
+
+function System:add_subsystem( system )
+    table.insert(self.subsystems, system)
 end
 
 function System:listen_for(event_name)

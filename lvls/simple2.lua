@@ -95,6 +95,7 @@ return {
                 fired=false,
                 vibration_duration = 0.25,
                 vibration_strength = 0.6,
+                shake_spectrum     = {4, 5, 33, 25}
               },
 
               bullet = {
