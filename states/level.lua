@@ -4,14 +4,14 @@ local State                 = require('lib.hump.gamestate')
 local Vector                = require('lib.hump.vector')
 local SignalRegistry        = require('lib.hump.signal')
 
-local Constants             = require('constants')
-
 local EntityManager         = require('entitymanager')
 local PhysicsSystem         = require('systems.physics')
 local CollisionSystem       = require('systems.collision')
 local CameraSystem          = require('systems.camera')
 
 local AudioMixer            = require('systems.audiomixer')
+
+local HashtagSystem         = require('systems.hashtag')
 
 local PlayerBrain           = require('systems.brains.player')
 local GruntBrain            = require('systems.brains.grunt')
@@ -57,6 +57,8 @@ function LevelState:enter(previous, state_manager, lvlfile)
     if settings.CONTROLS.aim_controller == 'gamepad' then
         self.input = GamepadHardware(self)
     end
+
+    self.hashtag         = HashtagSystem(self)
     
     self.audiomixer      = AudioMixer(self)
     
@@ -86,6 +88,7 @@ function LevelState:enter(previous, state_manager, lvlfile)
                     , camera    = self.camera
                     , gun       = self.gun
                     , bullet    = self.bullet
+                    , hashtag   = self.hashtag
                     }
 
     local ents = load_level(self.manager, systems, 'lvls/'..lvlfile)
@@ -97,6 +100,7 @@ end
 function LevelState:update(dt)
     
     if not self.pause then
+        self.hashtag:run(dt)
         self.input:run(dt)
         self.player:run(dt)
 

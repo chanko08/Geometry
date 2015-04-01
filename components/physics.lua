@@ -1,4 +1,3 @@
-local class  = require('lib.hump.class')
 local Vector = require('lib.hump.vector')
 
 local PhysicsComponent = class({})

@@ -4,11 +4,22 @@ local Signal = require('lib.hump.signal')
 local Set    = require('utils.set')
 
 
+local function get_entities( search_space, accessor )
+    if search_space then
+        return _.map(search_space:items(), accessor)
+    else
+        return {}
+    end
+end
+
+
+
 local EntityManager = class({})
 
 function EntityManager:init()
     --self.entities = Set({}, false)
     self.component_sets = {}
+    self.tag_sets = {}
     self.signals  = Signal.new()
 end
 
@@ -23,11 +34,7 @@ function EntityManager:get_entities( component_name )
         return comp.entity
     end
 
-    if self.component_sets[component_name] then
-        return _.map(self.component_sets[component_name]:items(), get_ent)
-    else
-        return {}
-    end
+    return get_entities(self.component_sets[component_name], get_ent)
 end
 
 function EntityManager:add_entity( entity )
@@ -39,18 +46,42 @@ function EntityManager:add_entity( entity )
 
             self.component_sets[k]:add(comp)
         end
+
+        if k == 'hashtag' then
+            self:add_entity_tags(comp, entity)
+        end
     end
 end
 
---[[
-function EntityManager:broadcast(system_type, entity)
-    self.entities:add(entity)
-    self.signals:emit(system_type, entity)
+function EntityManager:add_entity_tags( comp, entity )
+    for i, tag in ipairs(comp.tags) do
+        if not self.tag_sets[tag] then
+            self.tag_sets[tag] = Set({}, false)
+        end
+
+        self.tag_sets[tag]:add(entity)
+    end
 end
---]]
+
+function EntityManager:get_entities_by_tag( tag )
+    return get_entities(self.tag_sets[tag], _.identity)
+end
+
+
+
+-- TODO 
+function EntityManager:remove_entity_tags( entity )
+end
+
+-- TODO
+function EntityManager:remove_entity_components( entity )
+end
 
 function EntityManager:remove(entity)
-    self.entities:remove(entity)
+    self.remove_entity_components(entity)
+
+    self:remove_entity_tags(entity)
+
 end
 
 return EntityManager

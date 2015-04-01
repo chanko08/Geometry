@@ -29,6 +29,10 @@ function System:get_entities(component)
     return self.manager:get_entities(component)
 end
 
+function System:get_entities_by_tag( tag )
+    return self.manager:get_entities_by_tag(tag)
+end
+
 function System:run( dt )
     for i,subsystem in ipairs(self.subsystems) do
         subsystem:run(dt)
