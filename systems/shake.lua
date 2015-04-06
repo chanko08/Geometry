@@ -37,7 +37,7 @@ function ShakeSystem:run(dt)
 
     -- look for new bullets
     for k,event in ipairs(self.event_queue) do
-        print('shake system:',event.name, event.ent)
+        -- print('shake system:',event.name, event.ent)
         self:shake(event.ent.gun.shake_spectrum)
     end
 
@@ -60,12 +60,12 @@ function ShakeSystem:run(dt)
     end
     -- FLUSH
     self.event_queue = {}
-    print('Shake amount: ',self.shake)
+    -- print('Shake amount: ',self.shake)
 end
 
 function ShakeSystem:impulse(mode,magnitude,direction)
     local d = direction or Vector(0,1):rotated(math.random() * 2 * math.pi )
-    print('Shake: ',mode,magnitude,d)
+    -- print('Shake: ',mode,magnitude,d)
     self.modes[mode].v = self.modes[mode].v + magnitude*d
 end
 

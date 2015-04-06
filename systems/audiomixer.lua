@@ -41,7 +41,7 @@ end
 function AudioMixer:run( dt )
     -- look for new bullets
     for i,e in ipairs(self.event_queue) do
-        print('audio event:',e.name,e.ent)
+        -- print('audio event:',e.name,e.ent)
 
         local file = e.ent.audio[e.name]
 
@@ -60,7 +60,7 @@ function AudioMixer:build_component( layer, obj, comp_data )
     local c = AudioComponent(layer, obj, comp_data)
     for event,sound_file in pairs(c) do
         self:listen_for(event)
-        print('Listening for audio event:',event)
+        -- print('Listening for audio event:',event)
     end
     return c
 end
@@ -70,7 +70,7 @@ function AudioMixer:add_sfx(sound_file)
     -- We'll do this for small files (like sound effects)
     local s = love.audio.newSource(self.sfx_dir..sound_file, 'static')
     s:setVolume(self.settings.SFX_VOLUME)
-    print('adding sfx:', sound_file)
+    -- print('adding sfx:', sound_file)
     self.sfx[sound_file] = s
 end
 
@@ -80,7 +80,7 @@ function AudioMixer:add_music(music_file)
     local s = love.audio.newSource(self.music_dir..music_file)
     s:setLooping(true) -- for now?
     s:setVolume(self.settings.MUSIC_VOLUME)
-    print('adding music:', music_file)
+    -- print('adding music:', music_file)
     self.music[music_file] = s
 end
 

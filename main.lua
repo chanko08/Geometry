@@ -13,7 +13,5 @@ function love.load(args)
     State.registerEvents()
     local start_level = settings.START_LEVEL
 
-    print(inspect(settings))
-    print(start_level)
     State.switch(LevelState, State, start_level)
 end

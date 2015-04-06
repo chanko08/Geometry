@@ -1,5 +1,6 @@
 return {
     ["gun"] = {
+
         initial = {
             fire_delay = 1,
             bullets_per_shot = 1,

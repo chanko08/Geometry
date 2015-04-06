@@ -27,19 +27,7 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["bbox"] = true,
-            ["gruntai"] = {},
-            ["collision"] = {
-              is_passive=false,
-              groups={'grunt'},
-              sensors = {
-                {name='player_visible', is_passive=false, groups={'sensors'}, shape='circle', width=200, rel_x=0, rel_y=0},
-                {name='cliff_left',     is_passive=false, groups={'sensors','actor'}, shape='rectangle', width=1, height=80, rel_x=-15, rel_y=32},
-                {name='cliff_right',    is_passive=false, groups={'sensors','actor'}, shape='rectangle', width=1, height=80, rel_x=16, rel_y=32}
-              }
-            },
-            
-            ["physics"] = {v={x=0,y=0}, a={x=0,y=0}, gravity=500}
+            prototype = 'actors.grunt'
           }
         },
         {
@@ -53,15 +41,7 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["bbox"] = true,
-            ["collision"] = {is_passive=false, groups={'player','actor'}, shape='circle'},
-            ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=500},
-            ["player"] = {},
-            ["camera"] = {},
-            ["audio"]  = {
-              jump = 'jump.wav',
-              land = 'hit.wav'
-            }
+            prototype = 'actors.player'
           }
         },
         {
@@ -75,85 +55,9 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["bbox"] = true,
-            ["collision"] = {is_passive=false, groups={'gun','actor'}, shape='rectangle'},
-            ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=0},
-            ['audio'] = {
-              fire = 'pew.wav'
-            },
-            ["gun"] = {
-              -- fire rate, pull trigger, wait until we can fire again
-              initial = {
-                fire_delay = 1,
-                --cooldown = 0,
-                bullets_per_shot = 11,
-                accuracy = 0.55,
-                hitscan = false,
-                -- automatic = false,
-                -- burst = infinity would be automatic
-                max_burst = 1,
-                fired=false,
-                vibration_duration = 0.25,
-                vibration_strength = 0.6,
-                shake_spectrum     = {4, 5, 33, 25}
-              },
-
-              bullet = {
-                hitscan  = false,
-                velocity = 1500,
-                size     = 5
-              },
-
-              at_rest = {
-                fire_delay = {duration=1, type='instant',target=1,start=1} -- Imagine a gun that slowly gets more powerful the longer you don't fire 
-              },
-
-              pull_trigger = {
-                fire_delay   = {duration=1, type="instant", target=0, start=0},
-              },
-
-              fire_bullet = {
-                fire_delay = {duration=0.2, type="linear", target=0, start=1}
-              },
-
-              release_trigger = {
-              },
-
-              bullet_render_tag = "shotgun"
-            }
+            prototype = "gun.shotgun"
           }
         }
-        --[[,
-        {
-          name = "pistol",
-          type = "",
-          shape = "rectangle",
-          x = 65,
-          y = 45,
-          width = 32,
-          height = 8,
-          rotation = 0,
-          visible = true,
-          properties = {
-            ["bbox"] = true,
-            ["collision"] = {is_passive=false, groups={'gun','actor'}, shape='rectangle'},
-            ["physics"] = {v={x=0, y=0}, a={x=0, y=0}, gravity=0},
-            ["hitscan_gun"] = {},
-            ["gun"] = {
-              -- fire rate, pull trigger, wait until we can fire again
-              initial = {
-                fire_rate = 1
-              },
-
-              pull_trigger = {
-                fire_rate = {duration=1, type="linear", target=0, start=1}
-              },
-
-              release_trigger = {}
-            }
-          }
-        }
-        ]]--
       }
     },
     {
@@ -174,7 +78,7 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["bbox"] = true,
+            ["bbox"] = {},
             ["collision"] = {},
             ["physics"] = {}
           }
@@ -195,7 +99,7 @@ return {
         --     { x = 1233, y = 408 }
         --   },
         --   properties = {
-        --     --["bbox"] = true,
+        --     --["bbox"] = {},
         --     ["collision"] = {},
         --     ["physics"] = {}
         --   }
@@ -211,34 +115,11 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["bbox"] = true,
+            ["bbox"] = {},
             ["collision"] = {},
             ["physics"] = {}
           }
-        }--,
-        -- {
-        --   name = "boundary",
-        --   type = "",
-        --   shape = "polyline",
-        --   x = 8,
-        --   y = 5,
-        --   width = 0,
-        --   height = 0,
-        --   rotation = 0,
-        --   visible = true,
-        --   polyline = {
-        --     { x = 0, y = 0 },
-        --     { x = 1, y = 1195 },
-        --     { x = 1561, y = 1193 },
-        --     { x = 1560, y = 1 },
-        --     { x = 1, y = 1 }
-        --   },
-        --   properties = {
-        --     -- ["bbox"] = true,
-        --     ["collision"] = {},
-        --     ["physics"] = {}
-        --   }
-        -- }
+        }
       }
     },
     {
