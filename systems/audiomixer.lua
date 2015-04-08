@@ -56,8 +56,8 @@ function AudioMixer:run( dt )
     self.event_queue = {}
 end
 
-function AudioMixer:build_component( layer, obj, comp_data )
-    local c = AudioComponent(layer, obj, comp_data)
+function AudioMixer:build_component( obj, comp_data )
+    local c = AudioComponent(obj, comp_data)
     for event,sound_file in pairs(c) do
         self:listen_for(event)
         -- print('Listening for audio event:',event)

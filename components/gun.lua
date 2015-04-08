@@ -8,7 +8,7 @@ local GunComponent = class({})
 
 
 
-function GunComponent:init( layer, obj, comp_data )
+function GunComponent:init( obj, comp_data )
 
     -- The raw parameters/properties for the gun
     -- these are the things that get tweened (or are fixed)

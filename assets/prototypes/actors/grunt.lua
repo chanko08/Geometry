@@ -3,7 +3,7 @@ return {
             ["gruntai"] = {},
             ["collision"] = {
               is_passive=false,
-              groups={'grunt', 'actor'},
+              groups={'grunt'},
               sensors = {
                 {name='player_visible', is_passive=false, groups={'sensors'}, shape='circle', width=200, rel_x=0, rel_y=0},
                 {name='cliff_left',     is_passive=false, groups={'sensors','actor'}, shape='rectangle', width=1, height=80, rel_x=-15, rel_y=32},

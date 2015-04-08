@@ -47,8 +47,8 @@ function CameraSystem:run( dt )
 end
 
 
-function CameraSystem:build_component( layer, obj, comp_data )
-    return CameraComponent(layer, obj, comp_data)
+function CameraSystem:build_component( obj, comp_data )
+    return CameraComponent(obj, comp_data)
 end
 
 function CameraSystem:draw()

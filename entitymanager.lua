@@ -16,8 +16,9 @@ end
 
 local EntityManager = class({})
 
-function EntityManager:init()
+function EntityManager:init(entity_loader)
     --self.entities = Set({}, false)
+    self.prototypes = prototypes or {}
     self.component_sets = {}
     self.tag_sets = {}
     self.signals  = Signal.new()
@@ -51,6 +52,10 @@ function EntityManager:add_entity( entity )
             self:add_entity_tags(comp, entity)
         end
     end
+end
+
+function EntityManager:construct_entity(entity_data, prototype)
+    return self.entity_loader:from_prototype(entity_data, prototype)
 end
 
 function EntityManager:add_entity_tags( comp, entity )

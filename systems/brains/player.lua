@@ -58,7 +58,7 @@ function PlayerBrain:run( dt )
 end
 
 function PlayerBrain:build_component( ... )
-    return PlayerBrainComponent( {},  ...)
+    return PlayerBrainComponent( ... )
 end
 
 return PlayerBrain

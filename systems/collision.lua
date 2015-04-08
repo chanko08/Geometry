@@ -104,9 +104,9 @@ function CollisionSystem:on_stop_collision(dt, shape, other_shape)
 
 end
 
-function CollisionSystem:build_component( layer, obj, comp_data )
+function CollisionSystem:build_component( obj, comp_data )
 
-    return CollisionComponent(self.collider, layer, obj, comp_data)
+    return CollisionComponent(self.collider, obj, comp_data)
 end
 
 return CollisionSystem

@@ -13,5 +13,6 @@ return {
             ["audio"]  = {
               jump = 'jump.wav',
               land = 'hit.wav'
-            }
+            },
+            ["inventory"] = {}
           }

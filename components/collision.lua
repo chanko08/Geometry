@@ -2,7 +2,7 @@ local class  = require('lib.hump.class')
 local Vector = require('lib.hump.vector')
 
 
-local function build_shape( self, collider, layer, obj, comp_data )
+local function build_shape( self, collider, obj, comp_data )
     self.shape_name = comp_data.shape or obj.shape 
     
     -- We might want to change this later... assumption is
@@ -15,7 +15,7 @@ local function build_shape( self, collider, layer, obj, comp_data )
     end
 
 
-    self.groups          = comp_data.groups or {layer.name} or {obj.name}
+    self.groups          = comp_data.groups or {obj.name}
     
     self.has_collided   = false
     self.resolve_vector = Vector(0,0)
@@ -48,12 +48,12 @@ local function build_shape( self, collider, layer, obj, comp_data )
 end
 
 local CollisionComponent = class({})
-function CollisionComponent:init(collider, layer, obj, comp_data)
+function CollisionComponent:init(collider, obj, comp_data)
     -- TODO: Maybe give error if no position?
 
     -- builds the collision info for the component
     
-    build_shape(self, collider, layer, obj, comp_data)
+    build_shape(self, collider, obj, comp_data)
 
     local cx, cy = self.shape:center()
     self.sensors = {}
@@ -65,7 +65,7 @@ function CollisionComponent:init(collider, layer, obj, comp_data)
         sensor_data.x = sensor_data.rel_x + cx
         sensor_data.y = sensor_data.rel_y + cy
         sensor_data.groups = _.extend(sensor_data.groups, comp_data.groups)
-        build_shape(sensor, collider, layer, sensor_data, sensor_data)
+        build_shape(sensor, collider, sensor_data, sensor_data)
 
         sensor.shape.is_sensor = true
 

@@ -79,7 +79,7 @@ return {
           visible = true,
           properties = {
             ["bbox"] = {},
-            ["collision"] = {},
+            ["collision"] = {groups={"Terrain"}},
             ["physics"] = {}
           }
         },
@@ -116,7 +116,7 @@ return {
           visible = true,
           properties = {
             ["bbox"] = {},
-            ["collision"] = {},
+            ["collision"] = {groups={"Terrain"}},
             ["physics"] = {}
           }
         }
@@ -157,13 +157,15 @@ return {
           name = "item3",
           type = "",
           shape = "rectangle",
-          x = 1019,
-          y = 800,
+          x = 200,
+          y = 45,
           width = 35,
           height = 28,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            prototype='item.pickup'
+          }
         },
         {
           name = "gun",

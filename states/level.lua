@@ -28,6 +28,7 @@ local GamepadHardware       = require('hardware.gamepad')
 local KeyboardMouseHardware = require('hardware.keyboardmouse')
 
 local load_level            = require('loaders.level')
+local TiledFileLoaderSystem       = require('hardware.tiledfileloader')
 
 -- ---------------------------------------
 -- -- Level Sate
@@ -42,7 +43,8 @@ function LevelState:enter(previous, state_manager, lvlfile)
     self.pause   = false
     self.state_manager = state_manager
     self.lvlfile = lvlfile
-    self.manager = EntityManager()
+    self.entity_builder = TiledFileLoaderSystem(self)
+    self.manager = EntityManager(self.entity_builder)
 
     self.relay    = SignalRegistry()
 
@@ -91,7 +93,9 @@ function LevelState:enter(previous, state_manager, lvlfile)
                     , hashtag   = self.hashtag
                     }
 
-    local ents = load_level(self.manager, systems, 'lvls/'..lvlfile)
+    self.entity_builder.systems = systems
+    local ents = self.entity_builder:load_level('lvls/'..lvlfile)
+    _.each(ents, _.curry(self.manager.add_entity, self.manager))
 end
 
 function LevelState:leave()
@@ -106,7 +110,7 @@ function LevelState:update(dt)
 
         self.grunt_ai:run(dt)
         self.physics:run(dt)
-        
+    
         self.gun:run(dt)
         self.bullet:run(dt)
 
@@ -125,6 +129,8 @@ end
 
 function LevelState:keypressed(key)
     if key == 'escape' then love.event.quit() end
+
+    if key == 'i' then self.relay:emit('add_item', _.first(self.manager:get_entities('player')), 'gun.shotgun' ) end
 
     self.input:keypressed(key)
 

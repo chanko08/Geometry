@@ -60,7 +60,6 @@ end
 function GruntAIController:init( state )
     System.init(self,state)
 
-    self.conf = {}
     self.actions = {
         move_left  = move_left,
         move_right = move_right,
@@ -118,7 +117,7 @@ function GruntAIController:run( dt )
 end
 
 function GruntAIController:build_component( ... )
-    return GruntAIComponent(self.conf, ... )
+    return GruntAIComponent( ... )
 end
 
 return GruntAIController

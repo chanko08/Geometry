@@ -12,7 +12,7 @@ local function set_default( key, def, ... )
 end
 
 
-function GruntAIComponent:init( conf, layer, obj, comp_data )
+function GruntAIComponent:init( obj, comp_data )
     local vals     = { 'left'
                      , 'right'
                      , 'jump'
@@ -25,7 +25,7 @@ function GruntAIComponent:init( conf, layer, obj, comp_data )
 
     --set component values to conf, comp_data or a default, in that order
     for i, v in ipairs(vals) do
-        self[v] = set_default(v, defaults[i], conf, comp_data)
+        self[v] = set_default(v, defaults[i], comp_data)
     end
 
     -- not included in the above because these shouldnt be configurable
