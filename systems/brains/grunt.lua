@@ -67,6 +67,9 @@ function GruntAIController:init( state )
         jump       = jump,
         idle       = idle
     }
+
+    self:listen_for('grunt_brain_turn_left')
+    self:listen_for('grunt_brain_turn_right')
 end
 
 function GruntAIController:run( dt )
@@ -92,27 +95,38 @@ function GruntAIController:run( dt )
             grunt.physics.a.y = grunt.physics.gravity
             -- print('stopped jumping ...')
         end
-        
-        if     grunt.gruntai.state == 'move_left' then
-            if not sensors.cliff_left.has_collided then
+
+        for k,event in ipairs(self.event_queue) do
+            if event.name == 'grunt_brain_turn_right' then
                 grunt.gruntai.state = 'move_right'
                 grunt.physics.v.x = 0
-            end
-        elseif grunt.gruntai.state == 'move_right' then
-            if not sensors.cliff_right.has_collided then
+            elseif event.name == 'grunt_brain_turn_left' then
                 grunt.gruntai.state = 'move_left'
                 grunt.physics.v.x = 0
             end
-        elseif grunt.gruntai.state == 'jump' then
-            -- nothing.
-        elseif grunt.gruntai.state == 'attack' then
-            -- nothing
-        elseif grunt.gruntai.state == 'idle' then
-            -- nothing
         end
+        
+        -- if     grunt.gruntai.state == 'move_left' then
+        --     if not sensors.cliff_left.has_collided then
+        --         grunt.gruntai.state = 'move_right'
+        --         grunt.physics.v.x = 0
+        --     end
+        -- elseif grunt.gruntai.state == 'move_right' then
+        --     if not sensors.cliff_right.has_collided then
+        --         grunt.gruntai.state = 'move_left'
+        --         grunt.physics.v.x = 0
+        --     end
+        -- elseif grunt.gruntai.state == 'jump' then
+        --     -- nothing.
+        -- elseif grunt.gruntai.state == 'attack' then
+        --     -- nothing
+        -- elseif grunt.gruntai.state == 'idle' then
+        --     -- nothing
+        -- end
 
         -- do the thing, Zhu Li!
         self.actions[grunt.gruntai.state](grunt, dt)
+        self.event_queue = {}
     end
 end
 

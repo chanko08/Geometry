@@ -8,17 +8,14 @@ local EntityManager         = require('entitymanager')
 local PhysicsSystem         = require('systems.physics')
 local CollisionSystem       = require('systems.collision')
 local CameraSystem          = require('systems.camera')
-
-local AudioMixer            = require('systems.audiomixer')
-
+local GunSystem             = require('systems.gun')
+local BulletSystem          = require('systems.bullet')
+local AudioMixerSystem      = require('systems.audiomixer')
 local HashtagSystem         = require('systems.hashtag')
+local InventorySystem       = require('systems.inventory')
 
 local PlayerBrain           = require('systems.brains.player')
 local GruntBrain            = require('systems.brains.grunt')
-
-local GunSystem             = require('systems.gun')
-local BulletSystem          = require('systems.bullet')
-
 local BBoxRenderer          = require('systems.renderers.bbox')
 local LaserRenderer         = require('systems.renderers.laser')
 local BulletRenderer        = require('systems.renderers.bullet')
@@ -28,7 +25,7 @@ local GamepadHardware       = require('hardware.gamepad')
 local KeyboardMouseHardware = require('hardware.keyboardmouse')
 
 local load_level            = require('loaders.level')
-local TiledFileLoaderSystem       = require('hardware.tiledfileloader')
+local TiledFileLoaderSystem = require('hardware.tiledfileloader')
 
 -- ---------------------------------------
 -- -- Level Sate
@@ -44,7 +41,7 @@ function LevelState:enter(previous, state_manager, lvlfile)
     self.state_manager = state_manager
     self.lvlfile = lvlfile
     self.entity_builder = TiledFileLoaderSystem(self)
-    self.manager = EntityManager(self.entity_builder)
+    self.manager = EntityManager(self.entity_builder, self)
 
     self.relay    = SignalRegistry()
 
@@ -61,17 +58,17 @@ function LevelState:enter(previous, state_manager, lvlfile)
     end
 
     self.hashtag         = HashtagSystem(self)
-    
-    self.audiomixer      = AudioMixer(self)
-    
-    self.player          = PlayerBrain(self)
+    self.audiomixer      = AudioMixerSystem(self)
     self.physics         = PhysicsSystem(self)
     self.collision       = CollisionSystem(self)
-
-    self.grunt_ai        = GruntBrain(self)
-
     self.bullet          = BulletSystem(self)
     self.gun             = GunSystem(self)
+    self.inventory       = InventorySystem(self)
+    
+    self.player          = PlayerBrain(self)
+    self.grunt_ai        = GruntBrain(self)
+
+    
 
     self.bbox            = BBoxRenderer(self)
     self.bullet_renderer = BulletRenderer(self)
@@ -91,6 +88,7 @@ function LevelState:enter(previous, state_manager, lvlfile)
                     , gun       = self.gun
                     , bullet    = self.bullet
                     , hashtag   = self.hashtag
+                    , inventory = self.inventory
                     }
 
     self.entity_builder.systems = systems
@@ -104,7 +102,10 @@ end
 function LevelState:update(dt)
     
     if not self.pause then
+
         self.hashtag:run(dt)
+        self.inventory:run(dt)
+        self.manager:remove_dead_ents()
         self.input:run(dt)
         self.player:run(dt)
 

@@ -3,18 +3,10 @@ local _     = require('lib.underscore')
 
 local Set = class({})
 
-function Set:init(values,use_weak_refs)
-    local weak = use_weak_refs or false
+function Set:init(values)
     local vals = values or {}
 
-    local meta = {}
     self.values = {}
-
-    if weak then
-        meta.__mode = 'k'
-    end
-
-    setmetatable(self.values, meta)
 
     for i,v in ipairs(values) do
         self.values[v] = true
@@ -26,7 +18,7 @@ function Set:add(val)
 end
 
 function Set:remove(val)
-    if not self.values[val] then
+    if self.values[val] == nil then
         print('WARNING: '..tostring(val)..' is not around to be removed. You should probably look into this.' )
     end
     self.values[val] = nil

@@ -9,10 +9,14 @@ function Logger:init( args )
     
 end
 
-function Logger:log(tag, text)
+function Logger:log(tag, ...)
     if self.log_tags[tag] then
-        print(text)
+        print(...)
     end
+end
+
+function Logger:logi( tag, ... )
+    self:log(tag,inspect(...))
 end
 
 return Logger

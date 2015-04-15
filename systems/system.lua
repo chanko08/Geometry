@@ -4,20 +4,22 @@ local Set   = require('utils.set')
 local System = class({})
 
 function System:init( state )
-    self.entities = Set({},true)
-
-    self.event_queue = {}
-    self.subsystems  = {}
+    self.entities       = Set({},true)
     
-    self.manager     = state.manager
-    self.relay       = state.relay
+    self.event_queue    = {}
+    self.subsystems     = {}
     
-    self.input       = state.input
-    self.graphics    = state.graphics
-    self.audio       = state.audio   
-    self.log         = state.log     
-    self.savegame    = state.savegame
-    self.camera      = state.camera  
+    self.manager        = state.manager
+    self.relay          = state.relay
+    self.entity_builder = state.entity_builder
+    
+    
+    self.input          = state.input
+    self.graphics       = state.graphics
+    self.audio          = state.audio   
+    self.log            = state.log     
+    self.savegame       = state.savegame
+    self.camera         = state.camera  
 end
 
 --[[function System:add_entity( e )
@@ -31,6 +33,10 @@ end
 
 function System:get_entities_by_tag( tag )
     return self.manager:get_entities_by_tag(tag)
+end
+
+function System:get_entities_by( component, tag )
+    return self.manager:get_entities_by(component,tag)
 end
 
 function System:run( dt )

@@ -14,6 +14,8 @@ function CollisionSystem:init( state )
     local on_collision      = _.curry(CollisionSystem.on_collision, self)
     local on_stop_collision = _.curry(CollisionSystem.on_stop_collision, self)
     self.collider           = HC(100, on_collision, on_stop_collision)
+
+    self.relay:register('remove_collision_shape',_.curry(self.remove_entity_from_world,self))
 end
 
 function CollisionSystem:run( dt )
@@ -54,15 +56,19 @@ function CollisionSystem:run( dt )
 end
 
 function CollisionSystem:on_collision(dt, shape, other_shape, mx, my)
-    -- print('COLLIDING: '.. inspect(shape.component.groups)..' with '.. inspect(other_shape.component.groups))
+    local shape_name = shape.component.name or shape.component.entity.name
+    local other_shape_name = other_shape.component.name or other_shape.component.entity.name
+    log('collide','COLLIDING: '.. shape_name ..' with '..  other_shape_name )
 
+    -- TODO remove this, no longer needed because this collision is handled with groups now
+
+    -- print('\tResolve vector: ('..mx..','..my..')')
     if shape.is_sensor and other_shape.is_sensor then
         return
     end
+    
 
-    -- print('\tResolve vector: ('..mx..','..my..')')
-
-    if _.any(other_shape.component.groups, function(group) return group == 'Terrain' end) then
+    if _.any(other_shape.component.groups, function(group) return group == 'terrain' end) then
         shape.component.stop_vertical_movement = true
         -- print('I AM STOPPING!')
     else
@@ -70,12 +76,21 @@ function CollisionSystem:on_collision(dt, shape, other_shape, mx, my)
     end
 
     if shape.is_sensor then
+        if shape.component.signal.when_on then
+            self.relay:emit(shape.component.signal.when_on, shape.component, other_shape.component)
+        end
         shape.component.resolve_vector = shape.component.resolve_vector + Vector(mx,my)
         shape.component.has_collided = true
+        shape.component.colliding_shape = other_shape
 
     elseif other_shape.is_sensor then
+        if other_shape.component.signal.when_on then
+            self.relay:emit(other_shape.component.signal.when_on, other_shape.component, shape.component)
+        end
+
         other_shape.component.resolve_vector = other_shape.component.resolve_vector - Vector(mx,my)
         other_shape.component.has_collided = true
+        other_shape.component.colliding_shape = shape
 
     elseif not other_shape.component.is_passive then
         shape.component.has_collided = true
@@ -91,17 +106,41 @@ function CollisionSystem:on_collision(dt, shape, other_shape, mx, my)
 end
 
 function CollisionSystem:on_stop_collision(dt, shape, other_shape)
-    -- print('\tSTOP COLLIDING: '..shape.component.shape_name..' with '..other_shape.component.shape_name)
+    local shape_name = shape.component.name or shape.component.entity.name
+    local other_shape_name = other_shape.component.name or other_shape.component.entity.name
+    log('collide','\t STAHHP COLLIDING: '.. shape_name ..' with '..  other_shape_name )
+
     if shape.is_sensor and other_shape.is_sensor then
         return
     end
+    
+    if shape.is_sensor and shape.component.signal.when_off then
+            self.relay:emit(shape.component.signal.when_off, shape.component, other_shape.component)
+    end
+
+    if other_shape.is_sensor and other_shape.component.signal.when_off then
+            self.relay:emit(other_shape.component.signal.when_off, other_shape.component, shape.component)
+    end
 
     shape.component.has_collided = false
+    shape.colliding_shape = nil
+    other_shape.colliding_shape = nil
     shape.component.stop_vertical_movement = false
     if not other_shape.component.is_passive then
         other_shape.component.has_collided = false
     end
 
+end
+
+function CollisionSystem:remove_entity_from_world(collision)
+    local remove = _.curry(self.collider.remove,self.collider)
+    log('collision', 'removing entity from collision system')
+    logi('collision', collision.shape, {depth=1})
+    remove(collision.shape)
+    for i, s in pairs(collision.sensors) do
+        logi('collision', s, {depth=1})
+        remove(s.shape)
+    end
 end
 
 function CollisionSystem:build_component( obj, comp_data )

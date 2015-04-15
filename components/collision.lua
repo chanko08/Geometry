@@ -61,6 +61,7 @@ function CollisionComponent:init(collider, obj, comp_data)
 
     comp_data.sensors = comp_data.sensors or {}
     for i, sensor_data in ipairs(comp_data.sensors) do
+        log('sensor', inspect(sensor_data, {depth=1}))
         local sensor = {}
         sensor_data.x = sensor_data.rel_x + cx
         sensor_data.y = sensor_data.rel_y + cy
@@ -68,11 +69,15 @@ function CollisionComponent:init(collider, obj, comp_data)
         build_shape(sensor, collider, sensor_data, sensor_data)
 
         sensor.shape.is_sensor = true
+        log('sensor', sensor.shape)
 
         sensor.rel_x = sensor_data.rel_x
         sensor.rel_y = sensor_data.rel_y
+        sensor.name = sensor_data.name
+        sensor.signal = sensor_data.signal or {}
         -- table.insert(self.sensors, sensor)
         self.sensors[sensor_data.name] = sensor
+        log('sensor', inspect(self.sensors, {depth=2}))
     end
 
 end

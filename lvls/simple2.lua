@@ -44,20 +44,20 @@ return {
             prototype = 'actors.player'
           }
         },
-        {
-          name = "shotgun",
-          type = "",
-          shape = "rectangle",
-          x = 65,
-          y = 45,
-          width = 32,
-          height = 8,
-          rotation = 0,
-          visible = true,
-          properties = {
-            prototype = "gun.shotgun"
-          }
-        }
+        -- {
+        --   name = "shotgun",
+        --   type = "",
+        --   shape = "rectangle",
+        --   x = 65,
+        --   y = 45,
+        --   width = 32,
+        --   height = 8,
+        --   rotation = 0,
+        --   visible = true,
+        --   properties = {
+        --     prototype = "gun.shotgun"
+        --   }
+        -- }
       }
     },
     {
@@ -79,7 +79,7 @@ return {
           visible = true,
           properties = {
             ["bbox"] = {},
-            ["collision"] = {groups={"Terrain"}},
+            ["collision"] = {groups={"terrain"}},
             ["physics"] = {}
           }
         },
@@ -116,7 +116,7 @@ return {
           visible = true,
           properties = {
             ["bbox"] = {},
-            ["collision"] = {groups={"Terrain"}},
+            ["collision"] = {groups={"terrain"}},
             ["physics"] = {}
           }
         }
@@ -139,7 +139,12 @@ return {
           height = 40,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            prototype="item.pickup",
+            ["inventory"] = {
+              items = {'gun.machinegun'}
+            }
+          }
         },
         {
           name = "item2",
@@ -164,7 +169,10 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            prototype='item.pickup'
+            prototype="item.pickup",
+            ["inventory"] = {
+              items = {'gun.machinegun'}
+            }
           }
         },
         {

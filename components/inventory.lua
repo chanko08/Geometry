@@ -1,8 +1,8 @@
 local InventoryComponent = class({})
 
-function InventoryComponent:init( layer, obj, comp_data )
+function InventoryComponent:init( obj, comp_data )
     self.items = comp_data.items or {}
-    self.equipped = {}
+    self.equipped = nil
 end
 
 return InventoryComponent
