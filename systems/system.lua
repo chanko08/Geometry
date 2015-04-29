@@ -3,9 +3,11 @@ local Set   = require('utils.set')
 
 local System = class({})
 
-function System:init( state )
-    self.entities       = Set({},true)
+function System:init( state, filter )
+    self.entities       = {} --Set({},true)
     
+    self.filter         = filter or {}
+
     self.event_queue    = {}
     self.subsystems     = {}
     

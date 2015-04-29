@@ -200,6 +200,21 @@ function Underscore.funcs.max(list, func)
 	end).item
 end
 
+function Underscore.funcs.getter( e, propertyName )
+	return Underscore.funcs.curry(Underscore.funcs.get, e, propertyName) 
+end
+
+function Underscore.funcs.get( e, propertyName )
+	return e[propertyName]
+end
+
+function Underscore.funcs.flip(f)
+	return function(...)
+		local args = {...}
+		return f(args[2], args[1], Underscore.funcs.slice(args, 3, #args))
+	end
+end
+
 function Underscore.funcs.to_array(list)
 	local array = {}
 	for i in Underscore.iter(list) do
@@ -374,11 +389,13 @@ function Underscore.funcs.wrap(func, wrapper)
 	end
 end
 
-function Underscore.funcs.curry(func, argument)
+function Underscore.funcs.curry(func, ...)
+	local arguments = {...}
 	return function(...)
-		return func(argument, ...)
+		return func(unpack(arguments), ...)
 	end
 end
+
 
 function Underscore.functions() 
 	return Underscore.keys(Underscore.funcs)
