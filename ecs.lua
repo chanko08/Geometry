@@ -54,33 +54,52 @@ end
     * Calls update function on each system with their entities
 ]]
 function ECS:update(dt)
-    local function passes_filter( filters, e )
-        _.(filters):chain():map(function(f) return e[f] end):all():value()  
+    
+
+    local function process_entities(entity_filter, entity_process)
+        _.(self.systems):chain():filter(entity_filter):each(entity_process)
     end
 
-    local function add_entity( e )
-        self.entities[e] = e
 
-        _.each(self.systems, function(sys)
-            if passes_filter(sys.filter, e) then
-                sys:on_add(e)
-                self.system_entities[sys] = e
-            end
-        end)
+    local function add_entity( e )
+        assert(self.entities[e] == nil, "trying to add an entity that already exists")
+
+        local function add_entity_to_system(system)
+            self.system_entities[system][e] = e
+            system:on_add(e)
+        end
+
+        local function has_component(component, entity)
+            return entity[component] ~= nil
+        end
+
+        local function entity_matches_system_filter(entity, system)
+            local has_component = _.curry(has_component, entity)
+            return _.all(_.(system.filter):chain():map(has_component):value())
+        end
+
+        self.entities[e] = e
+        process_entities(entity_matches_system_filter, add_entity_to_system)
     end
 
     local function remove_entity( e )
-        if not self.entities[e] then
-            return
+        assert(self.entities[e] ~= nil, "trying to remove an entity that does not exist")
+
+
+        local function system_uses_entity(system)
+            return self.system_entities[system][e] ~= nil
         end
 
-        es[e] = nil
-        _.each(self.systems, function(sys)
-            if self.system_entities[e] ~= nil then
-                sys:on_remove(e)
-                self.system_entities[sys] = nil
-            end
-        end)
+    
+
+        local function remove_entity_from_system(system)
+            self.system_entities[system][e] = nil
+            system:on_remove(e)
+        end
+
+        self.entities[e] = nil
+
+        process_entities(system_uses_entity, remove_entity_from_system)
     end
 
     local function update_system(sys)
