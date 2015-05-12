@@ -97,21 +97,21 @@ function TiledFileLoaderSystem:load_level(lvl_file_path )
     local lvl = love.filesystem.load(lvl_file_path)()
 
     local entities = {}
-
-    for i,layer in ipairs(lvl.layers) do
-        if layer.type == 'objectgroup' then
-            for j, obj in ipairs(layer.objects) do
-                
-                local entity = self:build_entity(obj, obj.prototype)
-                
-                table.insert(entities, entity)
-                -- print(inspect(entity))
-            end
-
-        end
+    local function is_objectgroup( layer )
+        return layer.type == 'objectgroup'
     end
 
-    return entities
+    local function concat(t1, t2)
+        local t3 = {}
+        _.each(t1, _.curry(_.push, t3))
+        _.each(t2, _.curry(_.push, t3))
+
+        return t3
+    end
+
+    local objs = _.(lvl.layers):chain():filter(is_objectgroup):pluck('objects'):reduce({}, concat):value()
+
+    return _.(objs):chain():map(function(o) return self:build_entity(o, o.prototype) end)
 end
 
 return TiledFileLoaderSystem

@@ -75,7 +75,7 @@ function ECS:update(dt)
 
         local function entity_matches_system_filter(entity, system)
             local has_component = _.curry(has_component, entity)
-            return _.all(_.(system.filter):chain():map(has_component):value())
+            return _.(system.filter):chain():map(has_component):all():value()
         end
 
         self.entities[e] = e
