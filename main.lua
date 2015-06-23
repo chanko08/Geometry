@@ -1,4 +1,24 @@
 class							= require('lib.hump.class')
+_                               = require('lib.underscore')
+
+-- Add the big always used functions to the namespace
+local funcs = { 
+    'map',
+    'reduce',
+    'filter',
+    'head',
+    'tail',
+    'push',
+    'pop',
+    'keys',
+    'values',
+    'compose',
+    'curry'
+}
+
+for i,f in ipairs(funcs) do
+    _G[f] = _.[f]
+end
 
 GameState 						= require('lib.hump.gamestate')
 local Camera					= require('lib.hump.camera')
