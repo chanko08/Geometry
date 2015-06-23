@@ -17,7 +17,7 @@ local funcs = {
 }
 
 for i,f in ipairs(funcs) do
-    _G[f] = _.[f]
+    _G[f] = _[f]
 end
 
 GameState 						= require('lib.hump.gamestate')
