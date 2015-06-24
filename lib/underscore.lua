@@ -382,9 +382,10 @@ function Underscore.funcs.wrap(func, wrapper)
 	end
 end
 
-function Underscore.funcs.curry(func, argument)
+function Underscore.funcs.curry(func, ...)
+	local arg = {...}
 	return function(...)
-		return func(argument, ...)
+		return func(unpack(arg), ...)
 	end
 end
 

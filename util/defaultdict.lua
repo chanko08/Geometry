@@ -21,3 +21,5 @@ function DefaultDict:set(key, value)
 
     return value
 end
+
+return DefaultDict

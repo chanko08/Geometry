@@ -4,7 +4,7 @@ local ECS = class({})
 
 function ECS:init( ... )
     -- body
-    self.next_id = 0
+    self.next_id = 1
     self.entities   = {}
     self.components = DefaultDict(function() return {} end)
 end
@@ -48,7 +48,10 @@ function ECS:_find_ents( components, f )
         error('Requested entities without any components specified.')
     end
 
-    ents = _.copy(self.components:get(components[1]))
+    ents = keys(self.components:get(components[1]))
+    ents = map(ents, curry(self.get_entity, self))
+
+    -- print(inspect(ents))
 
     if #components > 1 then
 
@@ -63,6 +66,7 @@ function ECS:_find_ents( components, f )
 
         ents = _.filter(ents, filt)
     end
-
     return ents
 end
+
+return ECS
