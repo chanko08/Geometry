@@ -18,19 +18,30 @@ function ECS:add_entities(ents)
     end
 end
 
+function ECS:staged_for_deletion( )
+    return map(ents, curry(self.get_entity, self))
+end
+
+function ECS:update()
+    for i,ent_id in ipairs(self.staged_for_deletion_ents) do
+        local e = self.entities[ent_id]
+        self.entities[ent_id] = nil
+        for comp_name, comp in pairs(e) do
+            self.components:get(comp_name)[ent_id] = nil
+        end
+    end
+
+    self.staged_for_deletion_ents = {}
+end
+
 function ECS:_add_components( ent_id, ent )
     for comp_name,comp in pairs(ent) do
         self.components:get(comp_name)[ent_id] = comp
     end
 end
 
-
 function ECS:remove_entity(ent_id)
-    local e = self.entities[ent_id]
-    self.entities[ent_id] = nil
-    for comp_name, comp in pairs(e) do
-        self.components:get(comp_name)[ent_id] = nil
-    end
+    push(self.staged_for_deletion_ents, ent_id)
 end
 
 function ECS:get_entity( ent_id )
