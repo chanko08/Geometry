@@ -20,50 +20,56 @@ Physics:include(System)
 function Physics:init( )
     System.init(self)
     self.collider = HC(150, curry(self.on_collision, self), curry(self.on_stop_collision, self))
+    self.collisions = {}
 end
 
 
 local function integrate(dt, ent)
     ent.physics.v = ent.physics.v + dt*ent.physics.a
-    ent.physics.s = ent.physics.s + dt*ent.physics.v
+    -- ent.physics.s = ent.physics.s + dt*ent.physics.v
+
+    ent.physics.shape:move((ent.physics.v*dt):unpack())
 end
 
 local function clean_up_collider( collider, ent )
     collider:remove(ent.physics.shape)
 end
 
-local function resolve_collisions(ent)
-    -- local actual_resolve_vector = Vector(0,0)
-    -- for collision_entity_id,resolve_vector in pairs(ent.physics.shape.collision) do
-    --     actual_resolve_vector - resolve_vector
-    -- end
-end
-
 function Physics:on_collision(dt, a, b, dx, dy )
-    local delta = vector(dx, dy)
+    push( self.collisions, {a, b, dx, dy} )
 
-    a.collision[b.ent_id] =  delta
-    b.collision[a.ent_id] = -delta
-
+    print(inspect(a, {depth=2}))
 end
 
 function Physics:on_stop_collision(dt, a, b, dx, dy )
-    a.collision[b.ent_id] = nil
-    b.collision[a.ent_id] = nil
-
+    print('STOPPED POOPIONG')
 end
 
 function Physics:run( ecs, dt )
-    ecs:run_with( curry(integrate, dt), {'physics'} )
-    -- for i=1,10 do
-    --     self.collider:update(dt/10)
-    -- end
-    
-    -- for i,collision in ipairs(self.collider:get_collisions) do
-    --     resolve_this_particular
-    -- end
-    -- map(ecs:removed_entities, curry(clean_up_collider, self.collider))
+    for i,ent in ipairs(ecs:recently_added()) do
+        if ent.physics then
+            self.collider:addShape(ent.physics.shape)
+        end
+    end
 
+    for i,ent in ipairs(ecs:staged_for_deletion()) do
+        if ent.physics then
+            self.collider:remove(ent.physics.shape)
+        end
+    end
+
+    ecs:run_with( curry(integrate, dt), {'physics'} )
+    self.collider:update(dt)
+
+    for i,collision_pair in ipairs(self.collisions) do
+        local a,b,dx,dy = unpack(collision_pair)
+
+        a:move( dx/2,  dy/2)
+        b:move(-dx/2, -dy/2)
+
+    end
+
+    self.collisions = {}
 end
 
 return Physics

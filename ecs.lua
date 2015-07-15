@@ -7,22 +7,33 @@ function ECS:init( ... )
     self.next_id = 1
     self.entities   = {}
     self.components = DefaultDict(function() return {} end)
+    self.staged_for_deletion_ents = {}
+    self.recently_added_ents = {}
+
 end
 
 function ECS:add_entities(ents)
     for i,e in ipairs(ents) do
         self.entities[self.next_id] = e
         self:_add_components(self.next_id, e)
+        push(self.recently_added_ents, self.next_id)
 
         self.next_id = self.next_id + 1
     end
 end
 
+function ECS:recently_added()
+    return map(self.recently_added_ents, curry(self.get_entity, self))
+end
+
 function ECS:staged_for_deletion( )
-    return map(ents, curry(self.get_entity, self))
+    return map(self.staged_for_deletion_ents, curry(self.get_entity, self))
 end
 
 function ECS:update()
+    
+
+
     for i,ent_id in ipairs(self.staged_for_deletion_ents) do
         local e = self.entities[ent_id]
         self.entities[ent_id] = nil
@@ -32,6 +43,7 @@ function ECS:update()
     end
 
     self.staged_for_deletion_ents = {}
+    self.recently_added_ents = {}
 end
 
 function ECS:_add_components( ent_id, ent )
