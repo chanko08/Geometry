@@ -6,6 +6,7 @@ local Shapes  = require('lib.HardonCollider.shapes')
 
 local ECS  = require('ecs')
 local PhysicsSystem = require('systems.physics')
+local ScriptEngine  = require('systems.script')
 
 LevelState:include(PlayerInput)
 
@@ -18,9 +19,22 @@ function LevelState:init()
     self.ecs   = ECS()
 
     self.physics = PhysicsSystem()
+    self.scripts = ScriptEngine()
 
     self.ecs:add_entities({{physics = {a = vector(0,9.81), v = vector(0,0), shape = Shapes.newCircleShape(200,0,50)}}})
     self.ecs:add_entities({{physics = {a = vector(0,9.81), v = vector(0,0), shape = Shapes.newCircleShape(225,0,50)}}})
+
+    local entity = {
+        physics = {a = vector(0,9.81), v = vector(0,0), shape = Shapes.newCircleShape(250,0,50)},
+       
+        scripts = {
+            'scripts/player.lua', --possibly a brain, a state machine that decides what other scripts to run
+        },
+
+
+    }
+
+    self.ecs:add_entities({entity})
 end
 
 function LevelState:enter(previous, menuState)
@@ -29,6 +43,7 @@ end
 
 function LevelState:update(dt)
     self.physics:run(self.ecs, dt)
+    self.scripts:run(self.ecs, dt)
     --print(inspect(self.ecs:get_entity(1)))
     self.ecs:update()
 
