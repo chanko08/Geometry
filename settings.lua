@@ -19,7 +19,7 @@ local settings = {
             a = 'left',
             s = 'down',
             d = 'right',
-            [" "] = 'jump',
+            space = 'jump',
             e = 'use'
         },
         mouse = {
