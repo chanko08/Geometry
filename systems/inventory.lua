@@ -47,8 +47,10 @@ function InventorySystem:run( dt )
             log('sensor', inspect(ent.collision, {depth=2}))
             if item_sensor.has_collided then
                 local item_collision = item_sensor.colliding_shape.component
-                self.relay:emit('add_item',ent,item_collision.entity.inventory.items)
-                log('item','Adding item!', inspect(item_collision.entity.inventory.items, {depth=1}))
+                if item_collision.entity.inventory then
+                    self.relay:emit('add_item',ent,item_collision.entity.inventory.items)
+                    log('item','Adding item!', inspect(item_collision.entity.inventory.items, {depth=1}))
+                end
                 self.manager:mark_for_removal(item_collision.entity)
 
                 item_sensor.colliding_shape = nil
