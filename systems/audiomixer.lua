@@ -23,13 +23,13 @@ function AudioMixer:init( state )
     local music_files = love.filesystem.getDirectoryItems(self.music_dir)
 
     for i,filename in ipairs(sfx_files) do
-        if love.filesystem.isFile(self.sfx_dir..filename) then
+        if love.filesystem.getInfo(self.sfx_dir..filename).type == 'file' then
             self:add_sfx(filename)
         end
     end
 
     for i,filename in ipairs(music_files) do
-        if love.filesystem.isFile(self.music_dir..filename) then
+        if love.filesystem.getInfo(self.music_dir..filename).type == 'file' then
             self:add_music(filename)
         end
     end
@@ -46,7 +46,7 @@ function AudioMixer:run( dt )
         local file = e.ent.audio[e.name]
 
         if self.sfx[file]:isPlaying() then
-            self.sfx[file]:rewind()
+            self.sfx[file]:seek(0)
         else
             self.sfx[file]:play()
         end
@@ -77,7 +77,7 @@ end
 function AudioMixer:add_music(music_file)
     -- ... for the big files, we'll stream them from the disk
     -- (granted, even these are small right now)
-    local s = love.audio.newSource(self.music_dir..music_file)
+    local s = love.audio.newSource(self.music_dir..music_file, 'stream')
     s:setLooping(true) -- for now?
     s:setVolume(self.settings.MUSIC_VOLUME)
     -- print('adding music:', music_file)

@@ -11,11 +11,11 @@ local function load_prototype_table( proto_dir)
     
     for k, file in ipairs(fs) do
         local fpath = proto_dir .. '/' .. file
-        if love.filesystem.isFile(fpath) then
+        if love.filesystem.getInfo(fpath).type == 'file' then
             local name = unLua(file)
             root[name] = love.filesystem.load(proto_dir .. '/' .. file)()   
 
-        elseif love.filesystem.isDirectory(fpath) then
+        elseif love.filesystem.getInfo(fpath).type == 'directory' then
             root[file] = load_prototype_table(proto_dir .. '/' .. file)
         end
     end
