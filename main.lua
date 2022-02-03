@@ -1,6 +1,7 @@
 inspect          = require('lib.inspect')
 class            = require('lib.hump.class')
 _                = require('lib.underscore')
+log              = require('lib.log')
 
 local Logger     = require('utils.logger')
 local State      = require('lib.hump.gamestate')
