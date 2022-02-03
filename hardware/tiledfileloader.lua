@@ -43,9 +43,6 @@ function TiledFileLoaderSystem:fill_prototype( data, prototype )
     if type(prototype) == 'string' then
         local proto = collection.find(prototype, self.prototypes)
         local ent_data = collection.clone(proto)
-        -- print('data.name: ',data.name)
-        -- print(inspect(ent_data))
-        -- print(inspect(data.properties))
 
         collection.replace(ent_data, data)
         return ent_data
@@ -58,14 +55,12 @@ function TiledFileLoaderSystem:build_entity( obj, prototype )
     local entity = {}
     entity.name     = obj.name
 
-    log('obj', inspect(obj.properties, {depth=1}))
     obj.properties = self:fill_prototype(obj.properties, obj.properties.prototype)
     
 
     for comp_name,comp_data in pairs(obj.properties) do
         comp_data = self:fill_prototype(comp_data, comp_data.prototype)
-        
-        -- print('component name: '..comp_name)
+    
         if comp_name ~= "prototype" then
 
             local sys = self.systems[comp_name]

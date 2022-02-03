@@ -60,9 +60,7 @@ function PlayerBrain:run( dt )
 end
 
 function PlayerBrain:check_inventory( player )
-    logi('item', player.inventory.items)
     if not player.inventory.equipped and #player.inventory.items > 0 then
-        log('item', 'I need a gun')
         self.relay:emit('equip_item', player, player.inventory.items[1])
     end
 end

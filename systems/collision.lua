@@ -58,7 +58,6 @@ end
 function CollisionSystem:on_collision(dt, shape, other_shape, mx, my)
     local shape_name = shape.component.name or shape.component.entity.name
     local other_shape_name = other_shape.component.name or other_shape.component.entity.name
-    log('collide','COLLIDING: '.. shape_name ..' with '..  other_shape_name )
 
     -- TODO remove this, no longer needed because this collision is handled with groups now
 
@@ -108,7 +107,6 @@ end
 function CollisionSystem:on_stop_collision(dt, shape, other_shape)
     local shape_name = shape.component.name or shape.component.entity.name
     local other_shape_name = other_shape.component.name or other_shape.component.entity.name
-    log('collide','\t STAHHP COLLIDING: '.. shape_name ..' with '..  other_shape_name )
 
     if shape.is_sensor and other_shape.is_sensor then
         return
@@ -134,11 +132,9 @@ end
 
 function CollisionSystem:remove_entity_from_world(collision)
     local remove = _.curry(self.collider.remove,self.collider)
-    log('collision', 'removing entity from collision system')
-    logi('collision', collision.shape, {depth=1})
+    
     remove(collision.shape)
     for i, s in pairs(collision.sensors) do
-        logi('collision', s, {depth=1})
         remove(s.shape)
     end
 end
