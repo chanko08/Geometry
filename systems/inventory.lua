@@ -44,11 +44,10 @@ function InventorySystem:run( dt )
     for i,ent in ipairs(self:get_entities_by({component='inventory',tag='actor'})) do
         if ent.collision.sensors.item then
             local item_sensor = ent.collision.sensors.item
-            log('sensor', inspect(ent.collision, {depth=2}))
+            
             if item_sensor.has_collided then
                 local item_collision = item_sensor.colliding_shape.component
                 self.relay:emit('add_item',ent,item_collision.entity.inventory.items)
-                log('item','Adding item!', inspect(item_collision.entity.inventory.items, {depth=1}))
                 self.manager:mark_for_removal(item_collision.entity)
 
                 item_sensor.colliding_shape = nil

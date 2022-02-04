@@ -95,27 +95,20 @@ function EntityManager:get_entities_by( filter )
     local by_tag  = self:get_entities_by_tag(filter.tag)
     local by_comp = self:get_entities(filter.component)
 
-    -- logi('manager', by_tag)
-    -- logi('manager', by_comp)
-
     return _.filter(by_tag, _.curry(_.include, by_comp))
 end
 
 -- TODO 
 function EntityManager:remove_entity_tags( entity )
-    log('item', 'removing tags')
     for i,tag in ipairs(entity.hashtag.tags) do
-        log('item', 'tag name', tag)
         self.tag_sets[tag]:remove(entity)
     end
 end
 
 -- TODO
 function EntityManager:remove_entity_components( entity )
-    log('item', 'removing components')
     for comp_name,comp_data in pairs(entity) do
         if comp_name ~= 'lifetime' and comp_name ~= 'name' then
-            log('item', 'comp name', comp_name)
             self.component_sets[comp_name]:remove(comp_data)
         end
     end
